@@ -3,36 +3,53 @@ from deck import Deck
 from card import Suit
 import sys
 import random
-
+from operator import attrgetter
 
 class GameModel():
     
     def __init__(self):
         #TODO determine rounds/cards per round
-        self.rounds = 1
-        self.cards_per_round = [4]
+        self.rounds = 5
+        self.cards_per_round = [2,3,4,3,2]
         self.players = [Player(i, Seat(i)) for i in range(4)]
         self.deck = Deck()
         
     def start_game(self):
         for round in range(self.rounds):
+            for p in self.players:
+                p.reset()
             self.play_round(round, self.cards_per_round[round])
+            for p in self.players:
+                p.calculate_score()
+            print('Scores after round', round, ':', [p.score for p in self.players])
+        
+        print('The winner is', max(self.players, key=attrgetter('score')).name)
 
     def play_round(self, round, n_cards):
         print('=== Round', round, 'with', n_cards, 'cards',  '===')
         self.deal_cards(n_cards)
         trump = self.pick_trump()
         print('Trump is ', trump)
+        # Determine which player starts, this is usually the winner
+        winner = self.get_opener()
         for trick in range(n_cards):
             print('--- Trick', trick+1, '/', n_cards , '---')
-            # Determine which player starts
-            opener = self.get_opener()
-            self.order_players(opener)
+            
+            self.order_players(winner)
             # print('The opener is', opener.name)
             print('Player Order : ', [p.seat for p in self.players])
 
             # TODO make a guess
-
+            total_guessed = 0
+            for p in self.players:
+                p.guess_wins(trump, winner, n_cards)
+                print('Player', p.seat, 'guesses', p.guessed_wins, 'wins')
+                total_guessed += p.guessed_wins
+            if total_guessed == n_cards:
+                print('The guesses add up to', total_guessed, 'so the dealer guesses again')
+                self.players[3].change_guess(n_cards)
+                print('Player', p.seat, 'changes to guessing', p.guessed_wins, 'wins')
+            
             # Every player plays a card in order
             played_cards = []
             for idx, p in enumerate(self.players):
@@ -41,11 +58,12 @@ class GameModel():
                     trick_suit = card.suit
                     print('Trick suit is :', trick_suit)
                 played_cards.append(card)
-            # print('cards played', [t.name for t in played_cards])
 
             # Determine the winner of the trick
             # This is determined using the played_cards and the trick_suit
-            self.determine_winner(played_cards, trick_suit)
+            winner = self.determine_winner(played_cards, trump, trick_suit)
+            winner.add_win()
+            print(winner.seat, 'wins the trick!')
 
     def deal_cards(self, n_cards):
         # Get a deck of cards
@@ -53,13 +71,8 @@ class GameModel():
         print(len(self.deck.cards))
         print(len(self.players)*n_cards)
         assert(len(self.deck.cards) == len(self.players)*n_cards)
-        # assert(len(self.deck.cards) == len(self.players)*n_cards)
         for idx, p in enumerate(self.players):
             p.set_cards(self.deck.cards[idx*n_cards:(1+idx)*n_cards])
-            # print('player', p.seat, 'has', p.cards)
-        # for p in self.players:
-
-            
 
     def get_opener(self):
         for player in self.players:
@@ -70,14 +83,20 @@ class GameModel():
 
     def order_players(self, opener):
         idx = self.players.index(opener)
-        self.players = self.players[-idx:] + self.players[:-idx]
+        self.players = self.players[idx:] + self.players[:idx]
 
     def pick_trump(self):
         return Suit(random.randint(0, 3))
                 
-    def determine_winner(self, played_cards, trick_suit):
+    def determine_winner(self, played_cards, trump, trick_suit):
+        highest_value = 0
+        highest_card = None
         for c in played_cards:
-            pass
+            c.evaluate(trump, trick_suit)
+            if c.played_value > highest_value:
+                highest_value = c.played_value
+                highest_card = c
+        return c.owner
 
 if __name__ == '__main__':
     game_model = GameModel()

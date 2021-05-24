@@ -1,25 +1,27 @@
-from enum import Enum
+from enum import Enum, IntEnum
 class Card():
     def __init__(self, rank, suit):
         self.rank = rank
         self.suit = suit
         self.name = CardValue(self.rank).name + " of " + Suit(self.suit).name
+        self.played_value = 0
+        self.owner = None
 
     def evaluate(self, trump, trick_suit):
         if self.suit == trump:
-            pass
+            self.played_value = self.rank + 12
         elif self.suit == trick_suit:
-            pass
+            self.played_value = self.rank
         else:
-            return 0
+            self.played_value = 0
 
-class Suit(Enum):
+class Suit(IntEnum):
     CLUB = 0
     DIAMOND = 1
     HEART = 2
     SPADE = 3
 
-class CardValue(Enum):
+class CardValue(IntEnum):
     TWO = 0
     THREE = 1
     FOUR = 2
