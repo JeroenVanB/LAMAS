@@ -22,10 +22,10 @@ class Card:
 
 
 class Suit(IntEnum):
-    CLUB = 0
-    DIAMOND = 1
-    HEART = 2
-    SPADE = 3
+    CLUBS = 0
+    DIAMONDS = 1
+    HEARTS = 2
+    SPADES = 3
 
 
 class CardValue(IntEnum):
