@@ -1,7 +1,9 @@
+from card import Card
 from enum import Enum
 import random
 
-class Player():
+
+class Player:
     def __init__(self, seat_number, seat):
         self.seat_number = seat_number
         self.seat = seat
@@ -11,11 +13,7 @@ class Player():
 
         self.wins = 0
         self.guessed_wins = 0
-
-        if self.seat == Seat.NORTH:
-            self.opener = True
-        else:
-            self.opener = False
+        self.opener = self.seat == Seat.NORTH
 
     def set_cards(self, cards):
         self.cards = cards
@@ -23,7 +21,7 @@ class Player():
             c.owner = self
 
     def guess_wins(self, trump, winner, n_cards):
-        self.guessed_wins = random.randint(0,n_cards)
+        self.guessed_wins = random.randint(0, n_cards)
 
     def change_guess(self, n_cards):
         x = random.randint(0, n_cards)
@@ -38,20 +36,19 @@ class Player():
 
     def calculate_score(self):
         if self.wins == self.guessed_wins:
-            self.score += self.wins*2 + 10
+            self.score += self.wins * 2 + 10
         else:
-            self.score -= self.wins*2
+            self.score -= self.wins * 2
 
     def add_win(self):
         self.wins += 1
-    
-    def play_card(self):
+
+    def play_card(self) -> Card:
         return self.cards.pop(random.randrange(len(self.cards)))
+
 
 class Seat(Enum):
     NORTH = 0
     EAST = 1
     SOUTH = 2
     WEST = 3
-
-    

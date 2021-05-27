@@ -1,5 +1,7 @@
 from enum import Enum, IntEnum
-class Card():
+
+
+class Card:
     def __init__(self, rank, suit):
         self.rank = rank
         self.suit = suit
@@ -9,17 +11,22 @@ class Card():
 
     def evaluate(self, trump, trick_suit):
         if self.suit == trump:
-            self.played_value = self.rank + 12
+            self.played_value = self.rank.value + 13
         elif self.suit == trick_suit:
-            self.played_value = self.rank
+            self.played_value = self.rank.value
         else:
             self.played_value = 0
+
+    def __str__(self) -> str:
+        return self.name
+
 
 class Suit(IntEnum):
     CLUB = 0
     DIAMOND = 1
     HEART = 2
     SPADE = 3
+
 
 class CardValue(IntEnum):
     TWO = 0
