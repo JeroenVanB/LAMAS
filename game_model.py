@@ -37,13 +37,13 @@ class GameModel:
 
             self.order_players(winner)
             # print('The opener is', opener.name)
-            print("Player Order : ", [p.seat for p in self.players])
+            print("Player Order : ", [p.seat.name for p in self.players])
 
             # TODO make a guess
             total_guessed = 0
             for p in self.players:
                 p.guess_wins(trump, winner, n_cards)
-                print("Player", p.seat, "guesses", p.guessed_wins, "wins")
+                print("Player", p.seat.name, "guesses", p.guessed_wins, "wins")
                 total_guessed += p.guessed_wins
             if total_guessed == n_cards:
                 print(
@@ -56,7 +56,7 @@ class GameModel:
                 )  # the last player in the list is always the dealer.
                 print(
                     "Player",
-                    self.players[3].seat,
+                    self.players[3].seat.name,
                     "changes to guessing",
                     self.players[3].guessed_wins,
                     "wins",
@@ -66,17 +66,17 @@ class GameModel:
             played_cards = []
             for idx, p in enumerate(self.players):
                 card = p.play_card()
-                print(f"{p.seat} plays {card}")
+                print(f"{p.seat.name} plays {card}")
                 if idx == 0:
                     trick_suit = card.suit
-                    print("Trick suit is :", trick_suit)
+                    print("Trick suit is :", trick_suit.name)
                 played_cards.append(card)
 
             # Determine the winner of the trick
             # This is determined using the played_cards and the trick_suit
             winner = self.determine_winner(played_cards, trump, trick_suit)
             winner.add_win()
-            print(winner.seat, "wins the trick!")
+            print(winner.seat.name, "wins the trick!")
 
     def deal_cards(self, n_cards):
         # Get a deck of cards
