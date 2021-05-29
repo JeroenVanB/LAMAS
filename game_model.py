@@ -13,6 +13,12 @@ class GameModel:
         self.cards_per_round = [2, 3, 4, 3, 2]
         self.players = [Player(i, Seat(i)) for i in range(4)]
         self.deck = Deck()
+        self.table = {
+            Seat.NORTH: None,
+            Seat.EAST: None,
+            Seat.SOUTH: None,
+            Seat.WEST: None,
+        }
 
     def start_game(self):
         for round in range(self.rounds):
@@ -33,6 +39,7 @@ class GameModel:
         # Determine which player starts, this is usually the winner
         winner = self.get_opener()
         for trick in range(n_cards):
+            self.reset_table()
             print("--- Trick", trick + 1, "/", n_cards, "---")
 
             self.order_players(winner)
@@ -66,6 +73,7 @@ class GameModel:
             played_cards = []
             for idx, p in enumerate(self.players):
                 card = p.play_card()
+                self.table[p] = card
                 print(f"{p.seat.name} plays {card}")
                 if idx == 0:
                     trick_suit = card.suit
@@ -86,6 +94,14 @@ class GameModel:
         assert len(self.deck.cards) == len(self.players) * n_cards
         for idx, p in enumerate(self.players):
             p.set_cards(self.deck.cards[idx * n_cards : (1 + idx) * n_cards])
+
+    def reset_table(self):
+        self.table = {
+            Seat.NORTH: None,
+            Seat.EAST: None,
+            Seat.SOUTH: None,
+            Seat.North: None,
+        }
 
     def get_opener(self):
         for player in self.players:
