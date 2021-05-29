@@ -26,7 +26,13 @@ PLAYER_LOC = {
 
 class UI:
     def __init__(self, model: GameModel) -> None:
+        print("Making font object, this can take a few seconds. ", end="")
+        pygame.font.init()
         pygame.init()
+        # self.big_font = pygame.font.SysFont(None, 20)
+        self.font_size = 16
+        self.font = pygame.font.Font("seguisym.ttf", self.font_size)
+        print("Done.")
         pygame.display.set_caption("Boeren Bridge")
 
         self.window_surface = pygame.display.set_mode(RESOLUTION)
@@ -66,6 +72,8 @@ class UI:
                 self.draw_current_table()
                 # draw player cards
                 self.draw_player_cards()
+                # draw game info
+                self.draw_game_info()
                 paused = True
 
                 pygame.display.update()
@@ -103,6 +111,34 @@ class UI:
                 self.window_surface.blit(ci.img, rect)
         pygame.display.update()
 
+    def draw_game_info(self):
+        """Draws information about the current round and trick"""
+        trump_ico = self.suit_to_icon(self.model.trump)
+        trick_suit_ico = self.suit_to_icon(self.model.trick_suit)
+        location = (PLAYER_LOC[Seat.EAST][0] + CARD_SIZE[0], 20)
+        color = pygame.Color(0, 0, 0)
+        if self.model.cur_round >= len(self.model.cards_per_round):
+            total_tricks = self.model.cards_per_round[self.model.cur_round - 1]
+        else:
+            total_tricks = self.model.cards_per_round[self.model.cur_round]
+        # pygame sysfont does not support newline chars
+        text = []
+        text.append(
+            f"Round: {self.model.cur_round + 1}/{len(self.model.cards_per_round)}"
+        )
+        text.append(f"Trick: {self.model.cur_trick + 1}/{total_tricks}")
+        text.append(f"Trump: {trump_ico}")
+        text.append(f"Trick suit: {trick_suit_ico}")
+        label = []
+        for line in text:
+            label.append(self.font.render(line, True, color))
+        for line in range(len(label)):
+            self.window_surface.blit(
+                label[line],
+                (location[0], location[1] + (line * self.font_size) + (8 * line)),
+            )
+        # img = self.font.render(text, True, pygame.Color(0, 0, 0))
+
     def get_north_south_locations(self, num_cards, seat=Seat.NORTH) -> list:
         """Returns the locations of the North or South player so that we can view his cards"""
         positions = []
@@ -127,6 +163,17 @@ class UI:
             top = start_top + i * (CARD_SIZE[0] / 3)
             positions.append((left_val, top))
         return positions
+
+    def suit_to_icon(self, suit: Suit) -> str:
+        if suit == Suit.HEARTS:
+            return "♥"
+        elif suit == Suit.DIAMONDS:
+            return "♦"
+        elif suit == Suit.CLUBS:
+            return "♣"
+        elif suit == Suit.SPADES:
+            return "♠"
+        return ""
 
 
 class CardImage:

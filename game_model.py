@@ -9,7 +9,7 @@ from operator import attrgetter
 class GameModel:
     def __init__(self):
         # TODO determine rounds/cards per round
-        self.cards_per_round = [2, 3]
+        self.cards_per_round = [8, 3]
         self.players = [Player(i, Seat(i)) for i in range(4)]
         self.deck = Deck()
         self.table = {
