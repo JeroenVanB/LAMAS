@@ -1,3 +1,4 @@
+from PIL import Image
 import pygame
 import pygame_gui
 from pathlib import Path
@@ -53,13 +54,16 @@ class UI:
                     if event.key == pygame.K_SPACE:
                         print("Space pressed")
                         paused = False
+                    if event.key == pygame.K_ESCAPE:
+                        self.is_running = False
 
             if not paused:
+                # Go to the next game state
+                self.model.next_move()
                 # draw background
                 self.clear_table()
                 # draw played cards of each player
                 self.draw_current_table()
-
                 # draw player cards
                 self.draw_player_cards()
                 paused = True
@@ -134,16 +138,19 @@ class CardImage:
         self.closed = closed
         self.img_src = str(Path(__file__).resolve().parent) + "/img/cards/"
         self.back_side = str(Path(__file__).resolve().parent) + "/img/back-side.png"
+        self.placeholder = str(Path(__file__).resolve().parent) + "/img/placeholder.png"
         self.img = self.card_to_image()
 
     def card_to_image(self) -> str:
-        if self.card is None or self.closed:
+        if self.card is None:
+            img = pygame.image.load(self.placeholder)
+        elif self.closed:
             img = pygame.image.load(self.back_side)
         else:
             value = self.card.rank.value
             suit = str(self.card.suit.name).lower()
 
-            if value < 9:
+            if value < 9:  # value iteration starts at 0 so we have to adjust
                 value += 2
             else:
                 value = str(self.card.rank.name).lower()
@@ -158,6 +165,10 @@ class CardImage:
 
 
 if __name__ == "__main__":
+    # img = Image.new("RGB", CARD_SIZE, (105, 105, 105))
+    # img.show()
+    # img.save("img/placeholder.png")
+
     model = GameModel()
     ui = UI(model)
 
