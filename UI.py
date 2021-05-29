@@ -100,13 +100,13 @@ class UI:
         pygame.display.update()
 
     def get_north_south_locations(self, num_cards, seat=Seat.NORTH) -> list:
-        """Returns the locations of the South player so that we can view his cards"""
+        """Returns the locations of the North or South player so that we can view his cards"""
         positions = []
         start_l = 50 + CARD_SIZE[0]
         if seat == Seat.NORTH:
-            top_val = PLAYER_LOC[Seat.SOUTH][1] + CARD_SIZE[1] + 30
-        else:
             top_val = 30
+        else:
+            top_val = PLAYER_LOC[Seat.SOUTH][1] + CARD_SIZE[1] + 10
         for i in range(num_cards):
             l = start_l + i * (CARD_SIZE[0] / 3)
             positions.append((l, top_val))
