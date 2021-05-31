@@ -11,16 +11,16 @@ RESOLUTION = (800, 800)
 CARD_SIZE = (75, 100)
 PLAYER_LOC = {
     # (LEFT, TOP)
-    Seat.NORTH: (40 + CARD_SIZE[0] + 10 + 20 + CARD_SIZE[0], 20 + 20 + CARD_SIZE[1]),
-    Seat.EAST: (
-        60 + 2 * CARD_SIZE[0] + 20 + CARD_SIZE[0],
-        30 + CARD_SIZE[1] + 20 + CARD_SIZE[1],
-    ),
-    Seat.SOUTH: (
-        40 + CARD_SIZE[0] + 10 + 20 + CARD_SIZE[0],
-        40 + 2 * CARD_SIZE[1] + 20 + CARD_SIZE[1],
-    ),
-    Seat.WEST: (60 + CARD_SIZE[0], 30 + CARD_SIZE[1] + 20 + CARD_SIZE[1]),
+    Seat.NORTH: (70 + 2 * CARD_SIZE[0], 40 + CARD_SIZE[1]),
+    Seat.EAST: (80 + 3 * CARD_SIZE[0], 50 + 2 * CARD_SIZE[1]),
+    Seat.SOUTH: (70 + 2 * CARD_SIZE[0], 60 + 3 * CARD_SIZE[1]),
+    Seat.WEST: (60 + CARD_SIZE[0], 50 + 2 * CARD_SIZE[1]),
+}
+GUESS_LOC = {
+    Seat.NORTH: (70 + 2.5 * CARD_SIZE[0], 45 + 2 * CARD_SIZE[1]),
+    Seat.EAST: (65 + 3 * CARD_SIZE[0], 40 + 2.5 * CARD_SIZE[1]),
+    Seat.SOUTH: (70 + 2.5 * CARD_SIZE[0], 30 + 3 * CARD_SIZE[1]),
+    Seat.WEST: (70 + 2 * CARD_SIZE[0], 40 + 2.5 * CARD_SIZE[1]),
 }
 
 
@@ -32,7 +32,7 @@ class UI:
         # self.big_font = pygame.font.SysFont(None, 20)
         self.font_size = 16
         self.font = pygame.font.Font("seguisym.ttf", self.font_size)
-        print("Done.")
+        self.font_color = pygame.Color(0, 0, 0)
         pygame.display.set_caption("Boeren Bridge")
 
         self.window_surface = pygame.display.set_mode(RESOLUTION)
@@ -43,8 +43,6 @@ class UI:
         self.clock = pygame.time.Clock()
         self.is_running = True
         self.model = model
-        self.model.deal_cards(5)
-        # # self.draw_south_cards(cards)
         self.start_game_loop()
 
     def start_game_loop(self):
@@ -52,7 +50,6 @@ class UI:
         self.clear_table()
 
         while self.is_running:
-            time_delta = self.clock.tick(60) / 1000.0
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
@@ -66,14 +63,12 @@ class UI:
             if not paused:
                 # Go to the next game state
                 self.model.next_move()
-                # draw background
-                self.clear_table()
-                # draw played cards of each player
-                self.draw_current_table()
-                # draw player cards
+                self.clear_table()  # draw background
+                self.draw_current_table()  # draw played cards of each player
                 self.draw_player_cards()
-                # draw game info
                 self.draw_game_info()
+                self.draw_score_info()
+                self.draw_guesses()
                 paused = True
 
                 pygame.display.update()
@@ -85,7 +80,6 @@ class UI:
 
     def draw_current_table(self):
         """Draws the cards currently played."""
-
         for seat, card in self.model.table.items():
             loc = PLAYER_LOC[seat]
             ci = CardImage(card=card, rotate=False)
@@ -93,7 +87,7 @@ class UI:
             self.window_surface.blit(ci.img, rect)
         pygame.display.update()
 
-    def draw_player_cards(self):
+    def draw_player_cards(self) -> None:
         "Draws all cards that are in each players hand"
         for player in self.model.players:
             if player.seat in [Seat.NORTH, Seat.SOUTH]:
@@ -111,33 +105,58 @@ class UI:
                 self.window_surface.blit(ci.img, rect)
         pygame.display.update()
 
-    def draw_game_info(self):
+    def draw_score_info(self) -> None:
+        """Draws player score information"""
+        location = (PLAYER_LOC[Seat.EAST][0] + CARD_SIZE[0] + 100, 20)
+        n = [p.score for p in self.model.players if p.seat == Seat.NORTH][0]
+        e = [p.score for p in self.model.players if p.seat == Seat.EAST][0]
+        s = [p.score for p in self.model.players if p.seat == Seat.SOUTH][0]
+        w = [p.score for p in self.model.players if p.seat == Seat.WEST][0]
+        text = ["Scores", f"North: {n}", f"East: {e}", f"South: {s}", f"West: {w}"]
+        self.draw_multiline_text(text, location)
+
+    def draw_guesses(self) -> None:
+        for p in self.model.players:
+            guess = p.guessed_wins
+            loc = GUESS_LOC[p.seat]
+            label = self.font.render(str(guess), True, self.font_color)
+            self.window_surface.blit(label, loc)
+
+    def draw_game_info(self) -> None:
         """Draws information about the current round and trick"""
         trump_ico = self.suit_to_icon(self.model.trump)
         trick_suit_ico = self.suit_to_icon(self.model.trick_suit)
         location = (PLAYER_LOC[Seat.EAST][0] + CARD_SIZE[0], 20)
-        color = pygame.Color(0, 0, 0)
+        # resolve possible index out of bounds error
         if self.model.cur_round >= len(self.model.cards_per_round):
             total_tricks = self.model.cards_per_round[self.model.cur_round - 1]
         else:
             total_tricks = self.model.cards_per_round[self.model.cur_round]
-        # pygame sysfont does not support newline chars
-        text = []
+
+        text = ["Game"]
         text.append(
             f"Round: {self.model.cur_round + 1}/{len(self.model.cards_per_round)}"
         )
         text.append(f"Trick: {self.model.cur_trick + 1}/{total_tricks}")
         text.append(f"Trump: {trump_ico}")
         text.append(f"Trick suit: {trick_suit_ico}")
+        self.draw_multiline_text(text, location)
+
+    def draw_multiline_text(self, text: list, location: tuple) -> None:
+        """Draws multiline strings since pygame does not support this
+
+        Args:
+            text (list): list of lines of strings
+            location (tuple): screen location
+        """
         label = []
         for line in text:
-            label.append(self.font.render(line, True, color))
+            label.append(self.font.render(line, True, self.font_color))
         for line in range(len(label)):
             self.window_surface.blit(
                 label[line],
                 (location[0], location[1] + (line * self.font_size) + (8 * line)),
             )
-        # img = self.font.render(text, True, pygame.Color(0, 0, 0))
 
     def get_north_south_locations(self, num_cards, seat=Seat.NORTH) -> list:
         """Returns the locations of the North or South player so that we can view his cards"""
