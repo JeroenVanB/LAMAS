@@ -7,7 +7,9 @@ from player import Seat, Player
 from typing import List, Tuple
 from game_model import GameModel
 
-RESOLUTION = (800, 800)
+RESOLUTION = (600, 800)
+MSG_BOX_HEIGHT = 200
+MSG_LOC = (10, RESOLUTION[1] - MSG_BOX_HEIGHT + 20)
 CARD_SIZE = (75, 100)
 PLAYER_LOC = {
     # (LEFT, TOP)
@@ -17,10 +19,10 @@ PLAYER_LOC = {
     Seat.WEST: (60 + CARD_SIZE[0], 50 + 2 * CARD_SIZE[1]),
 }
 GUESS_LOC = {
-    Seat.NORTH: (70 + 2.5 * CARD_SIZE[0], 45 + 2 * CARD_SIZE[1]),
-    Seat.EAST: (65 + 3 * CARD_SIZE[0], 40 + 2.5 * CARD_SIZE[1]),
-    Seat.SOUTH: (70 + 2.5 * CARD_SIZE[0], 30 + 3 * CARD_SIZE[1]),
-    Seat.WEST: (70 + 2 * CARD_SIZE[0], 40 + 2.5 * CARD_SIZE[1]),
+    Seat.NORTH: (62 + 2.5 * CARD_SIZE[0], 45 + 2 * CARD_SIZE[1]),
+    Seat.EAST: (52 + 3 * CARD_SIZE[0], 37 + 2.5 * CARD_SIZE[1]),
+    Seat.SOUTH: (65 + 2.5 * CARD_SIZE[0], 30 + 3 * CARD_SIZE[1]),
+    Seat.WEST: (67 + 2 * CARD_SIZE[0], 37 + 2.5 * CARD_SIZE[1]),
 }
 
 
@@ -36,10 +38,15 @@ class UI:
         pygame.display.set_caption("Boeren Bridge")
 
         self.window_surface = pygame.display.set_mode(RESOLUTION)
-        self.background = pygame.Surface(RESOLUTION)
+        self.background = pygame.Surface(
+            (RESOLUTION[0], RESOLUTION[1] - MSG_BOX_HEIGHT)
+        )
         self.background_color = pygame.Color(50, 168, 82)
         self.background.fill(self.background_color)
-        self.manager = pygame_gui.UIManager(RESOLUTION)
+
+        self.msg_box = pygame.Surface((RESOLUTION[0], MSG_BOX_HEIGHT))
+        self.msg_box.fill(pygame.Color(255, 255, 255))
+        # self.manager = pygame_gui.UIManager(RESOLUTION)
         self.clock = pygame.time.Clock()
         self.is_running = True
         self.model = model
@@ -69,13 +76,16 @@ class UI:
                 self.draw_game_info()
                 self.draw_score_info()
                 self.draw_guesses()
+                self.draw_message()
                 paused = True
 
                 pygame.display.update()
                 self.clock.tick(60)
 
     def clear_table(self):
+        """Reset the view by drawing the background"""
         self.window_surface.blit(self.background, (0, 0))
+        self.window_surface.blit(self.msg_box, (0, RESOLUTION[1] - MSG_BOX_HEIGHT))
         pygame.display.update()
 
     def draw_current_table(self):
@@ -116,11 +126,16 @@ class UI:
         self.draw_multiline_text(text, location)
 
     def draw_guesses(self) -> None:
+        """Draw all player trick guesses on the screen"""
         for p in self.model.players:
-            guess = p.guessed_wins
             loc = GUESS_LOC[p.seat]
-            label = self.font.render(str(guess), True, self.font_color)
+            label = self.font.render(
+                str(p.wins) + "/" + str(p.guessed_wins), True, self.font_color
+            )
             self.window_surface.blit(label, loc)
+
+    def draw_message(self) -> None:
+        self.draw_multiline_text(self.model.status, location=MSG_LOC)
 
     def draw_game_info(self) -> None:
         """Draws information about the current round and trick"""

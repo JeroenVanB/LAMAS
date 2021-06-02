@@ -1,6 +1,7 @@
+from typing import List
 from player import Player, Seat
 from deck import Deck
-from card import Suit
+from card import Card, Suit
 import sys
 import random
 from operator import attrgetter
@@ -24,6 +25,11 @@ class GameModel:
         self.cur_round = 0
         self.cur_trick = 0
         self.cur_player = 0
+        self.status = ["Starting a round of Boeren Bridge!"] + [
+            f"Round {idx+1} is played with {c} cards"
+            for idx, c in enumerate(self.cards_per_round)
+        ]
+        print(self.status)
 
     def next_move(self):
         print("====  looking at next move.  ====")
@@ -38,33 +44,33 @@ class GameModel:
                 self.played_cards, self.trump, self.trick_suit
             )
             winner.add_win()
-            print(winner.seat.name, "wins the trick!")
+            # print(winner.seat.name, "wins the trick!")
 
         if self.cur_round == len(self.cards_per_round):
             # Game has ended
-            print(
-                "The game has ended.\nThe winner is",
-                max(self.players, key=attrgetter("score")).name,
-            )
+            # print(
+            #     "The game has ended.\nThe winner is",
+            #     max(self.players, key=attrgetter("score")).name,
+            # )
             exit(0)
 
         if self.cur_trick == self.cards_per_round[self.cur_round]:
             # round has ended
             for p in self.players:
                 p.calculate_score()
-            print(
-                "Scores after round",
-                self.cur_round + 1,
-                ":",
-                [p.score for p in self.players],
-            )
+            # print(
+            #     "Scores after round",
+            #     self.cur_round + 1,
+            #     ":",
+            #     [p.score for p in self.players],
+            # )
             self.cur_trick = 0
             self.cur_round += 1
             return
 
-        print(
-            f"round {self.cur_round + 1}/{len(self.cards_per_round)} trick {self.cur_trick + 1 }/{self.cards_per_round[self.cur_round]}"
-        )
+        # print(
+        #     f"round {self.cur_round + 1}/{len(self.cards_per_round)} trick {self.cur_trick + 1 }/{self.cards_per_round[self.cur_round]}"
+        # )
 
         if self.cur_trick == 0 and self.cur_player == 0:
             # start of a round
@@ -72,10 +78,10 @@ class GameModel:
                 p.reset()
             self.deal_cards(self.cards_per_round[self.cur_round])
             self.trump = self.pick_trump()
-            print("Trump is", self.trump)
+            # print("Trump is", self.trump)
             opener = self.get_opener()
             self.order_players(opener)
-            print("Player Order : ", [p.seat.name for p in self.players])
+            # print("Player Order : ", [p.seat.name for p in self.players])
             self.make_guesses(self.trump, opener, self.cards_per_round[self.cur_round])
 
         if self.cur_trick < self.cards_per_round[self.cur_round]:
@@ -83,10 +89,10 @@ class GameModel:
             player = self.players[self.cur_player]
             card = player.play_card()
             self.table[player.seat] = card
-            print(f"{player.seat.name} plays {card}")
+            # print(f"{player.seat.name} plays {card}")
             if self.cur_player == 0:
                 self.trick_suit = card.suit
-                print("Trick suit is :", self.trick_suit.name)
+                # print("Trick suit is :", self.trick_suit.name)
             self.played_cards.append(card)
 
             self.cur_player += 1
@@ -98,9 +104,9 @@ class GameModel:
             self.play_round(round, self.cards_per_round[round])
             for p in self.players:
                 p.calculate_score()
-            print("Scores after round", round, ":", [p.score for p in self.players])
+            # print("Scores after round", round, ":", [p.score for p in self.players])
 
-        print("The winner is", max(self.players, key=attrgetter("score")).name)
+        # print("The winner is", max(self.players, key=attrgetter("score")).name)
 
     def play_round(self, round, n_cards):
         print("=== Round", round, "with", n_cards, "cards", "===")
@@ -134,7 +140,7 @@ class GameModel:
             # This is determined using the played_cards and the trick_suit
             winner = self.determine_winner(self.played_cards, trump, trick_suit)
             winner.add_win()
-            print(winner.seat.name, "wins the trick!")
+            # print(winner.seat.name, "wins the trick!")
 
     def make_guesses(self, trump, winner, n_cards):
         total_guessed = 0
@@ -191,7 +197,7 @@ class GameModel:
     def pick_trump(self):
         return Suit(random.randint(0, 3))
 
-    def determine_winner(self, played_cards, trump, trick_suit):
+    def determine_winner(self, played_cards: List[Card], trump, trick_suit):
         highest_value = 0
         for c in played_cards:
             c.evaluate(trump, trick_suit)
