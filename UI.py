@@ -68,6 +68,8 @@ class UI:
                         self.is_running = False
 
             if not paused:
+                if self.model.finished:
+                    exit(0)
                 # Go to the next game state
                 self.model.next_move()
                 self.clear_table()  # draw background

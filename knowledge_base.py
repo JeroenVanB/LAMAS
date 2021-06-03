@@ -1,11 +1,10 @@
 from typing import List
-from card import Card
-from player import Player, Seat
-
+from card import Card, Suit
+from seat import Seat
 
 class KnowledgeBase:
     def __init__(
-        self, player: Player, all_cards: List[Card], own_cards: List[Card]
+        self, player, all_cards: List[Card], own_cards: List[Card]
     ) -> None:
         self.all_cards = all_cards
         self.player = player
@@ -20,7 +19,7 @@ class KnowledgeBase:
             }
             self.knowledge[c] = k
 
-    def set_card_knowledge(self, card: Card, player: Player, value: bool):
+    def set_card_knowledge(self, card: Card, player, value: bool):
         """Set the knowledge value for an individual card and player
 
         Args:
@@ -65,5 +64,22 @@ class KnowledgeBase:
         for card in self.own_cards:
             self.knowledge[card] = k
 
-    def get_cards_by_suit(self, suit):
-        return [card for card in self.all_cards if card.suit == suit]
+    def remove_card(self, card: Card):
+        """Removes a card from the kb since it has been played and is out of the game.
+        Args:
+            card (Card): The card that has been played
+        """
+        self.knowledge.pop(card)
+
+    def set_all_cards_of_suit_of_player(self, suit: Suit, player, value: bool):
+        """Sets the value for all cards from a suit of a player
+
+        Args:
+            suit (Suit): The suit of the cards
+            player (Player): The player
+            value (bool): Truth value 
+        """
+        for (card, seats) in self.knowledge:
+            if card.suit == suit:
+                seats[player.seat] = value
+        
