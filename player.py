@@ -78,33 +78,30 @@ class Player:
         
         # If the player has the trick suit, he must follow suit
         if len(cards_of_suit) > 0:
-            played_card = self.pick_card(cards_of_suit)
+            played_card = self.pick_card(cards_of_suit, True)
             # Make announcement does_have_suit
             self.game_model.make_announcement(self, played_card, AnnouncementType.card_played)
         else:
             # The player does not have the trick suit, so may play what he wants
             #TODO this should not be random (bijv introeven, laag opleggen)
-            played_card = self.cards.pop(random.randrange(len(self.cards)))
+            played_card = self.pick_card(self.cards, False)
             self.game_model.make_announcement(self, played_card, AnnouncementType.card_played)
             # Make announcement does_not_have_suit
             if self.game_model.trick_suit:
                 self.game_model.make_announcement(self, None, AnnouncementType.does_not_have_suit)
         return played_card
 
-    def pick_card(self, possible_cards: list) -> Card:
+    def pick_card(self, possible_cards: list, trick_suit:bool) -> Card:
         """Pick a card of a list of possible cards
 
         Args:
             possible_cards (list): the possible cards that the player can play
+            trick_suit (bool): weather or not the player is able to play the trick suit
 
         Returns:
             Card: card that will be played
         """        
-        # TODO this should not be random. Needs stragegy.
-        card = possible_cards[random.randrange(len(possible_cards))]
-        # Remove the card from the hand (self.cards)
-        self.cards.remove(card)
-        return card
+        raise NotImplementedError
         
     def get_cards_of_suit(self, suit: Suit) -> list:
         """Get the player's cards of a given suit

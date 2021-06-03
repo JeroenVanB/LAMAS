@@ -1,5 +1,7 @@
+from greedy_player import GreedyPlayer
 from typing import List
 from player import Player
+from random_player import RandomPlayer
 from seat import Seat
 from deck import Deck
 from card import Card, Suit
@@ -13,7 +15,7 @@ class GameModel:
     def __init__(self):
         # TODO determine rounds/cards per round
         self.cards_per_round = [3, 4]
-        self.players = [Player(i, Seat(i)) for i in range(4)]
+        self.players = [GreedyPlayer(i, Seat(i)) for i in range(4)]
         for p in self.players:
             p.set_game_model(self)
         self.deck = Deck()
