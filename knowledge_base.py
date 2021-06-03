@@ -106,7 +106,15 @@ class KnowledgeBase:
                     highest_card = card
         return highest_card
 
-    def do_next_players_have_suit(self, players:list, suit:Suit):
-        raise NotImplementedError
-        pass
+    def players_have_suit(self, players:list, suit:Suit):
+        for player in players:
+            if not self.player_might_have_suit(player, suit):
+                return False
+        return True
+
+    def player_might_have_suit(self, player:list, suit:Suit):
+        for card in self.all_cards:
+            if card.suit == suit and card.owner == player:
+                return True
+        return False
 

@@ -25,6 +25,8 @@ class GreedyKripkePlayer(Player):
             Card: card that will be played
         """
         
+        #TODO What if the the player is the opener?
+
         # If the player has a card of the trick suit
         if has_trick_suit:
             cards = self.get_cards_of_suit(self.game_model.trick_suit)
@@ -38,30 +40,29 @@ class GreedyKripkePlayer(Player):
 
         # The player does not have a card the trick suit
         elif not has_trick_suit:
-            # The player must choose wether to play a trump card or not
-            print('remaining players:', [p.seat for p in self.game_model.get_remaining_players()])
-            
-            # 1. Playing a low trump card is good if the other (next) players still have cards of the trick suit (use kb)
-            # if self.kb.do_next_players_have_suit(remaining_players, self.game_model.trick_suit):
-            #     pass
-            # If the other players still have cards of the trick suit
-            # Play a low trump card
-            # 
-            # 
-            # 2. 
-            # If the other players to not have cards of the trick suit
-            # 2a. If the player has the highest trump card in the game: play it (#TODO?)
-            # 2b. If the player does not have the highest trump card in the game: play the worst card*.
-            # 
+            # Check if the player has trump cards
+            if self.has_trump_cards():
+                # The player must choose wether to play a trump card or not
+                
+                # 1. Playing a low trump card is good if the other (next) players still have cards of the trick suit (use kb)
+                # If the other players still have cards of the trick suit: Play your lowest trump card
+                if self.kb.do_next_players_have_suit(self.game_model.get_remaining_players(), self.game_model.trick_suit):
+                    return self.get_lowest_cards_of_suit(self.game_model.trump)
+                # If the other players to not have cards of the trick suit (They might play trump cards)
+                else:
+                    pass
+                # 2a. If the player has the highest trump card in the game: play it (#TODO?)
+                # 2b. If the player does not have the highest trump card in the game: play the worst card*.
+                # 
             
 
-            # Play the highest trump card (Greedy)
-            # * How to calculate what is the worst card:
-            #    (cannot be done by card.evaluate(), since that takes the trick suit into account)
-            #    Look at the non trump, non trick suit cards
-            #    Determine the card with the lowest rank (card.rank.value) 
-            #           (#TODO Do we also need to take into account how many cards of that suit the player has?)
-            #    Check which player has how many cards of which suit? (kb)
+                # Play the highest trump card (Greedy)
+                # * How to calculate what is the worst card:
+                #    (cannot be done by card.evaluate(), since that takes the trick suit into account)
+                #    Look at the non trump, non trick suit cards
+                #    Determine the card with the lowest rank (card.rank.value) 
+                #           (#TODO Do we also need to take into account how many cards of that suit the player has?)
+                #    Check which player has how many cards of which suit? (kb)
 
 
             highest_card = self.get_cards_of_suit(self.game_model.trump)

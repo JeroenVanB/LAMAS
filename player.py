@@ -136,16 +136,7 @@ class Player:
         Returns:
             Card: the lowest card of the trick suit
         """        
-        suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
-        lowest_value = 999
-        lowest_card = None
-        for card in suit_cards:
-            card.evaluate(self.game_model.trump, self.game_model.trick_suit)
-            eval = card.played_value
-            if eval < lowest_value:
-                lowest_value = eval
-                lowest_card = card
-        return lowest_card
+        return self.get_lowest_cards_of_suit(self.game_model.trick_suit)
 
 
     def get_highest_card(self, possible_cards):
@@ -170,3 +161,21 @@ class Player:
                 highest_cards.append(card)
 
         return highest_cards[random.randrange(len(highest_cards))]
+
+    def has_trump_cards(self):
+        for card in self.cards:
+            if card.suit == self.game_model.trump:
+                return True
+        return False
+
+    def get_lowest_cards_of_suit(self, suit):
+        suit_cards = self.get_cards_of_suit(suit)
+        lowest_value = 999
+        lowest_card = None
+        for card in suit_cards:
+            card.evaluate(self.game_model.trump, self.game_model.trick_suit)
+            eval = card.played_value
+            if eval < lowest_value:
+                lowest_value = eval
+                lowest_card = card
+        return lowest_card
