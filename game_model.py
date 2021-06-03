@@ -1,5 +1,8 @@
 from typing import List
 from player import Player
+from random_player import RandomPlayer
+from greedy_player import GreedyPlayer
+from greedy_kripke_player import GreedyKripkePlayer
 from seat import Seat
 from deck import Deck
 from card import Card, Suit
@@ -12,8 +15,8 @@ from public_announcement import PublicAnnouncement, AnnouncementType
 class GameModel:
     def __init__(self):
         # TODO determine rounds/cards per round
-        self.cards_per_round = [2]
-        self.players = [Player(i, Seat(i)) for i in range(4)]
+        self.cards_per_round = [3, 4]
+        self.players = [GreedyKripkePlayer(i, Seat(i)) for i in range(4)]
         for p in self.players:
             p.set_game_model(self)
         self.deck = Deck()
@@ -74,6 +77,10 @@ class GameModel:
             for p in self.players:
                 p.reset()
             self.deal_cards(self.cards_per_round[self.cur_round])
+            for p in self.players:
+                if type(p) == GreedyKripkePlayer: 
+                    p.reset_knowledgebase()
+                    p.kb.set_game_model(self)
             self.trump = self.pick_trump()
             opener = self.get_opener()
             self.order_players(opener)
@@ -92,6 +99,8 @@ class GameModel:
             self.played_cards.append(card)
             self.cur_player += 1
 
+    def get_remaining_players(self):
+        return self.players[self.cur_player+1:len(self.players)]
 
     def make_guesses(self, trump, winner, n_cards):
         total_guessed = 0

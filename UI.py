@@ -122,8 +122,8 @@ class UI:
         pygame.draw.line(self.kb_box, (0,255,0), start, end, width=3)
 
     def start_game_loop(self):
-        paused = False
         self.clear_table()
+        paused = False
 
         while self.is_running:
             for event in pygame.event.get():
