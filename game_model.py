@@ -33,6 +33,7 @@ class GameModel:
         self.cur_trick = 0
         self.cur_player = 0
         self.finished = False
+
         self.status = ["Starting a round of Boeren Bridge!"] + [
             f"Round {idx+1} is played with {c} cards"
             for idx, c in enumerate(self.cards_per_round)
@@ -53,7 +54,12 @@ class GameModel:
                 self.played_cards, self.trump, self.trick_suit
             )
             winner.add_win()
+            
             self.status += [f'{winner.seat.name} wins the trick!']
+            for player in self.players:
+                if player.seat.name == winner.seat.name:
+                    opener = winner
+            self.order_players(opener)
             self.trick_suit = None
             # print(winner.seat.name, "wins the trick!")
 
