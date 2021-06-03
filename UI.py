@@ -53,8 +53,8 @@ class UI:
         self.start_game_loop()
 
     def start_game_loop(self):
-        paused = False
         self.clear_table()
+        paused = False
 
         while self.is_running:
             for event in pygame.event.get():

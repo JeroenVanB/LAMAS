@@ -10,6 +10,7 @@ class KnowledgeBase:
         self.player = player
         self.own_cards = own_cards
         self.knowledge = {}
+        self.game_model = None
         for c in own_cards:
             k = {
                 Seat.NORTH: False,
@@ -18,6 +19,9 @@ class KnowledgeBase:
                 Seat.WEST: False,
             }
             self.knowledge[c] = k
+
+    def set_game_model(self, game_model):
+        self.game_model = game_model
 
     def set_card_knowledge(self, card: Card, player, value: bool):
         """Set the knowledge value for an individual card and player
@@ -69,6 +73,7 @@ class KnowledgeBase:
         Args:
             card (Card): The card that has been played
         """
+        self.all_cards.pop(card)
         self.knowledge.pop(card)
 
     def set_all_cards_of_suit_of_player(self, suit: Suit, player, value: bool):
@@ -82,4 +87,26 @@ class KnowledgeBase:
         for (card, seats) in self.knowledge:
             if card.suit == suit:
                 seats[player.seat] = value
-        
+    
+    def get_highest_card_of_suit(self, suit: Suit):
+        """Getting the highest card of suit in the game.
+
+        Args:
+            suit (Suit): the suit
+        """
+        assert(len(self.all_cards) > 0)
+        highest_value = -1
+        highest_card = None
+        for card in self.all_cards:
+            if card.suit == suit:
+                card.evaluate(self.game_model.trump, self.game_model.trick_suit)
+                eval = card.played_value
+                if eval > highest_value:
+                    highest_value = eval
+                    highest_card = card
+        return highest_card
+
+    def do_next_players_have_suit(self, players:list, suit:Suit):
+        raise NotImplementedError
+        pass
+

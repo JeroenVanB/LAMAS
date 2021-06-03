@@ -18,7 +18,6 @@ class Player:
         self.wins = 0
         self.guessed_wins = 0
         self.opener = self.seat == Seat.NORTH
-        self.kb = None
 
     def set_game_model(self, game_model):
         self.game_model = game_model
@@ -30,9 +29,6 @@ class Player:
     
     def set_all_cards(self, cards):
         self.all_cards = cards
-
-    def reset_knowledgebase(self):
-        self.kb = KnowledgeBase(player=self, all_cards=self.all_cards, own_cards=self.cards)
 
     def guess_wins(self, trump, winner, n_cards):
         self.guessed_wins = random.randint(0, n_cards)
@@ -89,14 +85,15 @@ class Player:
             # Make announcement does_not_have_suit
             if self.game_model.trick_suit:
                 self.game_model.make_announcement(self, None, AnnouncementType.does_not_have_suit)
+        self.cards.remove(played_card)
         return played_card
 
-    def pick_card(self, possible_cards: list, trick_suit:bool) -> Card:
+    def pick_card(self, possible_cards: list, has_trick_suit:bool) -> Card:
         """Pick a card of a list of possible cards
 
         Args:
             possible_cards (list): the possible cards that the player can play
-            trick_suit (bool): weather or not the player is able to play the trick suit
+            has_trick_suit (bool): weather or not the player is able to play the trick suit
 
         Returns:
             Card: card that will be played
@@ -132,3 +129,44 @@ class Player:
             if card.suit == self.game_model.trump:
                 trump_cards.append(card)
         return trump_cards
+
+    def get_lowest_card_of_trick_suit(self):
+        """Getting the lowest card that the player holds of the trick suit
+
+        Returns:
+            Card: the lowest card of the trick suit
+        """        
+        suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
+        lowest_value = 999
+        lowest_card = None
+        for card in suit_cards:
+            card.evaluate(self.game_model.trump, self.game_model.trick_suit)
+            eval = card.played_value
+            if eval < lowest_value:
+                lowest_value = eval
+                lowest_card = card
+        return lowest_card
+
+
+    def get_highest_card(self, possible_cards):
+        """Getting the highest evaluated card from a list of cards
+
+        Args:
+            possible_cards (list): list of cards
+
+        Returns:
+            Card: the highest card
+        """        
+        assert(len(possible_cards) > 0)
+        highest_value = -1
+        highest_cards = []
+        for card in possible_cards:
+            card.evaluate(self.game_model.trump, self.game_model.trick_suit)
+            eval = card.played_value
+            if eval > highest_value:
+                highest_value = eval
+                highest_cards = [card]
+            elif eval == highest_value:
+                highest_cards.append(card)
+
+        return highest_cards[random.randrange(len(highest_cards))]
