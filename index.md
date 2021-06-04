@@ -1,4 +1,7 @@
 ## LAMAS Project --- BoerenBridge
+By Daan Krol (s3142221),
+   Jeroen van Brandenburg (s3193063), and 
+   Julian Bruinsma (s3215601)
 
 ### Introduction
 In this project, we are going to analyze the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take.
