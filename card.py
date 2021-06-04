@@ -16,6 +16,7 @@ class Card:
             self.played_value = self.rank.value + 13
         else:
             self.played_value = self.rank.value
+        return self.played_value
 
     def __str__(self) -> str:
         return self.name

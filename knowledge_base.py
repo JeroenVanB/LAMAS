@@ -117,6 +117,7 @@ class KnowledgeBase:
                 continue
             card, player = self.get_highest_card_of_suit(suit)
             val = card.evaluate(self.game_model.trump, self.game_model.trick_suit)
+            print("Value is:", val)
             if val > highest_value:
                 highest_value = val
                 highest_card = card
