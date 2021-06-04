@@ -1,3 +1,4 @@
+import operator
 from PIL import Image
 import pygame
 from pygame import draw
@@ -204,6 +205,7 @@ class UI:
         # load the knowledge of a player to find all cards still in the game 
         kb = self.model.players[0].kb
         cards = [card for card in kb.all_cards if card.suit == suit]
+        cards = sorted(cards, key=operator.attrgetter('rank'))
         print([card.rank.value for card in cards])
 
         self.rank_buttons = []
