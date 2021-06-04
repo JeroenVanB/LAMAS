@@ -8,7 +8,7 @@ In this project, we are going to analyze the Dutch game called _Boeren Bridge_. 
 ### Game Rules
 
 #### Variations
-There are many variants of the game: 'Oh hell!', 'Wizard' or 'Nomination Whist'. We decided to implement a version, which we ourselves usually play. To prevent state explosion, we simplified some game rules, e.g. the amount of cards. We implemented a version with 7 rounds and only the highest cards of the normal deck of cards are used. The trump changes each round and is chosen randomly.
+There are many variants of the game: 'Oh hell!', 'Wizard' or 'Nomination Whist'. We decided to implement a version, which we ourselves usually play. To prevent state explosion, we simplified some game rules, e.g. the amount of cards. We implemented a version with 5 rounds and only the highest cards of the normal deck of cards are used. The trump changes each round and is chosen randomly.
 
 #### Points
 The aim of the game is to get the most points. Points can be obtained by winning tricks and (most importantly) correctly guessing how many tricks the player himself will take in a round. 
@@ -95,7 +95,15 @@ Consider the Kripke model of the Queen of Hearts. Player South does not hold the
 The GeedyKripkeAgent uses the kripke models to determine which card to play. He is greedy, since he always tries to win the trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the graph below (made with draw.io). 
 
 Possible strategies are:
-- When a player knows that he has the highest 
+- When a player knows that he has the highest card of the trick suit, playing that card will often win the trick
+- When a player does not have a card of the trick suit, he can play a trump card
+
+The guessing is a very important part of the game. Since the guessing takes place before playing any cards, the only knowedge that the agent has, are his own cards (and the trump suit). We still have to come up with a way to determine a good estimation. It seems likely, that we will create a rule, based on the average score of the cards in the hand.
+
+
+A possible extension that we might add, is the 
+
+
 
 Graph1
 ![Graph Greedy Kripke Agent](greedy_kripke.jpg)
