@@ -71,6 +71,10 @@ To decrease the possible states, we minimized the amount of cards used in the ga
   </tr>
 </table>
 
+### Game implementation
+
+The game is made in Python (with pygame), using an MVC pattern and a object oriented approach. In _game_model.py_, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic. The class _Player_ is extended by different types of agents, such as _RandomAgent_ (which plays random cards), _GeedyAgent_ (which plays the highest cards) and _GreedyKripkeAgent_ (discussed below).
+
 
 ### Kripke implementation
 
@@ -88,11 +92,10 @@ Consider the Kripke model of the Queen of Hearts. Player South does not hold the
 
 ### Strategy
 
-The GeedyKripkeAgent uses the kripke models to determine which card to play. He is greedy, since he always tries to win the trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the graph below. 
+The GeedyKripkeAgent uses the kripke models to determine which card to play. He is greedy, since he always tries to win the trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the graph below (made with draw.io). 
+
+Possible strategies are:
+- When a player knows that he has the highest 
 
 Graph1
-
 ![Graph Greedy Kripke Agent](greedy_kripke.jpg)
-
-
-<div class="background" style="width: 710px; height: 500px; white-space: nowrap; overflow-x: scroll; border: 0; padding: 10px;"> <img src="greedy_kripke.jpg" alt="Graph Greedy Kripke Agent2"> </div>.
