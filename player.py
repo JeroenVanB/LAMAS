@@ -223,3 +223,6 @@ class Player:
                     highest_card = self.get_highest_card(self.game_model.trump)
 
         return highest_card
+    
+    def highest_trump_of_table(self):
+        return self.get_highest_card(self.game_model.played_cards)

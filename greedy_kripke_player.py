@@ -84,8 +84,19 @@ class GreedyKripkePlayer(Player):
                 if self.get_trump_cards():  # Do I have a trump card?
                     # Am I the last player?
                     if self.game_model.cur_player == 3:
-                        if self.game_model.played_cards:
-                            pass
+                        # There is a trump card on the table
+                        if self.game_model.trump_on_table:
+                            # Is the trump card on the table higher than the one in the hand 
+                            if self.highest_trump_of_table.evaluate(
+                                self.game_model.trump
+                                ) > self.get_highest_card(self.game_model.trump).evaluate(
+                                    self.game_model.trump
+                                ):
+                                return self.get_lowest_card() 
+                            else:
+                                return self.get_highest_card(self.game_model.trump)
+                        else:
+                            return self.get_lowest_card()
                     # Am I not the last player
                     else:
                         # Others have trick suit
@@ -97,12 +108,6 @@ class GreedyKripkePlayer(Player):
                                     return self.has_highest_trump_card()
                                 else:
                                     return self.get_lowest_card()
-                                # Other players have trump cards higher than your trump cards
-                                # if OTHERS HAVE HIGHER TRUMPS:
-                                # return self.get_lowest_card()
-
-                                # else:
-                                # return lowest trump that still wins (higher than others)
                             else:  # others don't have trumps
                                 return self.get_lowest_cards_of_suit(
                                     self.game_model.trump_suit

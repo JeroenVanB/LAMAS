@@ -189,6 +189,15 @@ class GameModel:
         
         self.status += msg
 
+    def trump_on_table(self):
+        for c in self.played_cards:
+            if c.suit == self.trump:
+                return True
+        return False
+    
+
+
+
 if __name__ == "__main__":
     game_model = GameModel()
     game_model.start_game()
