@@ -1,5 +1,8 @@
 ## LAMAS Project --- BoerenBridge
 
+### Introduction
+In this project, we are going to analyze the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take.
+
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
 ### Game Rules
@@ -23,16 +26,16 @@ The player who played the highest card during a trick, takes the trick. The card
 #### Number of cards
 The number of cards depend on the rumber of rounds. The number of rounds can usually freedly be determined by the players. We chose to play 5 rounds.
 In every round _r_, the players is dealt _t<sub>r</sub>_ cards. First, starting in the first round with _t<sub>1</sub>_ = 3. In each following round, every player is given _t<sub>r</sub>_ = _t<sub>r-1</sub>_+1 cards, up to 5 cards in total (in round 3). Then, starting with 2 more rounds are played, where the amount of cards decreases by 1. The game ends after round 5, where _n<sub>5</sub>=3. See the table below for clarification.
-To decrease the possible states, we minimized the amount of cards used in the game. This way it is known which cards are in the game and wich are not. E.g. in round 1, only the (Queen, King, Ace) of all the suits are used. This is also clarified in the table below
+To decrease the possible states, we minimized the amount of cards used in the game. This way it is known which cards are in the game and wich are not. E.g. in round 1, only the (Queen, King, Ace) of all the suits are used. This is also clarified in the table below.
 
 ##### Table 1
-| Round  | Number of cards  | Cards                      |
+<!-- | Round  | Number of cards  | Cards                      |
 | ------ | ---------------- | -------------------------- |
 | 1      | 3                | Queen, King, Ace           |
 | 2      | 4                | Jack, Queen, King, Ace     |
 | 3      | 5                | 10, Jack, Queen, King, Ace |
 | 4      | 4                | Jack, Queen, King, Ace     |
-| 5      | 3                | Queen, King, Ace           |
+| 5      | 3                | Queen, King, Ace           | -->
 
 
 <table style="width:100%">
@@ -67,3 +70,17 @@ To decrease the possible states, we minimized the amount of cards used in the ga
     <td>Queen, King, Ace</td>
   </tr>
 </table>
+
+
+### Kripke implementation
+
+We build an agent that determines which card to play, based on Kripke knowledge. For every card in the game, the agent has a Kripke model with four different states. Each of the states correspond to one of the four players holding the card. Each of the agents have a set of relations between the possible states. We visualize the Kripke models using a graphical representation next to the game UI. A screenshot can be seen in figure 1.
+
+<img src="kripke_example.jpg" alt="Example of the Kripke models">
+
+Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. 
+
+Example 1
+If player North plays the Ace of Spades, no one else can hold that card. Therefore, the kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which Noth is the owner of the Ace of Spades). 
+
+Example 2
