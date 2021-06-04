@@ -97,7 +97,6 @@ class KnowledgeBase:
         assert(len(self.all_cards) > 0)
         highest_value = -1
         highest_card = None
-        owner = None
         for card in self.all_cards:
             if card.suit == suit:
                 card.evaluate(self.game_model.trump, self.game_model.trick_suit)
@@ -105,8 +104,7 @@ class KnowledgeBase:
                 if value > highest_value:
                     highest_value = value
                     highest_card = card
-                    owner = card.owner
-        return highest_card, owner
+        return highest_card
 
     def get_highest_non_trump_card(self):
         owner = None
@@ -115,14 +113,13 @@ class KnowledgeBase:
         for suit in Suit:
             if suit == self.game_model.trump:
                 continue
-            card, player = self.get_highest_card_of_suit(suit)
+            card = self.get_highest_card_of_suit(suit)
             val = card.evaluate(self.game_model.trump, self.game_model.trick_suit)
             print("Value is:", val)
             if val > highest_value:
                 highest_value = val
                 highest_card = card
-                owner = player
-        return highest_card, owner
+        return highest_card
 
     def other_players_have_suit(self, suit:Suit):
         """Checks if there are other players with suit

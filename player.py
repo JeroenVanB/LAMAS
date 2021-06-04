@@ -69,6 +69,8 @@ class Player:
 
     def play_card(self) -> Card:
         card = self.pick_card()
+        print('card_picked', card.name)
+        print('cards_holding', [c.name for c in self.cards])
         self.cards.remove(card)
         self.game_model.make_announcement(self, card, AnnouncementType.card_played)
         return card

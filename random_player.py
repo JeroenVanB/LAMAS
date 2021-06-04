@@ -19,5 +19,6 @@ class RandomPlayer(Player):
         Returns:
             Card: card that will be played
         """
+        # FIXME implement game rules (he can now  play any card he wants)
         card = possible_cards[random.randrange(len(possible_cards))]
         return card

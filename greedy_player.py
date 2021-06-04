@@ -16,6 +16,7 @@ class GreedyPlayer(Player):
         Returns:
             Card: the card that is picked
         """
+        # FIXME implement game rules (he can now  play any card he wants)
         cards_of_suit = []
         if self.game_model.trick_suit is not None:
             cards_of_suit = self.get_cards_of_suit(self.game_model.trick_suit)
