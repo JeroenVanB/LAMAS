@@ -5,15 +5,15 @@
 ### Game Rules
 
 #### Variations
-There are many variants of the game: 'Oh hell!', 'Oh Pshaw' or 'Nomination Whist'. We decided to implement a version, which we ourselves usually play. There are 15 rounds and only the high cards of the normal deck of cards are used (7 up to Ace). The trump changes each round and is chosen randomly.
+There are many variants of the game: 'Oh hell!', 'Oh Pshaw' or 'Nomination Whist'. We decided to implement a version, which we ourselves usually play. To prevent state explosion, we simplified some game rules, e.g. the amount of cards. We implemented a version with 7 rounds and only the highest cards of the normal deck of cards are used. The trump changes each round and is chosen randomly.
 
 #### Points
-The aim of the game is to get the most points. Points can be obtained by winning tricks and (most importantly) correctly guessing how many tricks $c_{guess}$ the player himself will take in a round. 
-If the player correctly guesses the total number of tricks he has taken ($c_{wins}$), he will receive two points for each trick taken, with a 10 points bonus ($2*c_{wins}+10$). A special reward is given to players if they correctly guess taking 0 tricks, in rounds with 6 or more cards. Here, the bonus points change from 10 to 20.
-If the player guesses wrong, he will get two points subtracted for each trick he was off ($-2*|c_{wins}-c_{guess}|$). The player with the most points after 15 rounds wins the game.
+The aim of the game is to get the most points. Points can be obtained by winning tricks and (most importantly) correctly guessing how many tricks the player himself will take in a round. 
+If the player correctly guesses the total number of tricks he has taken, he will receive two points for each trick taken, with a 10 points bonus. A special reward is given to players if they correctly guess taking 0 tricks, in rounds with 6 or more cards. Here, the bonus points increase from 10 to 20.
+If the player guesses wrong, he will get two points subtracted for each trick he was off. The player with the most points after 15 rounds wins the game.
 
 #### Gameplay
-In each round, each player is given $n$ cards. From the remaining cards, one random card is picked to determine the trump of the round. Starting by the player to the left of the dealer ($P_1$) and continuing clockwise, every player $P \in \{1, 2, 3, 4\}$ guesses the number of tricks $c_{guess}^{P}$ he will win. (In the rare occasion that all the guesses sum up to $n$, the dealer has to change his guess. He has to increase or decrease his original guess with 1 such that the total is not a sum equal to $n$.)
+In each round, each player is given _n_ cards. From a separate set of cards, one random card is picked to determine the trump of the round. Starting by the player to the left of the dealer _P<sub>1</sub>_ and continuing clockwise, every player $P \in \{1, 2, 3, 4\}$ guesses the number of tricks $c_{guess}^{P}$ he will win. (In the rare occasion that all the guesses sum up to $n$, the dealer has to change his guess. He has to increase or decrease his original guess with 1 such that the total is not a sum equal to $n$.)
 
 Next, $t=n$ tricks are played. During the first trick $t_1$, the player left of the dealer starts. In the following rounds, the winner of the previous trick starts. The starting player is called 'the opener', denoted by $P_{opener}$. Every player after the opener, should play a card matching the suit of the card played by the opener. If this is not possible, the player may play any card of his choice.
 #### Winning tricks
