@@ -30,7 +30,7 @@ class GreedyKripkePlayer(Player):
             # check if other players still have trump cards
             if self.kb.other_players_have_suit(self.game_model.trump):
                 # check if I have the highest trump
-                trump_cards = self.pick_trump_card()
+                trump_cards = self.get_trump_cards()
                 card, owner = self.kb.get_highest_card_of_suit(self.game_model.trump)
                 if trump_cards and owner == self:  # I have highest trump card
                     return card
@@ -82,7 +82,6 @@ class GreedyKripkePlayer(Player):
                     announcement_type=AnnouncementType.does_not_have_suit,
                 )
                 if self.get_trump_cards():  # Do I have a trump card?
-                    if self.game_model.cur_player > 
                     # Others have trick suit
                     if self.kb.other_players_have_suit(self.game_model.trick_suit):
                         # Others have trump cards

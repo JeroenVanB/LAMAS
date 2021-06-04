@@ -2,9 +2,11 @@ import pygame
 
 
 class RadioButton(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, h, font, text):
+    def __init__(self, x, y, w, h, font, text, suit=None, rank=None):
         super().__init__()
         text_surf = font.render(text, True, (0, 0, 0))
+        self.suit = suit
+        self.rank = rank
         self.button_image = pygame.Surface((w, h))
         self.button_image.fill((96, 96, 96))
         self.button_image.blit(text_surf, text_surf.get_rect(center=(w // 2, h // 2)))

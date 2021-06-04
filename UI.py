@@ -5,14 +5,15 @@ import pygame_gui
 from pathlib import Path
 from card import Card, CardValue, Suit
 from player import Seat
-from UI_buttons import OptionBox
+from UI_buttons import OptionBox, RadioButton
 from game_model import GameModel
 
 RESOLUTION = (1200, 800)
 MSG_BOX_HEIGHT = 200
 MSG_LOC = (10, RESOLUTION[1] - MSG_BOX_HEIGHT + 20)
 KB_BOX_WIDTH = 600
-KB_SUIT_BUTTON_HEIGHT = 550
+KB_SUIT_BUTTON_LOC = (RESOLUTION[0] - KB_BOX_WIDTH + 10, 550)
+KB_CARD_BUTTON_LOC = (RESOLUTION[0] - KB_BOX_WIDTH + 10, 600)
 KB_PLAYER_BOX_SIZE = (110, 24)
 KB_PLAYER_LOC = {
     Seat.NORTH: (KB_BOX_WIDTH / 2 - (KB_PLAYER_BOX_SIZE[0] / 2), 40),
@@ -64,16 +65,21 @@ class UI:
         self.msg_box = pygame.Surface((RESOLUTION[0] - KB_BOX_WIDTH, MSG_BOX_HEIGHT))
         self.msg_box.fill(pygame.Color(255, 255, 255))
 
-        self.suit_dropdown = OptionBox(
-            20,
-            KB_SUIT_BUTTON_HEIGHT,
-            30,
-            30,
-            (150, 150, 150),
-            (100, 200, 255),
-            self.font,
-            ["♥", "♦", "♣", "♠"],
-        )
+        self.suit_buttons = [
+            RadioButton(KB_SUIT_BUTTON_LOC[0], KB_SUIT_BUTTON_LOC[1] , 30,30, self.font, "♥", Suit.HEARTS),
+            RadioButton(KB_SUIT_BUTTON_LOC[0] + 35, KB_SUIT_BUTTON_LOC[1], 30,30, self.font, "♦", Suit.DIAMONDS),
+            RadioButton(KB_SUIT_BUTTON_LOC[0] + 70, KB_SUIT_BUTTON_LOC[1], 30,30, self.font, "♣", Suit.CLUBS),
+            RadioButton(KB_SUIT_BUTTON_LOC[0] + 105, KB_SUIT_BUTTON_LOC[1], 30,30, self.font, "♠", Suit.SPADES),
+
+        ]
+        for rb in self.suit_buttons:
+            rb.setRadioButtons(self.suit_buttons)
+        self.suit_buttons[0].clicked = True
+        self.suit_button_group = pygame.sprite.Group(self.suit_buttons)
+        self.selected_suit = None
+        self.rank_buttons = []
+        self.rank_button_group = None
+        self.selected_rank = None
 
         self.kb_box = pygame.Surface((KB_BOX_WIDTH, RESOLUTION[1]))
 
@@ -102,6 +108,10 @@ class UI:
             pygame.draw.rect(self.kb_box, (0, 0, 0), rect, width=1)
             t = seat.name.capitalize() + " has card"
             self.kb_box.blit(self.font.render(t, True, (0, 0, 0)), (loc[0] + 2, loc[1]))
+        
+        # draw the whole box on the window surface 
+        self.window_surface.blit(self.kb_box, (RESOLUTION[0]-KB_BOX_WIDTH, 0))
+        
 
     def draw_kb_line(self):
         # as a demo, draw a line from north to west as viewed from player south
@@ -136,32 +146,42 @@ class UI:
                         paused = False
                     if event.key == pygame.K_ESCAPE:
                         self.is_running = False
-            selected_suit = self.suit_dropdown.update(event_list)
-            if selected_suit >= 0:
-                print(selected_suit)
-            self.suit_dropdown.draw(self.kb_box)
-            self.clear_table()  # draw background
-            self.draw_current_table()  # draw played cards of each player
-            self.draw_player_cards()
-            self.draw_game_info()
-            self.draw_score_info()
-            self.draw_guesses()
-            self.draw_message()
+
             self.draw_kb_box()
+            self.suit_button_group.update(event_list)
+            self.suit_button_group.draw(self.window_surface)
+            new_suit = self.get_selected_suit()
+            if self.selected_suit is None or new_suit is not self.selected_suit:
+                self.selected_suit = new_suit
+                self.draw_kb_card_buttons()
+            new_rank = self.get_selected_rank()
+            if new_rank is not None:
+                if new_rank is not self.selected_rank:
+                    self.selected_rank = new_rank
+                    # REDRAW THE KNOWLEDGE
+            self.rank_button_group.update(event_list)
+            self.rank_button_group.draw(self.window_surface)
+
             if not paused:
                 if self.model.finished:
                     exit(0)
                 # Go to the next game state
                 self.model.next_move()
+                self.clear_table()  # draw background
+                self.draw_current_table()  # draw played cards of each player
+                self.draw_player_cards()
+                self.draw_game_info()
+                self.draw_score_info()
+                self.draw_guesses()
+                self.draw_message()
                 paused = True
 
-            pygame.display.flip()
+            pygame.display.update()
 
     def clear_table(self):
         """Reset the view by drawing the background"""
         self.window_surface.blit(self.background, (0, 0))
         self.window_surface.blit(self.msg_box, (0, RESOLUTION[1] - MSG_BOX_HEIGHT))
-        pygame.display.update()
 
     def draw_current_table(self):
         """Draws the cards currently played."""
@@ -170,7 +190,30 @@ class UI:
             ci = CardImage(card=card, rotate=False)
             rect = pygame.Rect(loc, CARD_SIZE)
             self.window_surface.blit(ci.img, rect)
-        pygame.display.update()
+
+    def get_selected_suit(self):
+        selected_button = [button for button in self.suit_buttons if button.clicked][0]
+        return selected_button.suit
+
+    def get_selected_rank(self):
+        selected_button = [button for button in self.rank_buttons if button.clicked][0]
+        return selected_button.rank
+
+    def draw_kb_card_buttons(self):
+        suit = self.get_selected_suit()
+        # load the knowledge of a player to find all cards still in the game 
+        kb = self.model.players[0].kb
+        cards = [card for card in kb.all_cards if card.suit == suit]
+        print([card.rank.value for card in cards])
+
+        self.rank_buttons = []
+        for i, card in enumerate(cards):
+            self.rank_buttons.append(RadioButton(KB_CARD_BUTTON_LOC[0] + i*45, KB_CARD_BUTTON_LOC[1], 40,30,self.font, str(card.rank.name).capitalize(), card.suit, card.rank))
+        for rb in self.rank_buttons:
+            rb.setRadioButtons(self.rank_buttons)
+        self.rank_buttons[0].clicked = True
+        self.rank_button_group = pygame.sprite.Group(self.rank_buttons)
+            
 
     def draw_player_cards(self) -> None:
         "Draws all cards that are in each players hand"
@@ -188,7 +231,6 @@ class UI:
                 ci = CardImage(card=card, rotate=rotate)
                 rect = pygame.Rect(locs[idx], CARD_SIZE)
                 self.window_surface.blit(ci.img, rect)
-        pygame.display.update()
 
     def draw_score_info(self) -> None:
         """Draws player score information"""

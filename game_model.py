@@ -16,9 +16,10 @@ class GameModel:
     def __init__(self):
         # TODO determine rounds/cards per round
         self.cards_per_round = [3, 4]
-        self.players = [GreedyPlayer(i, Seat(i)) for i in range(4)]
+        self.players = [GreedyKripkePlayer(i, Seat(i)) for i in range(4)]
         for p in self.players:
             p.set_game_model(self)
+        
         self.deck = Deck()
         self.table = {
             Seat.NORTH: None,
@@ -34,6 +35,14 @@ class GameModel:
         self.cur_player = 0
         self.finished = False
 
+        for p in self.players:
+            p.reset()
+        self.deal_cards(self.cards_per_round[self.cur_round])
+        for p in self.players:
+            if type(p) == GreedyKripkePlayer: 
+                p.reset_knowledgebase()
+                p.kb.set_game_model(self)
+                
         self.status = ["Starting a round of Boeren Bridge!"] + [
             f"Round {idx+1} is played with {c} cards"
             for idx, c in enumerate(self.cards_per_round)
