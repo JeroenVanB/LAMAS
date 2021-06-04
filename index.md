@@ -33,3 +33,37 @@ To decrease the possible states, we minimized the amount of cards used in the ga
 | 3      | 5                | 10, Jack, Queen, King, Ace |
 | 4      | 4                | Jack, Queen, King, Ace     |
 | 5      | 3                | Queen, King, Ace           |
+
+
+<table style="width:100%">
+  <tr>
+    <th>Round</th>
+    <th>Number of cards</th>
+    <th>Cards</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>3</td>
+    <td>Queen, King, Ace</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>4</td>
+    <td>Jack, Queen, King, Ace</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>5</td>
+    <td>10, Jack, Queen, King, Ace</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>4</td>
+    <td>Jack, Queen, King, Ace</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>3</td>
+    <td>Queen, King, Ace</td>
+  </tr>
+</table>
