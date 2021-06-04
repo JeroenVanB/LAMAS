@@ -21,12 +21,12 @@ class Player:
 
     def set_game_model(self, game_model):
         self.game_model = game_model
-    
+
     def set_cards(self, cards):
         self.cards = cards
         for c in self.cards:
             c.owner = self
-    
+
     def set_all_cards(self, cards):
         self.all_cards = cards
 
@@ -57,49 +57,34 @@ class Player:
         t = announcement.type
         sender = announcement.sender
         card = announcement.card
-        
+
         if t == AnnouncementType.card_played:
             # Since the card is played, it's no longer part of the game
             self.kb.remove_card(card)
-        
-        elif t == AnnouncementType.does_not_have_suit:
-            self.kb.set_all_cards_of_suit_of_player(suit=self.game_model.trick_suit, player=sender, value=False)
 
+        elif t == AnnouncementType.does_not_have_suit:
+            self.kb.set_all_cards_of_suit_of_player(
+                suit=self.game_model.trick_suit, player=sender, value=False
+            )
 
     def play_card(self) -> Card:
-        # Check if the player has cards of the same suit as the trick suit
-        cards_of_suit = []
-        if self.game_model.trick_suit is not None:
-            cards_of_suit = self.get_cards_of_suit(self.game_model.trick_suit)
-        
-        # If the player has the trick suit, he must follow suit
-        if len(cards_of_suit) > 0:
-            played_card = self.pick_card(cards_of_suit, True)
-            # Make announcement does_have_suit
-            self.game_model.make_announcement(self, played_card, AnnouncementType.card_played)
-        else:
-            # The player does not have the trick suit, so may play what he wants
-            #TODO this should not be random (bijv introeven, laag opleggen)
-            played_card = self.pick_card(self.cards, False)
-            self.game_model.make_announcement(self, played_card, AnnouncementType.card_played)
-            # Make announcement does_not_have_suit
-            if self.game_model.trick_suit:
-                self.game_model.make_announcement(self, None, AnnouncementType.does_not_have_suit)
-        self.cards.remove(played_card)
-        return played_card
+        card = self.pick_card()
+        self.cards.remove(card)
+        self.game_model.make_announcement(self, card, AnnouncementType.card_played)
+        return card
 
-    def pick_card(self, possible_cards: list, has_trick_suit:bool) -> Card:
-        """Pick a card of a list of possible cards
+    def pick_card(self) -> Card:
+        """Pick a card based on a tactic
 
-        Args:
-            possible_cards (list): the possible cards that the player can play
-            has_trick_suit (bool): weather or not the player is able to play the trick suit
+        Raises:
+            NotImplementedError: Should be implemented by subclass
 
         Returns:
-            Card: card that will be played
-        """        
+            Card: chosen card
+        """
+        # Subclasses should override this method
         raise NotImplementedError
-        
+
     def get_cards_of_suit(self, suit: Suit) -> list:
         """Get the player's cards of a given suit
 
@@ -115,7 +100,7 @@ class Player:
                 cards_of_suit.append(card)
         return cards_of_suit
 
-    def pick_trump_card(self, possible_cards: list) -> list:
+    def get_trump_cards(self) -> list:
         """Pick the player's trump cards
 
         Args:
@@ -124,20 +109,15 @@ class Player:
         Returns:
             List: List of possible trump cards
         """
-        trump_cards = []
-        for card in self.cards:
-            if card.suit == self.game_model.trump:
-                trump_cards.append(card)
-        return trump_cards
+        return [card for card in self.cards if card.suit == self.game_model.trump]
 
     def get_lowest_card_of_trick_suit(self):
         """Getting the lowest card that the player holds of the trick suit
 
         Returns:
             Card: the lowest card of the trick suit
-        """        
+        """
         return self.get_lowest_cards_of_suit(self.game_model.trick_suit)
-
 
     def get_highest_card(self, possible_cards):
         """Getting the highest evaluated card from a list of cards
@@ -146,9 +126,9 @@ class Player:
             possible_cards (list): list of cards
 
         Returns:
-            Card: the highest card
-        """        
-        assert(len(possible_cards) > 0)
+            Card: the highest cards
+        """
+        assert len(possible_cards) > 0
         highest_value = -1
         highest_cards = []
         for card in possible_cards:
@@ -159,23 +139,87 @@ class Player:
                 highest_cards = [card]
             elif eval == highest_value:
                 highest_cards.append(card)
-
-        return highest_cards[random.randrange(len(highest_cards))]
+        return random.choice(highest_cards)
 
     def has_trump_cards(self):
+        """Whether the player has a trump card
+
+        Returns:
+            bool: Has trump card
+        """
         for card in self.cards:
             if card.suit == self.game_model.trump:
                 return True
         return False
 
     def get_lowest_cards_of_suit(self, suit):
+        """Gets the lowest ranked card of a given suit
+
+        Args:
+            suit (Suit): the suit
+
+        Returns:
+            Card: The lowest ranked card
+        """
         suit_cards = self.get_cards_of_suit(suit)
         lowest_value = 999
         lowest_card = None
         for card in suit_cards:
             card.evaluate(self.game_model.trump, self.game_model.trick_suit)
-            eval = card.played_value
-            if eval < lowest_value:
-                lowest_value = eval
+            value = card.played_value
+            if value < lowest_value:
+                lowest_value = value
                 lowest_card = card
+        return lowest_card, lowest_value
+
+    def get_lowest_card(self):
+        """Get the card with the lowest value of all cards
+
+        Returns:
+            Card: Card with lowest value
+        """
+        lowest_value = 999
+        lowest_card = None
+        for suit in Suit:
+            c, v = self.get_lowest_cards_of_suit(suit)
+            if v < lowest_value:
+                lowest_value = v
+                lowest_card = c
         return lowest_card
+
+    def has_two_cards_of_non_trump(self):
+        """Checks if there are two cards of the same suit and returns the lowest.
+
+        Returns:
+            Card: Lowest card of the two, None if there are no two of the same suit
+        """
+        cards_of_suit = [0, 0, 0, 0]
+        for card in self.cards:
+            if not card.Suit == self.game_model.trump:
+                cards_of_suit[card.Suit] += 1
+
+        suits_idx = [index for index, count in enumerate(cards_of_suit) if count >= 2]
+        if not suits_idx:  # there are no two cards of the same non_trump suit
+            return None
+        non_trump_suit = Suit(random.choice(suits_idx))
+        return self.get_lowest_cards_of_suit(non_trump_suit)
+
+    def has_highest_trump_card(self):
+        """Returns true if player has a higher trump card than all the other players
+
+        Returns:
+            Card: the highest trump card of player
+        """
+        highest_card = None
+        for player in self.game_model.player:
+            if player is not self:
+                if player.get_highest_card(self.game_model.trump).evaluate(
+                    self.game_model.trump
+                ) > self.get_highest_card(self.game_model.trump).evaluate(
+                    self.game_model.trump
+                ):
+                    return None
+                else:
+                    highest_card = self.get_highest_card(self.game_model.trump)
+
+        return highest_card

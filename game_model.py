@@ -16,7 +16,7 @@ class GameModel:
     def __init__(self):
         # TODO determine rounds/cards per round
         self.cards_per_round = [3, 4]
-        self.players = [GreedyKripkePlayer(i, Seat(i)) for i in range(4)]
+        self.players = [GreedyPlayer(i, Seat(i)) for i in range(4)]
         for p in self.players:
             p.set_game_model(self)
         self.deck = Deck()
@@ -56,6 +56,7 @@ class GameModel:
             winner.add_win()
             
             self.status += [f'{winner.seat.name} wins the trick!']
+            # Make the winner of the previous trick the opener
             for player in self.players:
                 if player.seat.name == winner.seat.name:
                     opener = winner

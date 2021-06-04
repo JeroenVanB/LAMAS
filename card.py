@@ -11,11 +11,11 @@ class Card:
 
     def evaluate(self, trump, trick_suit):
         if self.suit == trump:
-            self.played_value = self.rank.value + 13
+            self.played_value = self.rank.value + 26
         elif self.suit == trick_suit:
-            self.played_value = self.rank.value
+            self.played_value = self.rank.value + 13
         else:
-            self.played_value = 0
+            self.played_value = self.rank.value
 
     def __str__(self) -> str:
         return self.name

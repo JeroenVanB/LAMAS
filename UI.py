@@ -4,8 +4,8 @@ from pygame import draw
 import pygame_gui
 from pathlib import Path
 from card import Card, CardValue, Suit
-from player import Seat, Player
-from typing import List, Tuple
+from player import Seat
+from UI_buttons import OptionBox
 from game_model import GameModel
 
 RESOLUTION = (1200, 800)
@@ -15,18 +15,16 @@ KB_BOX_WIDTH = 600
 KB_SUIT_BUTTON_HEIGHT = 550
 KB_PLAYER_BOX_SIZE = (110, 24)
 KB_PLAYER_LOC = {
-    Seat.NORTH: (KB_BOX_WIDTH/2 - (KB_PLAYER_BOX_SIZE[0]/2), 40),
-    Seat.WEST: (40, (700-160)/2),
-    Seat.EAST: (KB_BOX_WIDTH - KB_PLAYER_BOX_SIZE[0]-40, (700-160)/2),
-    Seat.SOUTH: (KB_BOX_WIDTH/2 - (KB_PLAYER_BOX_SIZE[0]/2), 700 - 200)
+    Seat.NORTH: (KB_BOX_WIDTH / 2 - (KB_PLAYER_BOX_SIZE[0] / 2), 40),
+    Seat.WEST: (40, (700 - 160) / 2),
+    Seat.EAST: (KB_BOX_WIDTH - KB_PLAYER_BOX_SIZE[0] - 40, (700 - 160) / 2),
+    Seat.SOUTH: (KB_BOX_WIDTH / 2 - (KB_PLAYER_BOX_SIZE[0] / 2), 700 - 200),
 }
 
 KB_NORTH = {
     Seat.NORTH: KB_PLAYER_LOC[Seat.NORTH],
     Seat.EAST: (KB_PLAYER_LOC[Seat.NORTH][0] + 10, KB_PLAYER_LOC[Seat.NORTH][1]),
     Seat.WEST: (KB_PLAYER_LOC[Seat.NORTH][0] + 20, KB_PLAYER_LOC[Seat.NORTH][1]),
-
-    
 }
 CARD_SIZE = (75, 100)
 PLAYER_LOC = {
@@ -42,7 +40,6 @@ GUESS_LOC = {
     Seat.SOUTH: (65 + 2.5 * CARD_SIZE[0], 30 + 3 * CARD_SIZE[1]),
     Seat.WEST: (67 + 2 * CARD_SIZE[0], 37 + 2.5 * CARD_SIZE[1]),
 }
-
 
 
 class UI:
@@ -67,23 +64,31 @@ class UI:
         self.msg_box = pygame.Surface((RESOLUTION[0] - KB_BOX_WIDTH, MSG_BOX_HEIGHT))
         self.msg_box.fill(pygame.Color(255, 255, 255))
 
+        self.suit_dropdown = OptionBox(
+            20,
+            KB_SUIT_BUTTON_HEIGHT,
+            30,
+            30,
+            (150, 150, 150),
+            (100, 200, 255),
+            self.font,
+            ["♥", "♦", "♣", "♠"],
+        )
+
         self.kb_box = pygame.Surface((KB_BOX_WIDTH, RESOLUTION[1]))
-        self.init_kb_box()
-        self.window_surface.blit(self.kb_box, (RESOLUTION[0] - KB_BOX_WIDTH, 0))
 
         self.clock = pygame.time.Clock()
         self.is_running = True
         self.model = model
         self.start_game_loop()
 
-
-    def init_kb_box(self):
+    def draw_kb_box(self):
         """Initialize all elements in the KB box view."""
-        self.kb_box.fill(pygame.Color(255,255,255)) # draw background 
+        self.kb_box.fill(pygame.Color(255, 255, 255))  # draw background
         border = pygame.Rect(0, 0, KB_BOX_WIDTH, RESOLUTION[1])
-        pygame.draw.rect(self.kb_box, (0,0,0), border, width=2) # draw border 
-        title_label = self.big_font.render('Kripke Models', True, self.font_color)
-        self.kb_box.blit(title_label, (10,10)) # draw title 
+        pygame.draw.rect(self.kb_box, (0, 0, 0), border, width=2)  # draw border
+        title_label = self.big_font.render("Kripke Models", True, self.font_color)
+        self.kb_box.blit(title_label, (10, 10))  # draw title
 
         # Draw all lines here
         self.draw_kb_line()
@@ -92,41 +97,38 @@ class UI:
         for seat, loc in KB_PLAYER_LOC.items():
             rect = pygame.Rect(loc, KB_PLAYER_BOX_SIZE)
             surface = pygame.Surface(KB_PLAYER_BOX_SIZE)
-            surface.fill((255,255,255))
+            surface.fill((255, 255, 255))
             self.kb_box.blit(surface, rect)
-            pygame.draw.rect(self.kb_box, (0,0,0), rect, width=1)
-            t = seat.name.capitalize() + ' has card'
-            self.kb_box.blit(self.font.render(t, True, (0,0,0)), (loc[0]+2, loc[1]))
-        
-        # Draw Suit buttons
-        for sb in range(4):
-            button = pygame.Rect((20 + (35 * sb), KB_SUIT_BUTTON_HEIGHT), (30,30))
-            pygame.draw.rect(self.kb_box, (0,0,0), button, width=1)
+            pygame.draw.rect(self.kb_box, (0, 0, 0), rect, width=1)
+            t = seat.name.capitalize() + " has card"
+            self.kb_box.blit(self.font.render(t, True, (0, 0, 0)), (loc[0] + 2, loc[1]))
 
     def draw_kb_line(self):
         # as a demo, draw a line from north to west as viewed from player south
         start = self.get_line_location(Seat.SOUTH, knowledge_seat=Seat.NORTH)
         end = self.get_line_location(Seat.SOUTH, knowledge_seat=Seat.WEST)
-        pygame.draw.line(self.kb_box, (255,0,0), start, end, width=3)
+        pygame.draw.line(self.kb_box, (255, 0, 0), start, end, width=3)
 
         start = self.get_line_location(Seat.SOUTH, knowledge_seat=Seat.EAST)
         end = self.get_line_location(Seat.SOUTH, knowledge_seat=Seat.WEST)
-        pygame.draw.line(self.kb_box, (255,0,0), start, end, width=3)
+        pygame.draw.line(self.kb_box, (255, 0, 0), start, end, width=3)
 
         start = self.get_line_location(Seat.NORTH, knowledge_seat=Seat.WEST)
         end = self.get_line_location(Seat.NORTH, knowledge_seat=Seat.SOUTH)
-        pygame.draw.line(self.kb_box, (0,255,0), start, end, width=3)
+        pygame.draw.line(self.kb_box, (0, 255, 0), start, end, width=3)
 
         start = self.get_line_location(Seat.NORTH, knowledge_seat=Seat.WEST)
         end = self.get_line_location(Seat.NORTH, knowledge_seat=Seat.EAST)
-        pygame.draw.line(self.kb_box, (0,255,0), start, end, width=3)
+        pygame.draw.line(self.kb_box, (0, 255, 0), start, end, width=3)
 
     def start_game_loop(self):
         self.clear_table()
         paused = False
 
         while self.is_running:
-            for event in pygame.event.get():
+            self.clock.tick(60)
+            event_list = pygame.event.get()
+            for event in event_list:
                 if event.type == pygame.QUIT:
                     self.is_running = False
                 elif event.type == pygame.KEYDOWN:
@@ -134,23 +136,26 @@ class UI:
                         paused = False
                     if event.key == pygame.K_ESCAPE:
                         self.is_running = False
-
+            selected_suit = self.suit_dropdown.update(event_list)
+            if selected_suit >= 0:
+                print(selected_suit)
+            self.suit_dropdown.draw(self.kb_box)
+            self.clear_table()  # draw background
+            self.draw_current_table()  # draw played cards of each player
+            self.draw_player_cards()
+            self.draw_game_info()
+            self.draw_score_info()
+            self.draw_guesses()
+            self.draw_message()
+            self.draw_kb_box()
             if not paused:
                 if self.model.finished:
                     exit(0)
                 # Go to the next game state
                 self.model.next_move()
-                self.clear_table()  # draw background
-                self.draw_current_table()  # draw played cards of each player
-                self.draw_player_cards()
-                self.draw_game_info()
-                self.draw_score_info()
-                self.draw_guesses()
-                self.draw_message()
                 paused = True
 
-                pygame.display.update()
-                self.clock.tick(60)
+            pygame.display.flip()
 
     def clear_table(self):
         """Reset the view by drawing the background"""
@@ -249,7 +254,7 @@ class UI:
 
         Args:
             player (Player): The player from which we view the knowledge base
-            knowledge_player (Player): The 'X has card' player. 
+            knowledge_player (Player): The 'X has card' player.
 
         Returns:
             [tuple(int,int)]: location of the point.
@@ -261,10 +266,11 @@ class UI:
             extra_height += 3
             if s == seat:
                 break
-        loc = (KB_PLAYER_LOC[knowledge_seat][0] + extra_width, KB_PLAYER_LOC[knowledge_seat][1] + extra_height)
+        loc = (
+            KB_PLAYER_LOC[knowledge_seat][0] + extra_width,
+            KB_PLAYER_LOC[knowledge_seat][1] + extra_height,
+        )
         return loc
-        
-                
 
     def get_north_south_locations(self, num_cards, seat=Seat.NORTH) -> list:
         """Returns the locations of the North or South player so that we can view his cards"""

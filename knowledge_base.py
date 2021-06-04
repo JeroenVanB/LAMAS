@@ -6,9 +6,9 @@ class KnowledgeBase:
     def __init__(
         self, player, all_cards: List[Card], own_cards: List[Card]
     ) -> None:
-        self.all_cards = all_cards
+        self.all_cards = all_cards # all cards in the game 
         self.player = player
-        self.own_cards = own_cards
+        self.own_cards = own_cards # cards of the player 
         self.knowledge = {}
         self.game_model = None
         for c in own_cards:
@@ -97,24 +97,51 @@ class KnowledgeBase:
         assert(len(self.all_cards) > 0)
         highest_value = -1
         highest_card = None
+        owner = None
         for card in self.all_cards:
             if card.suit == suit:
                 card.evaluate(self.game_model.trump, self.game_model.trick_suit)
-                eval = card.played_value
-                if eval > highest_value:
-                    highest_value = eval
+                value = card.played_value
+                if value > highest_value:
+                    highest_value = value
                     highest_card = card
-        return highest_card
+                    owner = card.owner
+        return highest_card, owner
 
-    def players_have_suit(self, players:list, suit:Suit):
+    def get_highest_non_trump_card(self):
+        owner = None
+        highest_card = None
+        highest_value = -1 
+        for suit in Suit:
+            if suit == self.game_model.trump:
+                continue
+            card, player = self.get_highest_card_of_suit(suit)
+            val = card.evaluate(self.game_model.trump, self.game_model.trick_suit)
+            if val > highest_value:
+                highest_value = val
+                highest_card = card
+                owner = player
+        return highest_card, owner
+
+    def other_players_have_suit(self, suit:Suit):
+        """Checks if there are other players with suit
+
+        Args:
+            suit (Suit): the suit to check
+
+        Returns:
+            bool: whether there is another player that has the suit
+        """
+        # get all players except the current player
+        players = [player for player in self.game_model.players if player is not self.player]
         for player in players:
-            if not self.player_might_have_suit(player, suit):
-                return False
-        return True
+            if self.player_might_have_suit(player, suit):
+                return True
+        return False
 
     def player_might_have_suit(self, player:list, suit:Suit):
         for card in self.all_cards:
             if card.suit == suit and card.owner == player:
                 return True
         return False
-
+    
