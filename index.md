@@ -80,7 +80,8 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. 
 
-Example 1
+Example 1 - Announcement 'Played card'
 If player North plays the Ace of Spades, no one else can hold that card. Therefore, the kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which Noth is the owner of the Ace of Spades). 
 
-Example 2
+Example 2 Announcement 'Does not have suit'
+Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and start the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts. Therefore, Player south can update their knowledge of the Queen of Hearts. He knows that either player North or player South has the Queen of Hearts.
