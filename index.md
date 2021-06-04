@@ -93,4 +93,6 @@ The GeedyKripkeAgent uses the kripke models to determine which card to play. He 
 Graph1
 
 ![Graph Greedy Kripke Agent](greedy_kripke.jpg)
-<img src="greedy_kripke.jpg" alt="Graph Greedy Kripke Agent2">
+
+
+<div class="background" style="width: 710px; height: 500px; white-space: nowrap; overflow-x: scroll; border: 0; padding: 10px;"> <img src="greedy_kripke.jpg" alt="Graph Greedy Kripke Agent2"> </div>.
