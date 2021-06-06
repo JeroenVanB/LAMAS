@@ -75,9 +75,7 @@ class GreedyKripkePlayer(Player):
             # Do I have a trick suit?
             if self.get_cards_of_suit(self.game_model.trick_suit):
                 # do i have highest trick suit?
-                card = self.kb.get_highest_card_of_suit(
-                    self.game_model.trick_suit
-                )
+                card = self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
                 if card.owner == self:  # i have higest trick suit card
                     print("8 card is:", card.name)
                     return card
@@ -96,17 +94,26 @@ class GreedyKripkePlayer(Player):
                     if self.game_model.cur_player == 3:
                         # There is a trump card on the table
                         if self.game_model.trump_on_table:
-                            # Is the trump card on the table higher than the one in the hand 
+                            # Is the trump card on the table higher than the one in the hand
                             if self.highest_trump_of_table().evaluate(
                                 self.game_model.trump, self.game_model.trick_suit
-                                ) > self.get_highest_card(self.get_cards_of_suit(self.game_model.trump)).evaluate(
-                                    self.game_model.trump, self.game_model.trick_suit
-                                ):
+                            ) > self.get_highest_card(
+                                self.get_cards_of_suit(self.game_model.trump)
+                            ).evaluate(
+                                self.game_model.trump, self.game_model.trick_suit
+                            ):
                                 print("10 card is:", self.get_lowest_card().name)
-                                return self.get_lowest_card() 
+                                return self.get_lowest_card()
                             else:
-                                print("11 card is:", self.get_highest_card(self.get_cards_of_suit(self.game_model.trump)).name)
-                                return self.get_highest_card(self.get_cards_of_suit(self.game_model.trump))
+                                print(
+                                    "11 card is:",
+                                    self.get_highest_card(
+                                        self.get_cards_of_suit(self.game_model.trump)
+                                    ).name,
+                                )
+                                return self.get_highest_card(
+                                    self.get_cards_of_suit(self.game_model.trump)
+                                )
                         else:
                             return self.get_lowest_card()
                     # Am I not the last player
@@ -117,7 +124,10 @@ class GreedyKripkePlayer(Player):
                             if self.kb.other_players_have_suit(self.game_model.trump):
                                 # If you have the highest trump card, return that card
                                 if self.has_highest_trump_card():
-                                    print("12 card is:", self.has_highest_trump_card().name)
+                                    print(
+                                        "12 card is:",
+                                        self.has_highest_trump_card().name,
+                                    )
                                     return self.has_highest_trump_card()
                                 else:
                                     print("13 card is:", self.get_lowest_card().name)
@@ -130,11 +140,8 @@ class GreedyKripkePlayer(Player):
                         else:  # no one else has a trump
                             # play lowest trump
                             print("15 card is:", self.get_lowest_card().name)
-                            return self.get_lowest_cards_of_suit(
-                                self.game_model.trump
-                                )
+                            return self.get_lowest_cards_of_suit(self.game_model.trump)
                 return self.get_lowest_card()
-
 
     def receive_announcement(self, announcement: PublicAnnouncement):
         t = announcement.type

@@ -19,7 +19,7 @@ class GameModel:
         self.players = [GreedyKripkePlayer(i, Seat(i)) for i in range(4)]
         for p in self.players:
             p.set_game_model(self)
-        
+
         self.deck = Deck()
         self.table = {
             Seat.NORTH: None,
@@ -39,10 +39,10 @@ class GameModel:
             p.reset()
         self.deal_cards(self.cards_per_round[self.cur_round])
         for p in self.players:
-            if type(p) == GreedyKripkePlayer: 
+            if type(p) == GreedyKripkePlayer:
                 p.reset_knowledgebase()
                 p.kb.set_game_model(self)
-                
+
         self.status = ["Starting a round of Boeren Bridge!"] + [
             f"Round {idx+1} is played with {c} cards"
             for idx, c in enumerate(self.cards_per_round)
@@ -63,8 +63,8 @@ class GameModel:
                 self.played_cards, self.trump, self.trick_suit
             )
             winner.add_win()
-            
-            self.status += [f'{winner.seat.name} wins the trick!']
+
+            self.status += [f"{winner.seat.name} wins the trick!"]
             # Make the winner of the previous trick the opener
             for player in self.players:
                 if player.seat.name == winner.seat.name:
@@ -75,7 +75,7 @@ class GameModel:
 
         if self.cur_round == len(self.cards_per_round):
             # Game has ended
-            self.status += [f'The game has ended!']
+            self.status += [f"The game has ended!"]
             self.finished = True
             return
 
@@ -85,7 +85,7 @@ class GameModel:
                 p.calculate_score()
             self.cur_trick = 0
             self.cur_round += 1
-            self.status += ['The round has ended']
+            self.status += ["The round has ended"]
             return
 
         if self.cur_trick == 0 and self.cur_player == 0:
@@ -94,14 +94,16 @@ class GameModel:
                 p.reset()
             self.deal_cards(self.cards_per_round[self.cur_round])
             for p in self.players:
-                if type(p) == GreedyKripkePlayer: 
+                if type(p) == GreedyKripkePlayer:
                     p.reset_knowledgebase()
                     p.kb.set_game_model(self)
             self.trump = self.pick_trump()
             opener = self.get_opener()
             self.order_players(opener)
             self.make_guesses(self.trump, opener, self.cards_per_round[self.cur_round])
-            self.status += [f'Trump is {self.trump.name}, {opener.name} has to open the game']
+            self.status += [
+                f"Trump is {self.trump.name}, {opener.name} has to open the game"
+            ]
 
         if self.cur_trick < self.cards_per_round[self.cur_round]:
             # Let a player make a move in the current trick
@@ -110,12 +112,12 @@ class GameModel:
             self.table[player.seat] = card
             if self.cur_player == 0:
                 self.trick_suit = card.suit
-                self.status += [f'Trick suit is {card.suit.name}']
+                self.status += [f"Trick suit is {card.suit.name}"]
             self.played_cards.append(card)
             self.cur_player += 1
 
     def get_remaining_players(self):
-        return self.players[self.cur_player+1:len(self.players)]
+        return self.players[self.cur_player + 1 : len(self.players)]
 
     def make_guesses(self, trump, winner, n_cards):
         total_guessed = 0
@@ -132,7 +134,9 @@ class GameModel:
             self.players[3].change_guess(
                 n_cards
             )  # the last player in the list is always the dealer.
-            self.status += [f'Player {self.players[3].seat.name} changes to guessing {self.players[3].guessed_wins} wins']
+            self.status += [
+                f"Player {self.players[3].seat.name} changes to guessing {self.players[3].guessed_wins} wins"
+            ]
             print(
                 "Player",
                 self.players[3].seat.name,
@@ -177,23 +181,26 @@ class GameModel:
         highest_value = 0
         for c in played_cards:
             c.evaluate(trump, trick_suit)
-            # print("value of ", c, " is ", c.played_value)
             if c.played_value > highest_value:
                 highest_value = c.played_value
         return c.owner
 
-    def make_announcement(self, sender: Player, card:Card, announcement_type:AnnouncementType):
+    def make_announcement(
+        self, sender: Player, card: Card, announcement_type: AnnouncementType
+    ):
         public_announcement = PublicAnnouncement(sender, announcement_type, card)
         for player in self.players:
             player.receive_announcement(public_announcement)
-        
-        # Show messages in the UI 
+
+        # Show messages in the UI
         msg = []
         if announcement_type == AnnouncementType.card_played:
-            msg += [f'Public Announcement: Player {sender.name} plays {card.name}']
+            msg += [f"Public Announcement: Player {sender.name} plays {card.name}"]
         elif announcement_type == AnnouncementType.does_not_have_suit:
-            msg += [f'Public Announcement: Player {sender.name} does not have suit {self.trick_suit}']
-        
+            msg += [
+                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit}"
+            ]
+
         self.status += msg
 
     def trump_on_table(self):
@@ -201,8 +208,6 @@ class GameModel:
             if c.suit == self.trump:
                 return True
         return False
-    
-
 
 
 if __name__ == "__main__":

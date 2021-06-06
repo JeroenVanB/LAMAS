@@ -1,19 +1,20 @@
+import time
 from typing import List
 from card import Card, Suit
 from seat import Seat
 import copy
 
+
 class KnowledgeBase:
-    def __init__(
-        self, player, all_cards: List[Card], own_cards: List[Card]
-    ) -> None:
-        self.all_cards = []
-        self.all_cards = [c for c in all_cards] # all cards in the game
+    def __init__(self, player, all_cards: List[Card], own_cards: List[Card]) -> None:
+        self.all_cards = [c for c in all_cards]
+        # self.all_cards = copy.deepcopy(all_cards)  # all cards in the game
         self.player = player
-        self.own_cards = own_cards # cards of the player 
+        # self.own_cards = copy.deepcopy(own_cards)  # cards of the player
+        self.own_cards = [c for c in own_cards]
         self.knowledge = {}
         self.game_model = None
-        for c in own_cards:
+        for c in self.all_cards:
             k = {
                 Seat.NORTH: False,
                 Seat.EAST: False,
@@ -40,6 +41,7 @@ class KnowledgeBase:
             raise Exception(
                 "Trying to change knowledge of a card that is not in the knowledge base"
             )
+
         self.knowledge[card][player.seat] = value
 
     def set_knowledge_of_remaining_cards_in_deck(self):
@@ -75,13 +77,23 @@ class KnowledgeBase:
         Args:
             card (Card): The card that has been played
         """
-        cc = [card]
-        print('CP', cc)
+
+        print("CP: ", card.name)
         # print('player', self.player)
         # print(self.all_cards)
-        #FIXME removing from 1 players knowledge_base 'self.all_cards', removes it from all.
-        self.all_cards.remove(card)
-        print(self.knowledge)
+        # FIXME removing from 1 players knowledge_base 'self.all_cards', removes it from all.
+        print(f"current allcards: {[c.name for c in self.all_cards]}")
+        idx = -1
+        for idx, c in enumerate(self.all_cards):
+            if c == card:
+                break
+        if idx != -1:
+            del self.all_cards[idx]
+        else:
+            raise Exception("Card is no part of the KB so I cannot remove it.")
+
+        print(f"\n{self.player.name} has KB: ", self.knowledge)
+        print(f"Removing {card.name}")
         self.knowledge.pop(card)
 
     def set_all_cards_of_suit_of_player(self, suit: Suit, player, value: bool):
@@ -90,19 +102,19 @@ class KnowledgeBase:
         Args:
             suit (Suit): The suit of the cards
             player (Player): The player
-            value (bool): Truth value 
+            value (bool): Truth value
         """
-        for (card, seats) in self.knowledge:
+        for (card, seats) in self.knowledge.items():
             if card.suit == suit:
                 seats[player.seat] = value
-    
+
     def get_highest_card_of_suit(self, suit: Suit):
         """Getting the highest card of suit in the game.
 
         Args:
             suit (Suit): the suit
         """
-        assert(len(self.all_cards) > 0)
+        assert len(self.all_cards) > 0
         highest_value = -1
         highest_card = None
         for card in self.all_cards:
@@ -119,9 +131,9 @@ class KnowledgeBase:
 
         Returns:
             Card : highest non trump card in the game
-        """        
+        """
         highest_card = None
-        highest_value = -1 
+        highest_value = -1
         for suit in Suit:
             if suit == self.game_model.trump:
                 continue
@@ -133,7 +145,7 @@ class KnowledgeBase:
                     highest_card = card
         return highest_card
 
-    def other_players_have_suit(self, suit:Suit):
+    def other_players_have_suit(self, suit: Suit):
         """Checks if there are other players with suit
 
         Args:
@@ -143,15 +155,16 @@ class KnowledgeBase:
             bool: whether there is another player that has the suit
         """
         # get all players except the current player
-        players = [player for player in self.game_model.players if player is not self.player]
+        players = [
+            player for player in self.game_model.players if player is not self.player
+        ]
         for player in players:
             if self.player_might_have_suit(player, suit):
                 return True
         return False
 
-    def player_might_have_suit(self, player:list, suit:Suit):
+    def player_might_have_suit(self, player: list, suit: Suit):
         for card in self.all_cards:
             if card.suit == suit and card.owner == player:
                 return True
         return False
-    
