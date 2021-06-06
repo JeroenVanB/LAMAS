@@ -11,12 +11,15 @@ class Card:
 
     def evaluate(self, trump, trick_suit):
         if self.suit == trump:
-            self.played_value = self.rank.value + 26
-        elif self.suit == trick_suit:
+                self.played_value = self.rank.value + 26
+        elif trick_suit is not None and self.suit == trick_suit:
             self.played_value = self.rank.value + 13
         else:
             self.played_value = self.rank.value
         return self.played_value
+
+    def set_owner(self, player):
+        self.owner = player
 
     def __str__(self) -> str:
         return self.name

@@ -1,12 +1,14 @@
 from typing import List
 from card import Card, Suit
 from seat import Seat
+import copy
 
 class KnowledgeBase:
     def __init__(
         self, player, all_cards: List[Card], own_cards: List[Card]
     ) -> None:
-        self.all_cards = all_cards # all cards in the game 
+        self.all_cards = []
+        self.all_cards = [c for c in all_cards] # all cards in the game
         self.player = player
         self.own_cards = own_cards # cards of the player 
         self.knowledge = {}
@@ -73,7 +75,13 @@ class KnowledgeBase:
         Args:
             card (Card): The card that has been played
         """
-        self.all_cards.pop(card)
+        cc = [card]
+        print('CP', cc)
+        # print('player', self.player)
+        # print(self.all_cards)
+        #FIXME removing from 1 players knowledge_base 'self.all_cards', removes it from all.
+        self.all_cards.remove(card)
+        print(self.knowledge)
         self.knowledge.pop(card)
 
     def set_all_cards_of_suit_of_player(self, suit: Suit, player, value: bool):
@@ -107,18 +115,22 @@ class KnowledgeBase:
         return highest_card
 
     def get_highest_non_trump_card(self):
-        owner = None
+        """Get the highest card still in the game (non-trump)
+
+        Returns:
+            Card : highest non trump card in the game
+        """        
         highest_card = None
         highest_value = -1 
         for suit in Suit:
             if suit == self.game_model.trump:
                 continue
             card = self.get_highest_card_of_suit(suit)
-            val = card.evaluate(self.game_model.trump, self.game_model.trick_suit)
-            print("Value is:", val)
-            if val > highest_value:
-                highest_value = val
-                highest_card = card
+            if card is not None:
+                val = card.evaluate(self.game_model.trump, None)
+                if val > highest_value:
+                    highest_value = val
+                    highest_card = card
         return highest_card
 
     def other_players_have_suit(self, suit:Suit):

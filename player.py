@@ -24,8 +24,9 @@ class Player:
 
     def set_cards(self, cards):
         self.cards = cards
+        print('player', self.name, ' has ', [a.name for a in self.cards])
         for c in self.cards:
-            c.owner = self
+            c.set_owner(self)
 
     def set_all_cards(self, cards):
         self.all_cards = cards
@@ -53,24 +54,10 @@ class Player:
     def add_win(self):
         self.wins += 1
 
-    def receive_announcement(self, announcement: PublicAnnouncement):
-        t = announcement.type
-        sender = announcement.sender
-        card = announcement.card
-
-        if t == AnnouncementType.card_played:
-            # Since the card is played, it's no longer part of the game
-            self.kb.remove_card(card)
-
-        elif t == AnnouncementType.does_not_have_suit:
-            self.kb.set_all_cards_of_suit_of_player(
-                suit=self.game_model.trick_suit, player=sender, value=False
-            )
-
     def play_card(self) -> Card:
         card = self.pick_card()
-        print('card_picked', card.name)
-        print('cards_holding', [c.name for c in self.cards])
+        # print('card_picked', card.name)
+        # print('cards_holding', [c.name for c in self.cards])
         self.cards.remove(card)
         self.game_model.make_announcement(self, card, AnnouncementType.card_played)
         return card

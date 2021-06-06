@@ -108,7 +108,6 @@ class GameModel:
             player = self.players[self.cur_player]
             card = player.play_card()
             self.table[player.seat] = card
-
             if self.cur_player == 0:
                 self.trick_suit = card.suit
                 self.status += [f'Trick suit is {card.suit.name}']
@@ -146,8 +145,7 @@ class GameModel:
         # Get a deck of cards
         self.deck.reset_deck(n_cards)
         self.deck.shuffle()
-        print(len(self.deck.cards))
-        print(len(self.players) * n_cards)
+        self.remaining_cards = self.deck.cards
         assert len(self.deck.cards) == len(self.players) * n_cards
         for idx, p in enumerate(self.players):
             p.set_cards(self.deck.cards[idx * n_cards : (1 + idx) * n_cards])
@@ -185,7 +183,7 @@ class GameModel:
         return c.owner
 
     def make_announcement(self, sender: Player, card:Card, announcement_type:AnnouncementType):
-        public_announcement = PublicAnnouncement(sender, card, announcement_type)
+        public_announcement = PublicAnnouncement(sender, announcement_type, card)
         for player in self.players:
             player.receive_announcement(public_announcement)
         

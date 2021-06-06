@@ -1,4 +1,4 @@
-from public_announcement import AnnouncementType
+from public_announcement import AnnouncementType, PublicAnnouncement
 from typing import overload
 from player import Player
 from seat import Seat
@@ -32,17 +32,13 @@ class GreedyKripkePlayer(Player):
                 # check if I have the highest trump
                 trump_cards = self.get_trump_cards()
                 card = self.kb.get_highest_card_of_suit(self.game_model.trump)
-                #FIXME the owners of the cards seem to be incorrect. When/how are they reset?
-                # print('owner', card.owner)
-                # print('self', self)
-                # print('allcards', [c.name for c in self.cards])
                 if trump_cards and card.owner == self:  # I have highest trump card
                     print("1 card is:", card.name)
                     return card
                 else:
                     # Do I have highest non-trump?
                     card = self.kb.get_highest_non_trump_card()
-                    if card.owner == self:
+                    if card is not None and card.owner == self:
                         # Do the others still have cards of that suit?
                         if self.kb.other_players_have_suit(card.suit):
                             print("2 card is:", self.get_lowest_card().name)
@@ -62,7 +58,7 @@ class GreedyKripkePlayer(Player):
             else:  # other players do not have trump cards
                 # Check if I have highest non-trump
                 card = self.kb.get_highest_non_trump_card()
-                if card.owner == self:
+                if card is not None and card.owner == self:
                     print("6 card is:", card.name)
                     return card
                 else:  # Do I have two cards of the same suit, that are not trump?
@@ -138,3 +134,17 @@ class GreedyKripkePlayer(Player):
                                 self.game_model.trump
                                 )
                 return self.get_lowest_card()
+
+
+    def receive_announcement(self, announcement: PublicAnnouncement):
+        t = announcement.type
+        sender = announcement.sender
+        card = announcement.card
+        if t == AnnouncementType.card_played:
+            # Since the card is played, it's no longer part of the game
+            self.kb.remove_card(card)
+
+        elif t == AnnouncementType.does_not_have_suit:
+            self.kb.set_all_cards_of_suit_of_player(
+                suit=self.game_model.trick_suit, player=sender, value=False
+            )
