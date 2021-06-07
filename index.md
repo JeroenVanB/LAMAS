@@ -103,8 +103,19 @@ Possible strategies are:
 
 The guessing is a very important part of the game. Since the guessing takes place before playing any cards, the only knowedge that the agent has, are his own cards (and the trump suit). We still have to come up with a way to determine a good estimation. It seems likely, that we will create a rule, based on the average score of the cards in the hand.
 
+### Possible extensions
+A possible extension for inferring tactis is implementing a (Deep) Q-Learning algorithm. Instead of implementing rules based on the knowledge base manually, we train a Q-Learning network to extract these rules and tactics itself. The network could have a Kripke model as an input as it is a perfect representation of the state. 
 
-A possible extension that we might add, is the 
+The card game can be seen as a Markov Decision Process. We will define the state, action and reward as the following:
+- State S will be a list of 52 one hot encoded vectors (one for every card). Each card representation consist by 4 bits, one for every player. Here a 1 will represent a possible owner, and a 0 the opposite.
+-  Action A will be a list of 52 possible cards to play. Since the player only has a subset of these cards, the possible actions can be reduced, based on the available cards.
+- Reward R(s,a) will be a 1 for a win, and a 0 for a loss (we might consider adding a discount factor)
+
+Using the representation of the MDP we can use Q-learning as a function approximation. This function will approximate Policy P, which is choosing the action with the highest expected reward. 
+
+The implementation of such an algorithm is not the main goal of the course, but it could be interesting to combine Kripke models with a deep reinforcement learning algorithm. After training, we can investigate what influence the different Kripke models have on the tactics of the algorithm. 
+
+
 
 
 
