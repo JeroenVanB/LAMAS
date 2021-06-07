@@ -15,7 +15,7 @@ from public_announcement import PublicAnnouncement, AnnouncementType
 class GameModel:
     def __init__(self):
         # TODO determine rounds/cards per round
-        self.cards_per_round = [3, 4]
+        self.cards_per_round = [4, 4]
         self.players = [GreedyKripkePlayer(i, Seat(i)) for i in range(4)]
         for p in self.players:
             p.set_game_model(self)
@@ -209,7 +209,7 @@ class GameModel:
             msg += [f"Public Announcement: Player {sender.name} plays {card.name}"]
         elif announcement_type == AnnouncementType.does_not_have_suit:
             msg += [
-                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit.name}"
+                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit}"
             ]
 
         self.status += msg
