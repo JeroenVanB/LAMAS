@@ -93,6 +93,7 @@ If player North plays the Ace of Spades, no one else can hold that card. Therefo
 ##### Example 2 - Announcement 'Does not have suit'
 Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and start the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts. Therefore, Player south can update their knowledge of the Queen of Hearts. He knows that either player North or player South has the Queen of Hearts.
 
+
 ### Strategy
 
 The GeedyKripkeAgent uses the kripke models to determine which card to play. He is greedy, since he always tries to win the trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the graph below (made with draw.io). 
@@ -112,14 +113,15 @@ Graph1
 A possible extension for inferring tactis is implementing a (Deep) Q-Learning algorithm. Instead of implementing rules based on the knowledge base manually, we train a Q-Learning network to extract these rules and tactics itself. The network could have a Kripke model as an input as it is a perfect representation of the state. 
 
 The card game can be seen as a Markov Decision Process. We will define the state, action and reward as the following:
-- State S will be a list of 52 one hot encoded vectors (one for every card). Each card representation consist by 4 bits, one for every player. Here a 1 will represent a possible owner, and a 0 the opposite.
--  Action A will be a list of 52 possible cards to play. Since the player only has a subset of these cards, the possible actions can be reduced, based on the available cards.
-- Reward R(s,a) will be a 1 for a win, and a 0 for a loss (we might consider adding a discount factor)
+- State _S_: A list of 52 one hot encoded vectors (one for every card). Each card representation consist of 4 bits, one for every player. Here a 1 will represent a possible owner, and a 0 the opposite.
+-  Action _A_: A list of 52 possible cards to play. Since the player only has a subset of these cards, the possible actions can be reduced, based on the available cards.
+- Reward _R(s,a)_: Results in a 1 for a win, and a 0 for a loss (we might consider adding a discount factor)
 
 Using the representation of the MDP we can use Q-learning as a function approximation. This function will approximate Policy P, which is choosing the action with the highest expected reward. 
 
 The implementation of such an algorithm is not the main goal of the course, but it could be interesting to combine Kripke models with a deep reinforcement learning algorithm. After training, we can investigate what influence the different Kripke models have on the tactics of the algorithm. 
 
+### Visualization 
 
 
 
