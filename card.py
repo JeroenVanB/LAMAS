@@ -11,7 +11,7 @@ class Card:
 
     def evaluate(self, trump, trick_suit):
         if self.suit == trump:
-                self.played_value = self.rank.value + 26
+            self.played_value = self.rank.value + 26
         elif trick_suit is not None and self.suit == trick_suit:
             self.played_value = self.rank.value + 13
         else:

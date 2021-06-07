@@ -73,7 +73,9 @@ class GreedyKripkePlayer(Player):
         # Player is not the opener
         else:
             # Do I have a trick suit?
-            if self.get_cards_of_suit(self.game_model.trick_suit):
+            if self.get_cards_of_suit(
+                self.game_model.trick_suit
+            ):  # FIXME: this checks all cards but should only check the cards of the player
                 # do i have highest trick suit?
                 card = self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
                 if card.owner == self:  # i have higest trick suit card

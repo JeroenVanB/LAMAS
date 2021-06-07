@@ -90,6 +90,7 @@ class GameModel:
             return
 
         if self.cur_trick == 0 and self.cur_player == 0:
+            print("******** start of  a round!")
             # start of a round
             for p in self.players:
                 p.reset()
@@ -180,11 +181,20 @@ class GameModel:
 
     def determine_winner(self, played_cards: List[Card], trump, trick_suit):
         highest_value = 0
+        winner = None
+        print(
+            "Evaluating winner after a round with the following played cards:",
+            [c.name for c in played_cards],
+            f"\nTrump: {trump.name}, Trick: {trick_suit.name}",
+        )
         for c in played_cards:
             c.evaluate(trump, trick_suit)
+            print(f"evaluating: {c.name}: {c.played_value}")
             if c.played_value > highest_value:
                 highest_value = c.played_value
-        return c.owner
+                winner = c.owner
+        print("evalutating: Winner=", winner.name)
+        return winner
 
     def make_announcement(
         self, sender: Player, card: Card, announcement_type: AnnouncementType
@@ -199,7 +209,7 @@ class GameModel:
             msg += [f"Public Announcement: Player {sender.name} plays {card.name}"]
         elif announcement_type == AnnouncementType.does_not_have_suit:
             msg += [
-                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit}"
+                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit.name}"
             ]
 
         self.status += msg
