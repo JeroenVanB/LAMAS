@@ -105,7 +105,8 @@ The guessing is a very important part of the game. Since the guessing takes plac
 
 
 Graph1
-![Graph Greedy Kripke Agent](greedy_kripke.jpg)
+'''{r image-ref-for-in-text, echo = FALSE, message=FALSE, fig.align='center', fig.cap='Some cool caption', out.width='0.75\\linewidth', fig pos='H'}
+knitr::include_graphics("./greedy_kripke.pdf")'''
 
 
 ### Possible extensions
