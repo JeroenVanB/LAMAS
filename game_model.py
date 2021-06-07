@@ -71,6 +71,7 @@ class GameModel:
                     opener = winner
             self.order_players(opener)
             self.trick_suit = None
+            self.played_cards = []
             # print(winner.seat.name, "wins the trick!")
 
         if self.cur_round == len(self.cards_per_round):

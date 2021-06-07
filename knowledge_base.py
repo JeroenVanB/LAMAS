@@ -77,12 +77,6 @@ class KnowledgeBase:
         Args:
             card (Card): The card that has been played
         """
-
-        print("CP: ", card.name)
-        # print('player', self.player)
-        # print(self.all_cards)
-        # FIXME removing from 1 players knowledge_base 'self.all_cards', removes it from all.
-        print(f"current allcards: {[c.name for c in self.all_cards]}")
         idx = -1
         for idx, c in enumerate(self.all_cards):
             if c == card:
@@ -92,8 +86,8 @@ class KnowledgeBase:
         else:
             raise Exception("Card is no part of the KB so I cannot remove it.")
 
-        print(f"\n{self.player.name} has KB: ", self.knowledge)
-        print(f"Removing {card.name}")
+        # print(f"\n{self.player.name} has KB: ", self.knowledge)
+        # print(f"Removing {card.name}")
         self.knowledge.pop(card)
 
     def set_all_cards_of_suit_of_player(self, suit: Suit, player, value: bool):
