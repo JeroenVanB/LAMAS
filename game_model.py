@@ -209,7 +209,7 @@ class GameModel:
             msg += [f"Public Announcement: Player {sender.name} plays {card.name}"]
         elif announcement_type == AnnouncementType.does_not_have_suit:
             msg += [
-                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit}"
+                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit.name}"
             ]
 
         self.status += msg

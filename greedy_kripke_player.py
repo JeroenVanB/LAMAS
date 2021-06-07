@@ -75,7 +75,7 @@ class GreedyKripkePlayer(Player):
             # Do I have a trick suit?
             if self.get_cards_of_suit(
                 self.game_model.trick_suit
-            ):  # FIXME: this checks all cards but should only check the cards of the player
+            ):  # FIXME: this checks all cards but should only check the cards of the player -- Vlgm is dit niet waar
                 # do i have highest trick suit?
                 card = self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
                 if card.owner == self:  # i have higest trick suit card
@@ -86,6 +86,9 @@ class GreedyKripkePlayer(Player):
                     return self.get_lowest_card_of_trick_suit()
 
             else:  # I do not have the trick suit
+                #FIXME Announcements only happen after each round. I think this might be due to the fact that it uses the game_model to make announcements. 
+                # The game_model meanwhile also does other stuff. Maybe make announcements though another object?
+                print('Announcement from player', self.seat, '.', 'This happens after the round, which should not be the case')
                 self.game_model.make_announcement(
                     sender=self,
                     card=None,
