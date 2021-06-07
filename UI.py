@@ -67,11 +67,42 @@ class UI:
         self.msg_box.fill(pygame.Color(255, 255, 255))
 
         self.suit_buttons = [
-            RadioButton(KB_SUIT_BUTTON_LOC[0], KB_SUIT_BUTTON_LOC[1] , 30,30, self.font, "♥", Suit.HEARTS),
-            RadioButton(KB_SUIT_BUTTON_LOC[0] + 35, KB_SUIT_BUTTON_LOC[1], 30,30, self.font, "♦", Suit.DIAMONDS),
-            RadioButton(KB_SUIT_BUTTON_LOC[0] + 70, KB_SUIT_BUTTON_LOC[1], 30,30, self.font, "♣", Suit.CLUBS),
-            RadioButton(KB_SUIT_BUTTON_LOC[0] + 105, KB_SUIT_BUTTON_LOC[1], 30,30, self.font, "♠", Suit.SPADES),
-
+            RadioButton(
+                KB_SUIT_BUTTON_LOC[0],
+                KB_SUIT_BUTTON_LOC[1],
+                30,
+                30,
+                self.font,
+                "♥",
+                Suit.HEARTS,
+            ),
+            RadioButton(
+                KB_SUIT_BUTTON_LOC[0] + 35,
+                KB_SUIT_BUTTON_LOC[1],
+                30,
+                30,
+                self.font,
+                "♦",
+                Suit.DIAMONDS,
+            ),
+            RadioButton(
+                KB_SUIT_BUTTON_LOC[0] + 70,
+                KB_SUIT_BUTTON_LOC[1],
+                30,
+                30,
+                self.font,
+                "♣",
+                Suit.CLUBS,
+            ),
+            RadioButton(
+                KB_SUIT_BUTTON_LOC[0] + 105,
+                KB_SUIT_BUTTON_LOC[1],
+                30,
+                30,
+                self.font,
+                "♠",
+                Suit.SPADES,
+            ),
         ]
         for rb in self.suit_buttons:
             rb.setRadioButtons(self.suit_buttons)
@@ -109,10 +140,9 @@ class UI:
             pygame.draw.rect(self.kb_box, (0, 0, 0), rect, width=1)
             t = seat.name.capitalize() + " has card"
             self.kb_box.blit(self.font.render(t, True, (0, 0, 0)), (loc[0] + 2, loc[1]))
-        
-        # draw the whole box on the window surface 
-        self.window_surface.blit(self.kb_box, (RESOLUTION[0]-KB_BOX_WIDTH, 0))
-        
+
+        # draw the whole box on the window surface
+        self.window_surface.blit(self.kb_box, (RESOLUTION[0] - KB_BOX_WIDTH, 0))
 
     def draw_kb_line(self):
         # as a demo, draw a line from north to west as viewed from player south
@@ -163,6 +193,7 @@ class UI:
             self.rank_button_group.update(event_list)
             self.rank_button_group.draw(self.window_surface)
 
+            # self.model.check_announcements()
             if not paused:
                 if self.model.finished:
                     exit(0)
@@ -202,20 +233,30 @@ class UI:
 
     def draw_kb_card_buttons(self):
         suit = self.get_selected_suit()
-        # load the knowledge of a player to find all cards still in the game 
+        # load the knowledge of a player to find all cards still in the game
         kb = self.model.players[0].kb
         cards = [card for card in kb.all_cards if card.suit == suit]
-        cards = sorted(cards, key=operator.attrgetter('rank'))
+        cards = sorted(cards, key=operator.attrgetter("rank"))
         print([card.rank.value for card in cards])
 
         self.rank_buttons = []
         for i, card in enumerate(cards):
-            self.rank_buttons.append(RadioButton(KB_CARD_BUTTON_LOC[0] + i*45, KB_CARD_BUTTON_LOC[1], 40,30,self.font, str(card.rank.name).capitalize(), card.suit, card.rank))
+            self.rank_buttons.append(
+                RadioButton(
+                    KB_CARD_BUTTON_LOC[0] + i * 45,
+                    KB_CARD_BUTTON_LOC[1],
+                    40,
+                    30,
+                    self.font,
+                    str(card.rank.name).capitalize(),
+                    card.suit,
+                    card.rank,
+                )
+            )
         for rb in self.rank_buttons:
             rb.setRadioButtons(self.rank_buttons)
         self.rank_buttons[0].clicked = True
         self.rank_button_group = pygame.sprite.Group(self.rank_buttons)
-            
 
     def draw_player_cards(self) -> None:
         "Draws all cards that are in each players hand"

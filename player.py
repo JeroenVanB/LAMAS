@@ -24,7 +24,6 @@ class Player:
 
     def set_cards(self, cards):
         self.cards = cards
-        print('player', self.name, ' has ', [a.name for a in self.cards])
         for c in self.cards:
             c.set_owner(self)
 
@@ -49,15 +48,13 @@ class Player:
         if self.wins == self.guessed_wins:
             self.score += self.wins * 2 + 10
         else:
-            self.score -= self.wins * 2
+            self.score += abs(self.wins - self.guessed_wins) * -2
 
     def add_win(self):
         self.wins += 1
 
     def play_card(self) -> Card:
         card = self.pick_card()
-        # print('card_picked', card.name)
-        # print('cards_holding', [c.name for c in self.cards])
         self.cards.remove(card)
         self.game_model.make_announcement(self, card, AnnouncementType.card_played)
         return card
@@ -83,11 +80,7 @@ class Player:
         Returns:
             List: List of the cards of the given suit
         """
-        cards_of_suit = []
-        for card in self.cards:
-            if card.suit == suit:
-                cards_of_suit.append(card)
-        return cards_of_suit
+        return [c for c in self.cards if c.suit == suit]
 
     def get_trump_cards(self) -> list:
         """Pick the player's trump cards
@@ -202,16 +195,22 @@ class Player:
         highest_card = None
         for player in self.game_model.players:
             if player is not self:
-                if player.get_highest_card(self.get_cards_of_suit(self.game_model.trump)).evaluate(
+                if player.get_highest_card(
+                    self.get_cards_of_suit(self.game_model.trump)
+                ).evaluate(
                     self.game_model.trump, self.game_model.trick_suit
-                ) > self.get_highest_card(self.get_cards_of_suit(self.game_model.trump)).evaluate(
+                ) > self.get_highest_card(
+                    self.get_cards_of_suit(self.game_model.trump)
+                ).evaluate(
                     self.game_model.trump, self.game_model.trick_suit
                 ):
                     return None
                 else:
-                    highest_card = self.get_highest_card(self.get_cards_of_suit(self.game_model.trump))
+                    highest_card = self.get_highest_card(
+                        self.get_cards_of_suit(self.game_model.trump)
+                    )
 
         return highest_card
-    
+
     def highest_trump_of_table(self):
         return self.get_highest_card(self.game_model.played_cards)

@@ -26,7 +26,7 @@ class KnowledgeBase:
     def set_game_model(self, game_model):
         self.game_model = game_model
 
-    def set_card_knowledge(self, card: Card, player, value: bool):
+    def set_card_knowledge(self, card: Card, player):
         """Set the knowledge value for an individual card and player
 
         Args:
@@ -41,8 +41,14 @@ class KnowledgeBase:
             raise Exception(
                 "Trying to change knowledge of a card that is not in the knowledge base"
             )
-
-        self.knowledge[card][player.seat] = value
+        k = {
+            Seat.NORTH: False,
+            Seat.EAST: False,
+            Seat.SOUTH: False,
+            Seat.WEST: False,
+        }
+        k[player.seat] = True
+        self.knowledge[card] = k
 
     def set_knowledge_of_remaining_cards_in_deck(self):
         """Cards not in the players hand can be in any other players hand."""
@@ -85,9 +91,6 @@ class KnowledgeBase:
             del self.all_cards[idx]
         else:
             raise Exception("Card is no part of the KB so I cannot remove it.")
-
-        # print(f"\n{self.player.name} has KB: ", self.knowledge)
-        # print(f"Removing {card.name}")
         self.knowledge.pop(card)
 
     def set_all_cards_of_suit_of_player(self, suit: Suit, player, value: bool):

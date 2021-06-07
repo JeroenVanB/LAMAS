@@ -47,7 +47,6 @@ class GameModel:
             f"Round {idx+1} is played with {c} cards"
             for idx, c in enumerate(self.cards_per_round)
         ]
-        print(self.status)
 
     def next_move(self):
         print("====  looking at next move.  ====")
@@ -67,12 +66,17 @@ class GameModel:
             self.status += [f"{winner.seat.name} wins the trick!"]
             # Make the winner of the previous trick the opener
             for player in self.players:
+                player.opener = False
                 if player.seat.name == winner.seat.name:
                     opener = winner
+                    player.opener = True
             self.order_players(opener)
             self.trick_suit = None
+            # Remove all cards from the table from all knowledge bases.
+            for p in self.players:
+                for c in self.played_cards:
+                    p.kb.remove_card(c)
             self.played_cards = []
-            # print(winner.seat.name, "wins the trick!")
 
         if self.cur_round == len(self.cards_per_round):
             # Game has ended
@@ -84,6 +88,8 @@ class GameModel:
             # round has ended
             for p in self.players:
                 p.calculate_score()
+                for card in self.played_cards:
+                    p.kb.remove_card(card)
             self.cur_trick = 0
             self.cur_round += 1
             self.status += ["The round has ended"]
@@ -125,27 +131,14 @@ class GameModel:
         total_guessed = 0
         for p in self.players:
             p.guess_wins(trump, winner, n_cards)
-            print("Player", p.seat.name, "guesses", p.guessed_wins, "wins")
             total_guessed += p.guessed_wins
         if total_guessed == n_cards:
-            print(
-                "The guesses add up to",
-                total_guessed,
-                "so the dealer guesses again",
-            )
             self.players[3].change_guess(
                 n_cards
             )  # the last player in the list is always the dealer.
             self.status += [
                 f"Player {self.players[3].seat.name} changes to guessing {self.players[3].guessed_wins} wins"
             ]
-            print(
-                "Player",
-                self.players[3].seat.name,
-                "changes to guessing",
-                self.players[3].guessed_wins,
-                "wins",
-            )
 
     def deal_cards(self, n_cards):
         # Get a deck of cards
@@ -169,8 +162,7 @@ class GameModel:
         for player in self.players:
             if player.opener:
                 return player
-        print("Error: Opener could not be found")
-        sys.exit(1)
+        raise Exception("Error: Opener could not be found")
 
     def order_players(self, opener):
         idx = self.players.index(opener)
@@ -209,7 +201,7 @@ class GameModel:
             msg += [f"Public Announcement: Player {sender.name} plays {card.name}"]
         elif announcement_type == AnnouncementType.does_not_have_suit:
             msg += [
-                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit.name}"
+                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit}"
             ]
 
         self.status += msg

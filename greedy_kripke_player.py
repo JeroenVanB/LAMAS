@@ -41,11 +41,11 @@ class GreedyKripkePlayer(Player):
                     if card is not None and card.owner == self:
                         # Do the others still have cards of that suit?
                         if self.kb.other_players_have_suit(card.suit):
-                            print("2 card is:", self.get_lowest_card().name)
-                            return self.get_lowest_card()  # play worst
-                        else:
-                            print("3 card is:", card.name)
+                            print("2 card is:", card.name)
                             return card
+                        else:
+                            print("3 card is:", self.get_lowest_card().name)
+                            return self.get_lowest_card()  # play worst
                     else:  # Do I have two cards of the same suit, that are not trump?
                         card = self.has_two_cards_of_non_trump()
                         if card is not None:
@@ -73,10 +73,7 @@ class GreedyKripkePlayer(Player):
         # Player is not the opener
         else:
             # Do I have a trick suit?
-            if self.get_cards_of_suit(
-                self.game_model.trick_suit
-            ):  # FIXME: this checks all cards but should only check the cards of the player -- Vlgm is dit niet waar
-                # do i have highest trick suit?
+            if self.get_cards_of_suit(self.game_model.trick_suit):
                 card = self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
                 if card.owner == self:  # i have higest trick suit card
                     print("8 card is:", card.name)
@@ -86,9 +83,6 @@ class GreedyKripkePlayer(Player):
                     return self.get_lowest_card_of_trick_suit()
 
             else:  # I do not have the trick suit
-                #FIXME Announcements only happen after each round. I think this might be due to the fact that it uses the game_model to make announcements. 
-                # The game_model meanwhile also does other stuff. Maybe make announcements though another object?
-                print('Announcement from player', self.seat, '.', 'This happens after the round, which should not be the case')
                 self.game_model.make_announcement(
                     sender=self,
                     card=None,
@@ -98,7 +92,7 @@ class GreedyKripkePlayer(Player):
                     # Am I the last player?
                     if self.game_model.cur_player == 3:
                         # There is a trump card on the table
-                        if self.game_model.trump_on_table:
+                        if self.game_model.trump_on_table():
                             # Is the trump card on the table higher than the one in the hand
                             if self.highest_trump_of_table().evaluate(
                                 self.game_model.trump, self.game_model.trick_suit
@@ -153,9 +147,8 @@ class GreedyKripkePlayer(Player):
         sender = announcement.sender
         card = announcement.card
         if t == AnnouncementType.card_played:
-            # Since the card is played, it's no longer part of the game
-            self.kb.remove_card(card)
-
+            # card is played, so we now know the owner
+            self.kb.set_card_knowledge(card, sender)
         elif t == AnnouncementType.does_not_have_suit:
             self.kb.set_all_cards_of_suit_of_player(
                 suit=self.game_model.trick_suit, player=sender, value=False
