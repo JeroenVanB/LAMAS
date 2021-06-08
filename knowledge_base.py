@@ -123,29 +123,36 @@ class KnowledgeBase:
                     highest_card = card
         return highest_card
 
-    def get_highest_non_trump_card(self):
-        """Get the highest card still in the game (non-trump)
+    def get_highest_non_trump_cards(self):
+        """Get the highest cards still in the game (non-trump). 
 
         Returns:
-            Card : highest non trump card in the game
+            List : highest non trump cards in the game
         """
         highest_card = None
         highest_value = -1
+        highest_cards = []
         for suit in Suit:
             if suit == self.game_model.trump:
                 continue
+            print("Suit is:", suit)
             card = self.get_highest_card_of_suit(suit)
             if card is not None:
                 val = card.evaluate(self.game_model.trump, None)
+                print(card.name, "has value: ", val)
                 if val > highest_value:
                     highest_value = val
                     highest_card = card
-        return highest_card
+                if val == highest_value:
+                    highest_cards.append(highest_card)
+                    highest_value = val
+                    highest_card = card
+        return highest_cards
 
     def other_players_have_suit(self, suit: Suit):
         """Checks if there are other players with suit
 
-        Args:
+        Args: 
             suit (Suit): the suit to check
 
         Returns:
