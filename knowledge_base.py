@@ -135,18 +135,20 @@ class KnowledgeBase:
         for suit in Suit:
             if suit == self.game_model.trump:
                 continue
-            print("Suit is:", suit)
             card = self.get_highest_card_of_suit(suit)
             if card is not None:
                 val = card.evaluate(self.game_model.trump, None)
-                print(card.name, "has value: ", val)
                 if val > highest_value:
+                    if highest_cards:
+                        highest_card.remove(highest_card)
                     highest_value = val
                     highest_card = card
-                if val == highest_value:
                     highest_cards.append(highest_card)
+                # if there are multiple high value cards
+                if val == highest_value:
                     highest_value = val
                     highest_card = card
+                    highest_cards.append(highest_card)
         return highest_cards
 
     def other_players_have_suit(self, suit: Suit):
