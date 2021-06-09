@@ -1,4 +1,3 @@
-from typing import List
 from player import Player
 from random_player import RandomPlayer
 from greedy_player import GreedyPlayer
@@ -6,9 +5,7 @@ from greedy_kripke_player import GreedyKripkePlayer
 from seat import Seat
 from deck import Deck
 from card import Card, Suit
-import sys
 import random
-from operator import attrgetter
 from public_announcement import PublicAnnouncement, AnnouncementType
 
 

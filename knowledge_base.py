@@ -1,13 +1,11 @@
-import time
 from typing import List
 from card import Card, Suit
 from seat import Seat
-import copy
 
 
 class KnowledgeBase:
-    """An object containing the kripke knowledge which can be used to determine the next move
-    """    
+    """An object containing the kripke knowledge which can be used to determine the next move"""
+
     def __init__(self, player, all_cards: List[Card], own_cards: List[Card]) -> None:
         """Initialize the knowledgebase
 
@@ -15,7 +13,7 @@ class KnowledgeBase:
             player (Player): The owner of the knowledgebase
             all_cards (List[Card]): A list containing all cards in the game
             own_cards (List[Card]): A list containing the cards held by the player himself
-        """        
+        """
         self.all_cards = [c for c in all_cards]
         self.player = player
         self.own_cards = [c for c in own_cards]
@@ -37,7 +35,7 @@ class KnowledgeBase:
 
         Args:
             game_model (GameModel): The model of the game
-        """        
+        """
         self.game_model = game_model
 
     def set_card_knowledge(self, card: Card, player):
@@ -117,8 +115,8 @@ class KnowledgeBase:
         if idx != -1:
             del self.all_cards[idx]
         else:
-            print('card:',card)
-            print('self.all_cards', self.all_cards)
+            print("card:", card)
+            print("self.all_cards", self.all_cards)
             raise Exception("Card is no part of the KB so I cannot remove it.")
         self.knowledge.pop(card)
 
@@ -207,7 +205,7 @@ class KnowledgeBase:
 
         Returns:
             bool: Wether the given player might have a card of the given suit or not
-        """        
+        """
         for card in self.all_cards:
             if card.suit == suit and card.owner == player:
                 return True
