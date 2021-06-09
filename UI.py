@@ -22,12 +22,7 @@ KB_PLAYER_LOC = {
     Seat.EAST: (KB_BOX_WIDTH - KB_PLAYER_BOX_SIZE[0] - 40, (700 - 160) / 2),
     Seat.SOUTH: (KB_BOX_WIDTH / 2 - (KB_PLAYER_BOX_SIZE[0] / 2), 700 - 200),
 }
-
-KB_NORTH = {
-    Seat.NORTH: KB_PLAYER_LOC[Seat.NORTH],
-    Seat.EAST: (KB_PLAYER_LOC[Seat.NORTH][0] + 10, KB_PLAYER_LOC[Seat.NORTH][1]),
-    Seat.WEST: (KB_PLAYER_LOC[Seat.NORTH][0] + 20, KB_PLAYER_LOC[Seat.NORTH][1]),
-}
+LEGEND_LOC = (RESOLUTION[0] - KB_BOX_WIDTH + 50, 650)
 CARD_SIZE = (75, 100)
 PLAYER_LOC = {
     # (LEFT, TOP)
@@ -46,7 +41,7 @@ PLAYER_COLOR = {
     Seat.NORTH: (255, 0, 0),
     Seat.EAST: (0, 255, 0),
     Seat.SOUTH: (0, 0, 255),
-    Seat.WEST: (100, 100, 100),
+    Seat.WEST: (0, 255, 255),
 }
 
 
@@ -125,13 +120,14 @@ class UI:
         self.start_game_loop()
 
     def draw_kb_box(self):
-        """Initialize all elements in the KB box view."""
+        """Initialize and draw all elements in the Kripke model viewer."""
         self.kb_box.fill(pygame.Color(255, 255, 255))  # draw background
         border = pygame.Rect(0, 0, KB_BOX_WIDTH, RESOLUTION[1])
         pygame.draw.rect(self.kb_box, (0, 0, 0), border, width=2)  # draw border
+        # Draw title and legend
         title_label = self.big_font.render("Kripke Models", True, self.font_color)
         self.kb_box.blit(title_label, (10, 10))  # draw title
-
+        self.draw_legend()
         # Draw all lines in the Kripke model
         self.draw_kb_lines()
 
@@ -149,36 +145,41 @@ class UI:
         self.window_surface.blit(self.kb_box, (RESOLUTION[0] - KB_BOX_WIDTH, 0))
 
     def draw_suit_rank_buttons(self, event_list):
-        update = False
+        """Draws and updates the suit and rank buttons
+
+        Args:
+            event_list (list): list of pygame events.
+        """
         self.suit_button_group.update(event_list)
         self.suit_button_group.draw(self.window_surface)
         new_suit = self.get_selected_suit()
 
-        # if self.selected_suit is None or new_suit is not self.selected_suit:
+        # if there are no cards for the suit, select another suit
+        kb = self.model.players[0].kb
+        if not [card for card in kb.all_cards if card.suit == new_suit]:
+            self.select_suit_with_cards()
+
         if new_suit is not self.selected_suit:
             self.selected_suit = new_suit
             self.draw_kb_card_buttons()
-            update = True
 
         new_rank = self.get_selected_rank()
         if new_rank is not None:
             if new_rank is not self.selected_rank:
                 self.selected_rank = new_rank
-                update = True
-                # REDRAW THE KNOWLEDGE
         self.rank_button_group.update(event_list)
         self.rank_button_group.draw(self.window_surface)
-        if update:
-            print("Selected card:", Card(self.selected_rank, self.selected_suit).name)
 
     def draw_kb_lines(self):
+        """Draws all lines from possible states in the Kripke model viewer"""
         if self.selected_rank is None or self.selected_suit is None:
             return
         for p in self.model.players:
             color = PLAYER_COLOR[p.seat]
             card = Card(self.selected_rank, self.selected_suit)
             knowledge = p.kb.get_card_knowledge(card)
-            print('knwoledge: ', knowledge)
+            if not knowledge:
+                continue
             # Only keep possible knowledges
             knowledge = {
                 seat: value for (seat, value) in knowledge.items() if value == True
@@ -191,9 +192,22 @@ class UI:
                     start = self.get_line_location(p.seat, knowledge_seat=s)
                     end = self.get_line_location(p.seat, knowledge_seat=s2)
                     pygame.draw.line(self.kb_box, color, start, end, width=3)
-        return
+
+    def draw_legend(self):
+        """Draws the legend in the Kripke Model viewer."""
+        labels = []
+        labels.append(self.font.render("North", 1, PLAYER_COLOR[Seat.NORTH]))
+        labels.append(self.font.render("East", 1, PLAYER_COLOR[Seat.EAST]))
+        labels.append(self.font.render("South", 1, PLAYER_COLOR[Seat.SOUTH]))
+        labels.append(self.font.render("West", 1, PLAYER_COLOR[Seat.WEST]))
+        for line in range(len(labels)):
+            self.window_surface.blit(
+                labels[line],
+                (LEGEND_LOC[0], LEGEND_LOC[1] + line * self.font_size + 8 * line),
+            )
 
     def start_game_loop(self):
+        """Contains the loop for running the game and drawing the UI."""
         self.clear_table()
         paused = False
 
@@ -212,7 +226,6 @@ class UI:
             self.draw_kb_box()  # the kripke knowledge screen
             self.draw_suit_rank_buttons(event_list)  # The card selectors
 
-            # self.model.check_announcements()
             if not paused:
                 if self.model.finished:
                     exit(0)
@@ -243,21 +256,32 @@ class UI:
             self.window_surface.blit(ci.img, rect)
 
     def get_selected_suit(self):
-        selected_button = [button for button in self.suit_buttons if button.clicked][0]
-        return selected_button.suit
+        selected_button = [button for button in self.suit_buttons if button.clicked]
+        if not selected_button:
+            return None
+        return selected_button[0].suit
 
     def get_selected_rank(self):
-        selected_button = [button for button in self.rank_buttons if button.clicked][0]
-        return selected_button.rank
+
+        selected_button = [button for button in self.rank_buttons if button.clicked]
+        if not selected_button:
+            return None
+        return selected_button[0].rank
 
     def draw_kb_card_buttons(self):
-        suit = self.get_selected_suit()
+        """Draws the card selector buttons in the Kripke viewer"""
         # load the knowledge of a player to find all cards still in the game
         kb = self.model.players[0].kb
+        suit = self.get_selected_suit()
         cards = [card for card in kb.all_cards if card.suit == suit]
-        cards = sorted(cards, key=operator.attrgetter("rank"))
-        print([card.rank.value for card in cards])
+        # # if there are no cards of the suit, select another suit
+        # if not cards:
+        #     self.select_suit_with_cards()
+        #     suit = self.get_selected_suit()
+        #     cards = [card for card in kb.all_cards if card.suit == suit]
 
+        # draw all sorted ranks for that suit
+        cards = sorted(cards, key=operator.attrgetter("rank"))
         self.rank_buttons = []
         for i, card in enumerate(cards):
             self.rank_buttons.append(
@@ -274,11 +298,25 @@ class UI:
             )
         for rb in self.rank_buttons:
             rb.setRadioButtons(self.rank_buttons)
-        self.rank_buttons[0].clicked = True
+        if cards:
+            self.rank_buttons[0].clicked = True
+
         self.rank_button_group = pygame.sprite.Group(self.rank_buttons)
 
+    def select_suit_with_cards(self):
+        """Selects the first suit that still has cards in the game"""
+        kb = self.model.players[0].kb  # load a kb to get all cards
+        for suit in Suit:
+            cards = [card for card in kb.all_cards if card.suit == suit]
+            if cards:
+                break
+
+        for s in Suit:
+            self.suit_buttons[s].clicked = False
+        self.suit_buttons[suit].clicked = True
+
     def draw_player_cards(self) -> None:
-        "Draws all cards that are in each players hand"
+        """Draws all cards that are in each players hand"""
         for player in self.model.players:
             if player.seat in [Seat.NORTH, Seat.SOUTH]:
                 locs = self.get_north_south_locations(
@@ -286,7 +324,7 @@ class UI:
                 )
             else:
                 locs = self.get_west_east_locations(len(player.cards), seat=player.seat)
-
+            # rotate the cards if drawing for west and east
             rotate = player.seat in [Seat.WEST, Seat.EAST]
 
             for idx, card in enumerate(player.cards):
@@ -314,6 +352,7 @@ class UI:
             self.window_surface.blit(label, loc)
 
     def draw_message(self) -> None:
+        """Draws the status in the text box."""
         self.draw_multiline_text(self.model.status, location=MSG_LOC)
 
     def draw_game_info(self) -> None:
@@ -390,6 +429,15 @@ class UI:
         return positions
 
     def get_west_east_locations(self, num_cards, seat=Seat.WEST) -> list:
+        """Compute the locations for drawing the cards for the west and east player
+
+        Args:
+            num_cards (int): number of cards
+            seat (Seat, optional): Either WEST or EAST. Defaults to Seat.WEST.
+
+        Returns:
+            list: locations of the cards on the screen
+        """
         positions = []
         if seat == Seat.WEST:
             left_val = 30
@@ -402,6 +450,14 @@ class UI:
         return positions
 
     def suit_to_icon(self, suit: Suit) -> str:
+        """Convert a suit name to a small icon
+
+        Args:
+            suit (Suit): the suit
+
+        Returns:
+            str: the icon
+        """
         if suit == Suit.HEARTS:
             return "♥"
         elif suit == Suit.DIAMONDS:
@@ -414,6 +470,8 @@ class UI:
 
 
 class CardImage:
+    """Image class of the card."""
+
     def __init__(self, card: Card, rotate: bool, closed=False) -> None:
         self.original_size = (868, 1600)
         self.size = CARD_SIZE
@@ -426,6 +484,11 @@ class CardImage:
         self.img = self.card_to_image()
 
     def card_to_image(self) -> str:
+        """Converts the card to an image
+
+        Returns:
+            image: pygame image
+        """
         if self.card is None:
             img = pygame.image.load(self.placeholder)
         elif self.closed:
@@ -446,15 +509,3 @@ class CardImage:
         if self.rotate:
             img = pygame.transform.rotate(img, -90)
         return img
-
-
-if __name__ == "__main__":
-    # img = Image.new("RGB", CARD_SIZE, (105, 105, 105))
-    # img.show()
-    # img.save("img/placeholder.png")
-
-    model = GameModel()
-    ui = UI(model)
-
-    # card = Card(Rank(2), Suit(0))
-    # print(CardImage(card).img)
