@@ -87,7 +87,7 @@ class GreedyKripkePlayer(Player):
                 if self.game_model.trump_on_table():
                     return self.get_lowest_card_of_trick_suit()
                 else:
-                    card= self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
+                    card = self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
                     if card.owner == self:  # i have higest trick suit card
                         print("8 card is:", card.name)
                         return card

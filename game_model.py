@@ -29,7 +29,6 @@ class GameModel:
         }
         self.trump = None
         self.trick_suit = None
-        self.played_cards = []
         self.cur_round = 0
         self.cur_trick = 0
         self.cur_player = 0
@@ -49,21 +48,22 @@ class GameModel:
         ]
 
     def next_move(self):
+        """Execute the next move of the game. The move is determined by whose turn it is, or if the game or round has already ended.
+        """        
         print("====  looking at next move.  ====")
         self.status = []
         if self.cur_player > 3:
             # Trick has ended
             self.cur_player = 0
             self.cur_trick += 1
-            self.reset_table()
+
             # Determine the winner of the trick
-            # This is determined using the played_cards and the trick_suit
             winner = self.determine_winner(
-                self.played_cards, self.trump, self.trick_suit
+                self.trump, self.trick_suit
             )
             winner.add_win()
-
             self.status += [f"{winner.seat.name} wins the trick!"]
+
             # Make the winner of the previous trick the opener
             for player in self.players:
                 player.opener = False
@@ -72,11 +72,12 @@ class GameModel:
                     player.opener = True
             self.order_players(opener)
             self.trick_suit = None
+
             # Remove all cards from the table from all knowledge bases.
             for p in self.players:
-                for c in self.played_cards:
-                    p.kb.remove_card(c)
-            self.played_cards = []
+                for _, card in self.table.items():
+                    p.kb.remove_card(card)
+            self.reset_table()
 
         if self.cur_round == len(self.cards_per_round):
             # Game has ended
@@ -88,7 +89,7 @@ class GameModel:
             # round has ended
             for p in self.players:
                 p.calculate_score()
-                for card in self.played_cards:
+                for _, card in self.table.items():
                     p.kb.remove_card(card)
             self.cur_trick = 0
             self.cur_round += 1
@@ -96,7 +97,6 @@ class GameModel:
             return
 
         if self.cur_trick == 0 and self.cur_player == 0:
-            print("******** start of  a round!")
             # start of a round
             for p in self.players:
                 p.reset()
@@ -108,7 +108,7 @@ class GameModel:
             self.trump = self.pick_trump()
             opener = self.get_opener()
             self.order_players(opener)
-            self.make_guesses(self.trump, opener, self.cards_per_round[self.cur_round])
+            self.make_guesses(self.trump, self.cards_per_round[self.cur_round])
             self.status += [
                 f"Trump is {self.trump.name}, {opener.name} has to open the game"
             ]
@@ -121,17 +121,29 @@ class GameModel:
             if self.cur_player == 0:
                 self.trick_suit = card.suit
                 self.status += [f"Trick suit is {card.suit.name}"]
-            self.played_cards.append(card)
+            self.table[player.seat] = card
             self.cur_player += 1
 
     def get_remaining_players(self):
+        """Obtaining the players that still need to play a card in the tricking
+
+        Returns:
+            list: The Players that still need to play a card
+        """        
         return self.players[self.cur_player + 1 : len(self.players)]
 
-    def make_guesses(self, trump, winner, n_cards):
+    def make_guesses(self, trump, n_cards):
+        """Let all the players guess how many tricks they will win in the next round
+
+        Args:
+            trump (Suit): Trump of the game
+            n_cards (int): Number of cards that each player holds
+        """        
         total_guessed = 0
         for p in self.players:
-            p.guess_wins(trump, winner, n_cards)
+            p.guess_wins(trump, n_cards)
             total_guessed += p.guessed_wins
+        # If the guesses add up to the amount of cards, the dealer must change his guess
         if total_guessed == n_cards:
             self.players[3].change_guess(
                 n_cards
@@ -141,6 +153,11 @@ class GameModel:
             ]
 
     def deal_cards(self, n_cards):
+        """Dealing the cards between the players and
+
+        Args:
+            n_cards (int): The amount of cards that each player gets
+        """        
         # Get a deck of cards
         self.deck.reset_deck(n_cards)
         self.deck.shuffle()
@@ -151,6 +168,8 @@ class GameModel:
             p.set_all_cards(self.deck.cards)
 
     def reset_table(self):
+        """Reset the table by removing the cards played by each player
+        """        
         self.table = {
             Seat.NORTH: None,
             Seat.EAST: None,
@@ -159,27 +178,53 @@ class GameModel:
         }
 
     def get_opener(self):
+        """Determine who should be the opener of the next trick
+
+        Raises:
+            Exception: The opener cannot be determined
+
+        Returns:
+            Player: The opener of the next trick
+        """        
         for player in self.players:
             if player.opener:
                 return player
         raise Exception("Error: Opener could not be found")
 
     def order_players(self, opener):
+        """Order the players in self.players in the order in which the cards will be playerd
+
+        Args:
+            opener (Player): The opener of the next trick
+        """        
         idx = self.players.index(opener)
         self.players = self.players[idx:] + self.players[:idx]
 
     def pick_trump(self):
+        """Choose the trump (randomly)
+
+        Returns:
+            Suit: The trump suit for the next round
+        """        
         return Suit(random.randint(0, 3))
 
-    def determine_winner(self, played_cards: List[Card], trump, trick_suit):
+    def determine_winner(self, trump, trick_suit):
+        """Determine the winner of the last played trick
+
+        Args:
+            trump (Suit): Tuimp suit of the round
+            trick_suit (Suit): The trick suit
+        Returns:
+            Player: The winner of the trick
+        """        
         highest_value = 0
         winner = None
         print(
             "Evaluating winner after a round with the following played cards:",
-            [c.name for c in played_cards],
+            [c.name for _, c in self.table.items()],
             f"\nTrump: {trump.name}, Trick: {trick_suit.name}",
         )
-        for c in played_cards:
+        for _, c in self.table.items():
             c.evaluate(trump, trick_suit)
             print(f"evaluating: {c.name}: {c.played_value}")
             if c.played_value > highest_value:
@@ -191,6 +236,13 @@ class GameModel:
     def make_announcement(
         self, sender: Player, card: Card, announcement_type: AnnouncementType
     ):
+        """Make an announcement, to inform al the players. The announcements can be used update the kb
+
+        Args:
+            sender (Player): The sender of the annoucement
+            card (Card): The card that the sender played
+            announcement_type (AnnouncementType): The type of announcement which is send to all the players
+        """    
         public_announcement = PublicAnnouncement(sender, announcement_type, card)
         for player in self.players:
             player.receive_announcement(public_announcement)
@@ -207,8 +259,13 @@ class GameModel:
         self.status += msg
 
     def trump_on_table(self):
-        for c in self.played_cards:
-            if c.suit == self.trump:
+        """Is there a trump card played on the table?
+
+        Returns:
+            bool: Wether there is a trump card on the table or not
+        """        
+        for _, c in self.table.items():
+            if c is not None and c.suit == self.trump:
                 return True
         return False
 

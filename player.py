@@ -30,7 +30,7 @@ class Player:
     def set_all_cards(self, cards):
         self.all_cards = cards
 
-    def guess_wins(self, trump, winner, n_cards):
+    def guess_wins(self, trump, n_cards):
         self.guessed_wins = random.randint(0, n_cards)
 
     def change_guess(self, n_cards):
@@ -213,4 +213,4 @@ class Player:
         return highest_card
 
     def highest_trump_of_table(self):
-        return self.get_highest_card(self.game_model.played_cards)
+        return self.get_highest_card(self.game_model.table.items())
