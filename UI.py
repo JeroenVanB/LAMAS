@@ -178,6 +178,7 @@ class UI:
             color = PLAYER_COLOR[p.seat]
             card = Card(self.selected_rank, self.selected_suit)
             knowledge = p.kb.get_card_knowledge(card)
+            print('knwoledge: ', knowledge)
             # Only keep possible knowledges
             knowledge = {
                 seat: value for (seat, value) in knowledge.items() if value == True
