@@ -57,7 +57,7 @@ class Suit(IntEnum):
 
 
 class Rank(IntEnum):
-    """ 
+    """ Enumeration of the different ranks of cards in a deck of cards. The integer represents the base value of the card.
     """
     TWO = 0
     THREE = 1

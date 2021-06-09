@@ -48,7 +48,7 @@ class GameModel:
         ]
 
     def next_move(self):
-        """Execute the next move of the game. The move is determined by whose turn it is, or if the game or round has already ended.
+        """Execute the next move of the game. The move is determined by whose turn it is, or if the game or the round has already ended
         """        
         print("====  looking at next move.  ====")
         self.status = []
