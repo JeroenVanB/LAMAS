@@ -99,7 +99,7 @@ the public announcement changes the common knowledge as follows:
 Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. 
 In formal, the public announcement changes the common knowledge as follows:
 
-<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'">
+<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="400">
 
 for all _r_ ∈ \{A, K, Q, J\}.
 
