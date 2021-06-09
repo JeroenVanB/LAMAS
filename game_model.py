@@ -48,8 +48,7 @@ class GameModel:
         ]
 
     def next_move(self):
-        """Execute the next move of the game. The move is determined by whose turn it is, or if the game or the round has already ended
-        """        
+        """Execute the next move of the game. The move is determined by whose turn it is, or if the game or the round has already ended"""
         print("====  looking at next move.  ====")
         self.status = []
         if self.cur_player > 3:
@@ -58,9 +57,7 @@ class GameModel:
             self.cur_trick += 1
 
             # Determine the winner of the trick
-            winner = self.determine_winner(
-                self.trump, self.trick_suit
-            )
+            winner = self.determine_winner(self.trump, self.trick_suit)
             winner.add_win()
             self.status += [f"{winner.seat.name} wins the trick!"]
 
@@ -129,7 +126,7 @@ class GameModel:
 
         Returns:
             list: The Players that still need to play a card
-        """        
+        """
         return self.players[self.cur_player + 1 : len(self.players)]
 
     def make_guesses(self, trump, n_cards):
@@ -138,7 +135,7 @@ class GameModel:
         Args:
             trump (Suit): Trump of the game
             n_cards (int): Number of cards that each player holds
-        """        
+        """
         total_guessed = 0
         for p in self.players:
             p.guess_wins(trump, n_cards)
@@ -157,7 +154,7 @@ class GameModel:
 
         Args:
             n_cards (int): The amount of cards that each player gets
-        """        
+        """
         # Get a deck of cards
         self.deck.reset_deck(n_cards)
         self.deck.shuffle()
@@ -168,8 +165,7 @@ class GameModel:
             p.set_all_cards(self.deck.cards)
 
     def reset_table(self):
-        """Reset the table by removing the cards played by each player
-        """        
+        """Reset the table by removing the cards played by each player"""
         self.table = {
             Seat.NORTH: None,
             Seat.EAST: None,
@@ -185,7 +181,7 @@ class GameModel:
 
         Returns:
             Player: The opener of the next trick
-        """        
+        """
         for player in self.players:
             if player.opener:
                 return player
@@ -196,7 +192,7 @@ class GameModel:
 
         Args:
             opener (Player): The opener of the next trick
-        """        
+        """
         idx = self.players.index(opener)
         self.players = self.players[idx:] + self.players[:idx]
 
@@ -205,7 +201,7 @@ class GameModel:
 
         Returns:
             Suit: The trump suit for the next round
-        """        
+        """
         return Suit(random.randint(0, 3))
 
     def determine_winner(self, trump, trick_suit):
@@ -216,7 +212,7 @@ class GameModel:
             trick_suit (Suit): The trick suit
         Returns:
             Player: The winner of the trick
-        """        
+        """
         highest_value = 0
         winner = None
         print(
@@ -242,7 +238,7 @@ class GameModel:
             sender (Player): The sender of the annoucement
             card (Card): The card that the sender played
             announcement_type (AnnouncementType): The type of announcement which is send to all the players
-        """    
+        """
         public_announcement = PublicAnnouncement(sender, announcement_type, card)
         for player in self.players:
             player.receive_announcement(public_announcement)
@@ -253,7 +249,7 @@ class GameModel:
             msg += [f"Public Announcement: Player {sender.name} plays {card.name}"]
         elif announcement_type == AnnouncementType.does_not_have_suit:
             msg += [
-                f"Public Announcement: Player {sender.name} does not have suit {self.trick_suit}"
+                f"Public Announcement: Player {sender.name} does not have suit {Suit(self.trick_suit).name}"
             ]
 
         self.status += msg
@@ -263,7 +259,7 @@ class GameModel:
 
         Returns:
             bool: Wether there is a trump card on the table or not
-        """        
+        """
         for _, c in self.table.items():
             if c is not None and c.suit == self.trump:
                 return True

@@ -1,4 +1,5 @@
 Books/
+.DS_Store
 
 # IDEA
 .vscode
