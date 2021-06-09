@@ -1,7 +1,7 @@
 import operator
 from PIL import Image
 import pygame
-from pygame import draw
+from pygame import Color, draw
 import pygame_gui
 from pathlib import Path
 from card import Card, CardValue, Suit
@@ -22,7 +22,7 @@ KB_PLAYER_LOC = {
     Seat.EAST: (KB_BOX_WIDTH - KB_PLAYER_BOX_SIZE[0] - 40, (700 - 160) / 2),
     Seat.SOUTH: (KB_BOX_WIDTH / 2 - (KB_PLAYER_BOX_SIZE[0] / 2), 700 - 200),
 }
-LEGEND_LOC = (RESOLUTION[0] - KB_BOX_WIDTH + 50, 650)
+LEGEND_LOC = (KB_BOX_WIDTH - 100, 10)
 CARD_SIZE = (75, 100)
 PLAYER_LOC = {
     # (LEFT, TOP)
@@ -138,11 +138,28 @@ class UI:
             surface.fill((255, 255, 255))
             self.kb_box.blit(surface, rect)
             pygame.draw.rect(self.kb_box, (0, 0, 0), rect, width=1)
+            self.draw_true_world_box()  # draw the true world box
             t = seat.name.capitalize() + " has card"
             self.kb_box.blit(self.font.render(t, True, (0, 0, 0)), (loc[0] + 2, loc[1]))
 
         # draw the whole box on the window surface
         self.window_surface.blit(self.kb_box, (RESOLUTION[0] - KB_BOX_WIDTH, 0))
+
+    def draw_true_world_box(self):
+        if self.selected_rank is None or self.selected_suit is None:
+            return
+        c = Color(255, 215, 0)
+        card = self.model.deck.get_card_by_rank_and_suit(
+            self.selected_rank, self.selected_suit
+        )
+        if not card:
+            return
+        loc = KB_PLAYER_LOC[card.owner.seat]
+        rect = pygame.Rect(loc, KB_PLAYER_BOX_SIZE)
+        surface = pygame.Surface(KB_PLAYER_BOX_SIZE)
+        surface.fill((255, 255, 255))
+        self.kb_box.blit(surface, rect)
+        pygame.draw.rect(self.kb_box, c, rect, width=2)
 
     def draw_suit_rank_buttons(self, event_list):
         """Draws and updates the suit and rank buttons
@@ -196,12 +213,14 @@ class UI:
     def draw_legend(self):
         """Draws the legend in the Kripke Model viewer."""
         labels = []
+        labels.append(self.font.render("Legend:", 1, self.font_color))
+        labels.append(self.font.render("True world ☐", 1, Color(255, 215, 0)))
         labels.append(self.font.render("North", 1, PLAYER_COLOR[Seat.NORTH]))
         labels.append(self.font.render("East", 1, PLAYER_COLOR[Seat.EAST]))
         labels.append(self.font.render("South", 1, PLAYER_COLOR[Seat.SOUTH]))
         labels.append(self.font.render("West", 1, PLAYER_COLOR[Seat.WEST]))
         for line in range(len(labels)):
-            self.window_surface.blit(
+            self.kb_box.blit(
                 labels[line],
                 (LEGEND_LOC[0], LEGEND_LOC[1] + line * self.font_size + 8 * line),
             )
@@ -274,12 +293,6 @@ class UI:
         kb = self.model.players[0].kb
         suit = self.get_selected_suit()
         cards = [card for card in kb.all_cards if card.suit == suit]
-        # # if there are no cards of the suit, select another suit
-        # if not cards:
-        #     self.select_suit_with_cards()
-        #     suit = self.get_selected_suit()
-        #     cards = [card for card in kb.all_cards if card.suit == suit]
-
         # draw all sorted ranks for that suit
         cards = sorted(cards, key=operator.attrgetter("rank"))
         self.rank_buttons = []

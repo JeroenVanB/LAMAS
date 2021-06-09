@@ -19,5 +19,20 @@ class Deck:
             self.cards.append(Card(CardValue(12 - c), Suit(2)))
             self.cards.append(Card(CardValue(12 - c), Suit(3)))
 
+    def get_card_by_rank_and_suit(self, rank, suit):
+        """Returns a card object by its rank and suit
+
+        Args:
+            rank (Rank): rank of the card
+            suit (Suit): suit of the card
+
+        Returns:
+            Card: the card or None if not found
+        """
+        for card in self.cards:
+            if card.suit == suit and card.rank == rank:
+                return card
+        return None
+
     def shuffle(self):
         random.shuffle(self.cards)
