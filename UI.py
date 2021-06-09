@@ -42,14 +42,18 @@ GUESS_LOC = {
     Seat.SOUTH: (65 + 2.5 * CARD_SIZE[0], 30 + 3 * CARD_SIZE[1]),
     Seat.WEST: (67 + 2 * CARD_SIZE[0], 37 + 2.5 * CARD_SIZE[1]),
 }
+PLAYER_COLOR = {
+    Seat.NORTH: (255, 0, 0),
+    Seat.EAST: (0, 255, 0),
+    Seat.SOUTH: (0, 0, 255),
+    Seat.WEST: (100, 100, 100),
+}
 
 
 class UI:
     def __init__(self, model: GameModel) -> None:
-        print("Making font object, this can take a few seconds. ", end="")
         pygame.font.init()
         pygame.init()
-        # self.big_font = pygame.font.SysFont(None, 20)
         self.font_size = 16
         self.font = pygame.font.Font("seguisym.ttf", self.font_size)
         self.big_font = pygame.font.Font("seguisym.ttf", self.font_size + 4)
@@ -128,8 +132,8 @@ class UI:
         title_label = self.big_font.render("Kripke Models", True, self.font_color)
         self.kb_box.blit(title_label, (10, 10))  # draw title
 
-        # Draw all lines here
-        self.draw_kb_line()
+        # Draw all lines in the Kripke model
+        self.draw_kb_lines()
 
         # Draw all player boxes
         for seat, loc in KB_PLAYER_LOC.items():
@@ -144,23 +148,49 @@ class UI:
         # draw the whole box on the window surface
         self.window_surface.blit(self.kb_box, (RESOLUTION[0] - KB_BOX_WIDTH, 0))
 
-    def draw_kb_line(self):
-        # as a demo, draw a line from north to west as viewed from player south
-        start = self.get_line_location(Seat.SOUTH, knowledge_seat=Seat.NORTH)
-        end = self.get_line_location(Seat.SOUTH, knowledge_seat=Seat.WEST)
-        pygame.draw.line(self.kb_box, (255, 0, 0), start, end, width=3)
+    def draw_suit_rank_buttons(self, event_list):
+        update = False
+        self.suit_button_group.update(event_list)
+        self.suit_button_group.draw(self.window_surface)
+        new_suit = self.get_selected_suit()
 
-        start = self.get_line_location(Seat.SOUTH, knowledge_seat=Seat.EAST)
-        end = self.get_line_location(Seat.SOUTH, knowledge_seat=Seat.WEST)
-        pygame.draw.line(self.kb_box, (255, 0, 0), start, end, width=3)
+        # if self.selected_suit is None or new_suit is not self.selected_suit:
+        if new_suit is not self.selected_suit:
+            self.selected_suit = new_suit
+            self.draw_kb_card_buttons()
+            update = True
 
-        start = self.get_line_location(Seat.NORTH, knowledge_seat=Seat.WEST)
-        end = self.get_line_location(Seat.NORTH, knowledge_seat=Seat.SOUTH)
-        pygame.draw.line(self.kb_box, (0, 255, 0), start, end, width=3)
+        new_rank = self.get_selected_rank()
+        if new_rank is not None:
+            if new_rank is not self.selected_rank:
+                self.selected_rank = new_rank
+                update = True
+                # REDRAW THE KNOWLEDGE
+        self.rank_button_group.update(event_list)
+        self.rank_button_group.draw(self.window_surface)
+        if update:
+            print("Selected card:", Card(self.selected_rank, self.selected_suit).name)
 
-        start = self.get_line_location(Seat.NORTH, knowledge_seat=Seat.WEST)
-        end = self.get_line_location(Seat.NORTH, knowledge_seat=Seat.EAST)
-        pygame.draw.line(self.kb_box, (0, 255, 0), start, end, width=3)
+    def draw_kb_lines(self):
+        if self.selected_rank is None or self.selected_suit is None:
+            return
+        for p in self.model.players:
+            color = PLAYER_COLOR[p.seat]
+            card = Card(self.selected_rank, self.selected_suit)
+            knowledge = p.kb.get_card_knowledge(card)
+            # Only keep possible knowledges
+            knowledge = {
+                seat: value for (seat, value) in knowledge.items() if value == True
+            }
+            # Draw lines from/to each possible seat
+            for (s, v) in knowledge.items():
+                for (s2, v2) in knowledge.items():
+                    if s == s2:
+                        continue
+                    start = self.get_line_location(p.seat, knowledge_seat=s)
+                    end = self.get_line_location(p.seat, knowledge_seat=s2)
+                    pygame.draw.line(self.kb_box, color, start, end, width=3)
+        return
 
     def start_game_loop(self):
         self.clear_table()
@@ -178,20 +208,8 @@ class UI:
                     if event.key == pygame.K_ESCAPE:
                         self.is_running = False
 
-            self.draw_kb_box()
-            self.suit_button_group.update(event_list)
-            self.suit_button_group.draw(self.window_surface)
-            new_suit = self.get_selected_suit()
-            if self.selected_suit is None or new_suit is not self.selected_suit:
-                self.selected_suit = new_suit
-                self.draw_kb_card_buttons()
-            new_rank = self.get_selected_rank()
-            if new_rank is not None:
-                if new_rank is not self.selected_rank:
-                    self.selected_rank = new_rank
-                    # REDRAW THE KNOWLEDGE
-            self.rank_button_group.update(event_list)
-            self.rank_button_group.draw(self.window_surface)
+            self.draw_kb_box()  # the kripke knowledge screen
+            self.draw_suit_rank_buttons(event_list)  # The card selectors
 
             # self.model.check_announcements()
             if not paused:

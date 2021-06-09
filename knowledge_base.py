@@ -22,6 +22,8 @@ class KnowledgeBase:
                 Seat.WEST: False,
             }
             self.knowledge[c] = k
+        self.set_knowledge_of_remaining_cards_in_deck()
+        self.set_knowledge_of_own_hand()
 
     def set_game_model(self, game_model):
         self.game_model = game_model
@@ -49,6 +51,20 @@ class KnowledgeBase:
         }
         k[player.seat] = True
         self.knowledge[card] = k
+
+    def get_card_knowledge(self, card):
+        """Returns the knowledge of a card
+
+        Args:
+            card (Card): The card
+
+        Returns:
+            knowledge: if card is found else None
+        """
+        for c, knowledge in self.knowledge.items():
+            if c.name == card.name:
+                return knowledge
+        return None
 
     def set_knowledge_of_remaining_cards_in_deck(self):
         """Cards not in the players hand can be in any other players hand."""
