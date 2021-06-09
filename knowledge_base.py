@@ -117,6 +117,8 @@ class KnowledgeBase:
         if idx != -1:
             del self.all_cards[idx]
         else:
+            print('card:',card)
+            print('self.all_cards', self.all_cards)
             raise Exception("Card is no part of the KB so I cannot remove it.")
         self.knowledge.pop(card)
 

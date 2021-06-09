@@ -259,4 +259,4 @@ class Player(ABC):
         Returns:
             Card: The highest trump suit card on the table
         """        
-        return self.get_highest_card(self.game_model.table.items())
+        return self.get_highest_card([c for _,c in self.game_model.table.items()])

@@ -89,8 +89,6 @@ class GameModel:
             # round has ended
             for p in self.players:
                 p.calculate_score()
-                for _, card in self.table.items():
-                    p.kb.remove_card(card)
             self.cur_trick = 0
             self.cur_round += 1
             self.status += ["The round has ended"]
