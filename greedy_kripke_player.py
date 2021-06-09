@@ -37,7 +37,11 @@ class GreedyKripkePlayer(Player):
                     return card
                 else:
                     # Do I have highest non-trump?
-                    card = self.kb.get_highest_non_trump_card()
+                    cards = self.kb.get_highest_non_trump_cards()
+                    # If there are multiple highest card in the hand return just 1
+                    for c in cards:
+                        card = c if c.owner == self else None 
+                    
                     if card is not None and card.owner == self:
                         # Do the others still have cards of that suit?
                         if self.kb.other_players_have_suit(card.suit):
@@ -57,7 +61,12 @@ class GreedyKripkePlayer(Player):
 
             else:  # other players do not have trump cards
                 # Check if I have highest non-trump
-                card = self.kb.get_highest_non_trump_card()
+                cards = self.kb.get_highest_non_trump_cards()
+                for c in cards:
+                    card = c if c.owner == self else None
+                if card is not None:
+                    print("highest card:", card.name)
+   
                 if card is not None and card.owner == self:
                     print("6 card is:", card.name)
                     return card
@@ -74,13 +83,17 @@ class GreedyKripkePlayer(Player):
         else:
             # Do I have a trick suit?
             if self.get_cards_of_suit(self.game_model.trick_suit):
-                card = self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
-                if card.owner == self:  # i have higest trick suit card
-                    print("8 card is:", card.name)
-                    return card
-                else:  # play lowest trick card (obligated)
-                    print("9 card is:", self.get_lowest_card_of_trick_suit().name)
+                # Did someone play a trump card?
+                if self.game_model.trump_on_table():
                     return self.get_lowest_card_of_trick_suit()
+                else:
+                    card= self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
+                    if card.owner == self:  # i have higest trick suit card
+                        print("8 card is:", card.name)
+                        return card
+                    else:  # play lowest trick card (obligated)
+                        print("9 card is:", self.get_lowest_card_of_trick_suit().name)
+                        return self.get_lowest_card_of_trick_suit()
 
             else:  # I do not have the trick suit
                 self.game_model.make_announcement(
