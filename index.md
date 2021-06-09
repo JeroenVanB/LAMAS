@@ -130,5 +130,9 @@ The implementation of such an algorithm is not the main goal of the course, but 
 
 ### Visualization 
 
+#### Card UI
 
+#### Message box
+
+#### Kripke models 
 
