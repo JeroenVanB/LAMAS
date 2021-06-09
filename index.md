@@ -76,7 +76,7 @@ To decrease the possible states, we minimized the amount of cards used in the ga
 
 ### Game implementation
 
-The game is made in Python (with pygame), using an MVC pattern and a object oriented approach. In _game_model.py_, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic. The class _Player_ is extended by different types of agents, such as _RandomAgent_ (which plays random cards), _GeedyAgent_ (which plays the highest cards) and _GreedyKripkeAgent_ (discussed below).
+The game is made in Python (with pygame), using an MVC pattern and a object oriented approach. In _game_model.py_, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic. The class _Player_ is extended by different types of agents, such as _RandomAgent_ (which plays random cards), _GreedyAgent_ (which plays the highest cards) and _GreedyKripkeAgent_ (discussed below).
 
 
 ### Kripke implementation
@@ -87,12 +87,21 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. 
 
+To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
+
 ##### Example 1 - Announcement 'Played card'
 If player North plays the Ace of Spades, no one else can hold that card. Therefore, the kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore. 
+In formal: 
+
+<img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
 
 ##### Example 2 - Announcement 'Does not have suit'
 Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. 
+In formal
 
+<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'">
+
+for all _r_ ∈ \{A, K, Q, J\}.
 
 ### Strategy
 
