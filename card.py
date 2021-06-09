@@ -26,9 +26,9 @@ class Card:
 
 
 class Suit(IntEnum):
-    CLUBS = 0
+    HEARTS = 0
     DIAMONDS = 1
-    HEARTS = 2
+    CLUBS = 2
     SPADES = 3
 
 
