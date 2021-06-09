@@ -140,7 +140,7 @@ class KnowledgeBase:
         return highest_card
 
     def get_highest_non_trump_cards(self):
-        """Get the highest cards still in the game (non-trump). 
+        """Get the highest cards still in the game (non-trump).
 
         Returns:
             List : highest non trump cards in the game
@@ -156,7 +156,7 @@ class KnowledgeBase:
                 val = card.evaluate(self.game_model.trump, None)
                 if val > highest_value:
                     if highest_cards:
-                        highest_card.remove(highest_card)
+                        highest_cards.remove(highest_card)
                     highest_value = val
                     highest_card = card
                     highest_cards.append(highest_card)
@@ -170,7 +170,7 @@ class KnowledgeBase:
     def other_players_have_suit(self, suit: Suit):
         """Checks if there are other players with suit
 
-        Args: 
+        Args:
             suit (Suit): the suit to check
 
         Returns:
