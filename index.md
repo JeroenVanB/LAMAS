@@ -113,8 +113,7 @@ Possible strategies are:
 
 The guessing is a very important part of the game. Since the guessing takes place before playing any cards, the only knowedge that the agent has, are his own cards (and the trump suit). We still have to come up with a way to determine a good estimation. It seems likely, that we will create a rule, based on the average score of the cards in the hand.
 
-![Graph Greedy Kripke Agent](greedy_kripke.jpg)
-
+[![](greedy_kripke.jpg){ width=400px }](greedy_kripke.jpg)
 
 ### Possible extensions
 A possible extension for inferring tactis is implementing a (Deep) Q-Learning algorithm. Instead of implementing rules based on the knowledge base manually, we train a Q-Learning network to extract these rules and tactics itself. The network could have a Kripke model as an input as it is a perfect representation of the state. 
