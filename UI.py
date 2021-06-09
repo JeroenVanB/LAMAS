@@ -1,13 +1,12 @@
 import operator
-from PIL import Image
 import pygame
-from pygame import Color, draw
-import pygame_gui
+from pygame import Color
 from pathlib import Path
-from card import Card, Rank, Suit
+from card import Card, Suit
 from player import Seat
-from UI_buttons import OptionBox, RadioButton
+from UI_buttons import RadioButton
 from game_model import GameModel
+
 
 RESOLUTION = (1200, 800)
 MSG_BOX_HEIGHT = 200
