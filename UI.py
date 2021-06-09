@@ -4,7 +4,7 @@ import pygame
 from pygame import draw
 import pygame_gui
 from pathlib import Path
-from card import Card, CardValue, Suit
+from card import Card, Rank, Suit
 from player import Seat
 from UI_buttons import OptionBox, RadioButton
 from game_model import GameModel
@@ -456,5 +456,5 @@ if __name__ == "__main__":
     model = GameModel()
     ui = UI(model)
 
-    # card = Card(CardValue(2), Suit(0))
+    # card = Card(Rank(2), Suit(0))
     # print(CardImage(card).img)

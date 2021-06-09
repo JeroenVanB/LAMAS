@@ -1,4 +1,4 @@
-from card import Card, Suit, CardValue
+from card import Card, Suit, Rank
 import random
 
 
@@ -14,10 +14,10 @@ class Deck:
     def reset_deck(self, n_cards):
         self.cards = []
         for c in range(n_cards):
-            self.cards.append(Card(CardValue(12 - c), Suit(0)))
-            self.cards.append(Card(CardValue(12 - c), Suit(1)))
-            self.cards.append(Card(CardValue(12 - c), Suit(2)))
-            self.cards.append(Card(CardValue(12 - c), Suit(3)))
+            self.cards.append(Card(Rank(12 - c), Suit(0)))
+            self.cards.append(Card(Rank(12 - c), Suit(1)))
+            self.cards.append(Card(Rank(12 - c), Suit(2)))
+            self.cards.append(Card(Rank(12 - c), Suit(3)))
 
     def shuffle(self):
         random.shuffle(self.cards)
