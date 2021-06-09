@@ -83,7 +83,7 @@ The game is made in Python (with pygame), using an MVC pattern and a object orie
 
 We build an agent that determines which card to play, based on Kripke knowledge. For every card in the game, the agent has a Kripke model with four different states. Each of the states correspond to one of the four players holding the card. Each of the agents have a set of relations between the possible states. We visualize the Kripke models using a graphical representation next to the game UI. A screenshot can be seen in figure 1.
 
-<img src="kripke_example.jpg" alt="Example of the Kripke models">
+<img src="kripke_model.png" alt="Example of the Kripke models">
 
 Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. 
 
@@ -113,8 +113,6 @@ Possible strategies are:
 
 The guessing is a very important part of the game. Since the guessing takes place before playing any cards, the only knowedge that the agent has, are his own cards (and the trump suit). We still have to come up with a way to determine a good estimation. It seems likely, that we will create a rule, based on the average score of the cards in the hand.
 
-
-Graph1
 ![Graph Greedy Kripke Agent](greedy_kripke.jpg)
 
 
