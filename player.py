@@ -4,10 +4,19 @@ from enum import Enum
 import random
 from public_announcement import AnnouncementType, PublicAnnouncement
 from seat import Seat
+from abc import ABC
 
 
-class Player:
+class Player(ABC):
+    """An (abstract) object representing a player
+    """    
     def __init__(self, seat_number, seat: Seat):
+        """Basic inialization of a player
+
+        Args:
+            seat_number (int): Number of the seat
+            seat (Seat): Seat (of enumaration Seat)
+        """        
         self.seat = seat
         self.cards = []
         self.all_cards = []
@@ -20,9 +29,19 @@ class Player:
         self.opener = self.seat == Seat.NORTH
 
     def set_game_model(self, game_model):
+        """Setting the game model
+
+        Args:
+            game_model (GameModel): The game model object
+        """        
         self.game_model = game_model
 
     def set_cards(self, cards):
+        """Set the owner of the cards in the cards owned by the player.
+
+        Args:
+            cards (List[Card]): list of cards owned by the player
+        """        
         self.cards = cards
         for c in self.cards:
             c.set_owner(self)
@@ -31,9 +50,20 @@ class Player:
         self.all_cards = cards
 
     def guess_wins(self, trump, n_cards):
+        """Guess the amount of tricks the player is going to win in this round
+
+        Args:
+            trump (Suit): The trump of the roun
+            n_cards (int): The amount of cards each player holds
+        """        
         self.guessed_wins = random.randint(0, n_cards)
 
     def change_guess(self, n_cards):
+        """Changing the amount of tricks the player guesses to win in this round
+
+        Args:
+            n_cards (int): The amount of cards each player holds
+        """        
         x = random.randint(0, n_cards)
         if x == self.guessed_wins:
             self.change_guess(n_cards)
@@ -41,19 +71,30 @@ class Player:
             self.guessed_wins = x
 
     def reset(self):
+        """Reset the amounf of wins and guessed wins
+        """        
         self.wins = 0
         self.guessed_wins = 0
 
     def calculate_score(self):
+        """Calculate the score of the round, by comparing the wins with the guessed wins
+        """        
         if self.wins == self.guessed_wins:
             self.score += self.wins * 2 + 10
         else:
             self.score += abs(self.wins - self.guessed_wins) * -2
 
     def add_win(self):
+        """Add a win to the total wins of the player
+        """        
         self.wins += 1
 
     def play_card(self) -> Card:
+        """Let the player pick a card to play
+
+        Returns:
+            Card: the card that the player chooses to play 
+        """        
         card = self.pick_card()
         self.cards.remove(card)
         self.game_model.make_announcement(self, card, AnnouncementType.card_played)
@@ -213,4 +254,9 @@ class Player:
         return highest_card
 
     def highest_trump_of_table(self):
+        """Look which card of the trump suit is the highest card on the table
+
+        Returns:
+            Card: The highest trump suit card on the table
+        """        
         return self.get_highest_card(self.game_model.table.items())

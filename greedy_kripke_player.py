@@ -15,6 +15,8 @@ class GreedyKripkePlayer(Player):
         self.kb = None
 
     def reset_knowledgebase(self):
+        """Reset the knowledge base of the player
+        """        
         self.kb = KnowledgeBase(
             player=self, all_cards=self.all_cards, own_cards=self.cards
         )
@@ -156,13 +158,20 @@ class GreedyKripkePlayer(Player):
                 return self.get_lowest_card()
 
     def receive_announcement(self, announcement: PublicAnnouncement):
+        """Receive an announcement and apply the new knowledge by updating the kripke models
+
+        Args:
+            announcement (PublicAnnouncement): The annoucement object, containing the information of the anncouncement
+        """        
         t = announcement.type
         sender = announcement.sender
         card = announcement.card
         if t == AnnouncementType.card_played:
-            # card is played, so we now know the owner
+            # A card is played, so we now know the owner of that card 
+            # (and can exclude the possiblity of others having that card)
             self.kb.set_card_knowledge(card, sender)
         elif t == AnnouncementType.does_not_have_suit:
+            # A player does not have cards of a specific suit
             self.kb.set_all_cards_of_suit_of_player(
                 suit=self.game_model.trick_suit, player=sender, value=False
             )

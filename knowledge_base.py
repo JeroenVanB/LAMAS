@@ -6,11 +6,18 @@ import copy
 
 
 class KnowledgeBase:
+    """An object containing the kripke knowledge which can be used to determine the next move
+    """    
     def __init__(self, player, all_cards: List[Card], own_cards: List[Card]) -> None:
+        """Initialize the knowledgebase
+
+        Args:
+            player (Player): The owner of the knowledgebase
+            all_cards (List[Card]): A list containing all cards in the game
+            own_cards (List[Card]): A list containing the cards held by the player himself
+        """        
         self.all_cards = [c for c in all_cards]
-        # self.all_cards = copy.deepcopy(all_cards)  # all cards in the game
         self.player = player
-        # self.own_cards = copy.deepcopy(own_cards)  # cards of the player
         self.own_cards = [c for c in own_cards]
         self.knowledge = {}
         self.game_model = None
@@ -26,6 +33,11 @@ class KnowledgeBase:
         self.set_knowledge_of_own_hand()
 
     def set_game_model(self, game_model):
+        """Set the game_model to
+
+        Args:
+            game_model (GameModel): The model of the game
+        """        
         self.game_model = game_model
 
     def set_card_knowledge(self, card: Card, player):
@@ -34,7 +46,6 @@ class KnowledgeBase:
         Args:
             card (Card): the card
             player (Player): the player
-            value (bool): If the player could have the card or not
 
         Raises:
             Exception: raised if the card is not part of the KB.
@@ -143,7 +154,7 @@ class KnowledgeBase:
         """Get the highest cards still in the game (non-trump).
 
         Returns:
-            List : highest non trump cards in the game
+            List[Card] : highest non trump cards in the game
         """
         highest_card = None
         highest_value = -1
@@ -186,6 +197,15 @@ class KnowledgeBase:
         return False
 
     def player_might_have_suit(self, player: list, suit: Suit):
+        """It is possible for a given player to hold a card of a given type of suit
+
+        Args:
+            player (Player): The player in question
+            suit (Suit): The suit in question
+
+        Returns:
+            bool: Wether the given player might have a card of the given suit or not
+        """        
         for card in self.all_cards:
             if card.suit == suit and card.owner == player:
                 return True

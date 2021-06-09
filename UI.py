@@ -4,7 +4,7 @@ import pygame
 from pygame import Color, draw
 import pygame_gui
 from pathlib import Path
-from card import Card, CardValue, Suit
+from card import Card, Rank, Suit
 from player import Seat
 from UI_buttons import OptionBox, RadioButton
 from game_model import GameModel
