@@ -85,6 +85,7 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 <img src="kripke_model.png" alt="Example of the Kripke models">
 
+##### Formalizatin
 Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. 
 
 To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
