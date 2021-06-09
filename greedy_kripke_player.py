@@ -3,6 +3,7 @@ from player import Player
 from seat import Seat
 from card import Card
 from knowledge_base import KnowledgeBase
+import sys
 
 
 class GreedyKripkePlayer(Player):
@@ -173,3 +174,45 @@ class GreedyKripkePlayer(Player):
             self.kb.set_all_cards_of_suit_of_player(
                 suit=self.game_model.trick_suit, player=sender, value=False
             )
+
+    def guess_wins(self, trump, total_tricks):
+            """Guess the amount of tricks the player is going to win in this round
+
+            Args:
+                trump (Suit): The trump of the roun
+                n_cards (int): The amount of cards each player holds
+            """
+            # How the guessing is done:
+            # Calculate the average value of a card of the player
+            total_value_hand = 0
+            mean_value_hand = 0
+            for c in self.kb.own_cards:
+                total_value_hand += c.evaluate(trump=trump, trick_suit=None)
+            mean_value_hand = total_value_hand/len(self.kb.own_cards)
+            # print('mean_value_hand:', mean_value_hand)
+
+            # Calculate the average value of a card in the game
+            total_value_game = 0
+            mean_value_game = 0
+            for c in self.kb.all_cards:
+                total_value_game += c.evaluate(trump=trump, trick_suit=None)
+            mean_value_game = total_value_game/len(self.kb.all_cards)
+            # print('mean_value_game:', mean_value_game)
+
+            # Normalize the value
+            normalized_value_hand = mean_value_hand/mean_value_game
+
+            # If the cards are evaluated far below the mean
+            if normalized_value_hand < 0.8:
+                guess = 0
+            # If the cards are evaluated around the mean
+            elif normalized_value_hand < 1.2:
+                guess = int(total_tricks/4)
+            # If the cards are evaluated higher than the mean
+            elif normalized_value_hand < 1.4:
+                guess = int(total_tricks/4 * 2)
+            # If the cards are evaluated much higher than the mean
+            else:
+                guess = total_tricks
+            print('mean_value_normalized:', mean_value_hand/mean_value_game,'\tguesses', guess)
+            self.guessed_wins = guess
