@@ -128,9 +128,15 @@ class UI:
         title_label = self.big_font.render("Kripke Models", True, self.font_color)
         self.kb_box.blit(title_label, (10, 10))  # draw title
         self.draw_legend()
+        # Draw instructions:
+        t = [
+            "Press the buttons above to switch the Kripke Model.",
+            "Press SPACE to go the next move. ",
+            "Press ESC to quit.",
+        ]
+        self.draw_multiline_text(t, (10, 725), self.kb_box)
         # Draw all lines in the Kripke model
         self.draw_kb_lines()
-
         # Draw all player boxes
         for seat, loc in KB_PLAYER_LOC.items():
             rect = pygame.Rect(loc, KB_PLAYER_BOX_SIZE)
@@ -146,6 +152,7 @@ class UI:
         self.window_surface.blit(self.kb_box, (RESOLUTION[0] - KB_BOX_WIDTH, 0))
 
     def draw_true_world_box(self):
+        """Draws a gold box around the true world in the Kripke Model."""
         if self.selected_rank is None or self.selected_suit is None:
             return
         c = Color(255, 215, 0)
@@ -158,7 +165,6 @@ class UI:
         rect = pygame.Rect(loc, KB_PLAYER_BOX_SIZE)
         surface = pygame.Surface(KB_PLAYER_BOX_SIZE)
         surface.fill((255, 255, 255))
-        self.kb_box.blit(surface, rect)
         pygame.draw.rect(self.kb_box, c, rect, width=2)
 
     def draw_suit_rank_buttons(self, event_list):
@@ -212,6 +218,15 @@ class UI:
 
     def draw_legend(self):
         """Draws the legend in the Kripke Model viewer."""
+        # Draw border
+        size = (97, 150)
+        rect = pygame.Rect(LEGEND_LOC, size)
+        surface = pygame.Surface(size)
+        surface.fill((255, 255, 255))
+        self.kb_box.blit(surface, rect)
+        pygame.draw.rect(self.kb_box, (0, 0, 0), rect, width=1)
+
+        # Draw text
         labels = []
         labels.append(self.font.render("Legend:", 1, self.font_color))
         labels.append(self.font.render("True world ☐", 1, Color(255, 215, 0)))
@@ -222,7 +237,7 @@ class UI:
         for line in range(len(labels)):
             self.kb_box.blit(
                 labels[line],
-                (LEGEND_LOC[0], LEGEND_LOC[1] + line * self.font_size + 8 * line),
+                (LEGEND_LOC[0] + 3, LEGEND_LOC[1] + line * self.font_size + 8 * line),
             )
 
     def start_game_loop(self):
@@ -388,7 +403,7 @@ class UI:
         text.append(f"Trick suit: {trick_suit_ico}")
         self.draw_multiline_text(text, location)
 
-    def draw_multiline_text(self, text: list, location: tuple) -> None:
+    def draw_multiline_text(self, text: list, location: tuple, surface=None) -> None:
         """Draws multiline strings since pygame does not support this
 
         Args:
@@ -399,10 +414,16 @@ class UI:
         for line in text:
             label.append(self.font.render(line, True, self.font_color))
         for line in range(len(label)):
-            self.window_surface.blit(
-                label[line],
-                (location[0], location[1] + (line * self.font_size) + (8 * line)),
-            )
+            if surface is not None:
+                surface.blit(
+                    label[line],
+                    (location[0], location[1] + (line * self.font_size) + (8 * line)),
+                )
+            else:
+                self.window_surface.blit(
+                    label[line],
+                    (location[0], location[1] + (line * self.font_size) + (8 * line)),
+                )
 
     def get_line_location(self, seat, knowledge_seat):
         """Gives the location of the start/end of a line in the 'X has card' box.
