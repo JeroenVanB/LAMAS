@@ -99,7 +99,7 @@ the public announcement changes the common knowledge as follows:
 Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. 
 In formal, the public announcement changes the common knowledge as follows:
 
-<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="400">
+<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="250">
 
 for all _r_ ∈ \{A, K, Q, J\}.
 
@@ -113,7 +113,7 @@ Possible strategies are:
 
 The guessing is a very important part of the game. Since the guessing takes place before playing any cards, the only knowedge that the agent has, are his own cards (and the trump suit). We still have to come up with a way to determine a good estimation. It seems likely, that we will create a rule, based on the average score of the cards in the hand.
 
-[![](greedy_kripke.jpg){ width=400px }](greedy_kripke.jpg)
+[![](greedy_kripke.jpg)Rules for greedy kripke player](greedy_kripke.jpg)
 
 ### Possible extensions
 A possible extension for inferring tactis is implementing a (Deep) Q-Learning algorithm. Instead of implementing rules based on the knowledge base manually, we train a Q-Learning network to extract these rules and tactics itself. The network could have a Kripke model as an input as it is a perfect representation of the state. 
