@@ -136,7 +136,7 @@ class GameModel:
         """
         total_guessed = 0
         for p in self.players:
-            p.guess_wins(trump, n_cards)
+            p.guess_wins(trump, total_tricks=n_cards)
             total_guessed += p.guessed_wins
         # If the guesses add up to the amount of cards, the dealer must change his guess
         if total_guessed == n_cards:
