@@ -11,15 +11,7 @@ class GreedyKripkePlayer(Player):
 
     def __init__(self, seat_number, seat: Seat):
         Player.__init__(self, seat_number, seat)
-        self.kb = None
-
-    def reset_knowledgebase(self):
-        """Reset the knowledge base of the player
-        """        
-        self.kb = KnowledgeBase(
-            player=self, all_cards=self.all_cards, own_cards=self.cards
-        )
-
+    
     def pick_card(self) -> Card:
         """Pick a card based on a tactic.
 

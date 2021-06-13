@@ -175,7 +175,7 @@ To give the user a better overview of what is happening in the game and models w
 The right hand side of the screen shows an interactive Kripke Model viewer. The screen is continuosly redrawn so that we can make use of buttons to redraw parts of the viewer but also to make it independent of the game loop. The user can use the suit and rank buttons to select a card in the current game. The Kripke Model of that card is then visualized above the buttons. The model shows the knowledge of the current card. 
 <img src="kripke_model_viewer.png" alt="Kripke Model Viewer">
 
-In the image above the Kripke Model of the Jack of Hearts is visualized. The true world is shown by a golden box. Possible world relations are shown with colored lines where each color represents a player.  Here player North has the card in its hand.
+In the image above the Kripke Model of the Jack of Hearts is visualized. The true world is shown by a golden box. Possible world relations are shown with colored lines where each color represents a player.  Here player North has the card in its hand and thus only considers the true world possible so there is no line being drawn. All other players consider it possible that all other players have the card except for the player himself. 
 
 ### Kripke implementation
 
@@ -186,7 +186,7 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 ##### Formalization
 Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. 
 
-To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
+To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
 
 The full names and used abbreviations of the players, suits and ranks can be found in the table below. 
 
@@ -243,6 +243,11 @@ The full names and used abbreviations of the players, suits and ranks can be fou
     <td>Jack</td>
     <td>J</td>
   </tr>
+  </tr>
+    <tr>
+    <td>10</td>
+    <td>10</td>
+  </tr>
 </table>
 
 
@@ -256,7 +261,7 @@ the public announcement changes the common knowledge as follows:
 Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. 
 In formal, the public announcement changes the common knowledge as follows:
 
-<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="250">
+<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="400">
 
 ### Strategy
 

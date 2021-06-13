@@ -3,6 +3,8 @@ import random
 from public_announcement import AnnouncementType
 from seat import Seat
 from abc import ABC
+from knowledge_base import KnowledgeBase
+from public_announcement import PublicAnnouncement
 
 
 class Player(ABC):
@@ -25,6 +27,7 @@ class Player(ABC):
         self.wins = 0
         self.guessed_wins = 0
         self.opener = self.seat == Seat.NORTH
+        self.kb = None
 
     def set_game_model(self, game_model):
         """Setting the game model
@@ -47,14 +50,14 @@ class Player(ABC):
     def set_all_cards(self, cards):
         self.all_cards = cards
 
-    def guess_wins(self, trump, n_cards):
+    def guess_wins(self, trump, total_tricks):
         """Guess the amount of tricks the player is going to win in this round
 
         Args:
             trump (Suit): The trump of the roun
             n_cards (int): The amount of cards each player holds
         """
-        self.guessed_wins = random.randint(0, n_cards)
+        raise NotImplementedError('Abstract class function call: Should be overridden by subclass')
 
     def change_guess(self, n_cards):
         """Changing the amount of tricks the player guesses to win in this round
@@ -104,8 +107,7 @@ class Player(ABC):
         Returns:
             Card: chosen card
         """
-        # Subclasses should override this method
-        raise NotImplementedError
+        raise NotImplementedError('Abstract class function call: Should be overridden by subclass')
 
     def get_cards_of_suit(self, suit: Suit) -> list:
         """Get the player's cards of a given suit
@@ -262,3 +264,18 @@ class Player(ABC):
                 if c is not None and c.suit == self.game_model.trump
             ]
         )
+
+    def reset_knowledgebase(self):
+        """Reset the knowledge base of the player
+        """        
+        self.kb = KnowledgeBase(
+            player=self, all_cards=self.all_cards, own_cards=self.cards
+        )
+    
+    def receive_announcement(self, announcement: PublicAnnouncement):
+        """Receive an announcement and apply the new knowledge by updating the kripke models
+
+        Args:
+            announcement (PublicAnnouncement): The annoucement object, containing the information of the anncouncement
+        """ 
+        raise NotImplementedError('Abstract class function call: Should be overridden by subclass')

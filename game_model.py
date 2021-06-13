@@ -13,7 +13,10 @@ class GameModel:
     def __init__(self):
         # TODO determine rounds/cards per round
         self.cards_per_round = [4, 4]
-        self.players = [GreedyKripkePlayer(i, Seat(i)) for i in range(4)]
+        self.players = [RandomPlayer(0, Seat(0)),
+                        RandomPlayer(1, Seat(1)),
+                        RandomPlayer(2, Seat(2)),
+                        RandomPlayer(3, Seat(3))]
         for p in self.players:
             p.set_game_model(self)
 
@@ -31,13 +34,11 @@ class GameModel:
         self.cur_player = 0
         self.finished = False
 
-        for p in self.players:
-            p.reset()
         self.deal_cards(self.cards_per_round[self.cur_round])
         for p in self.players:
-            if type(p) == GreedyKripkePlayer:
-                p.reset_knowledgebase()
-                p.kb.set_game_model(self)
+            p.reset()
+            p.reset_knowledgebase()
+            p.kb.set_game_model(self)
 
         self.status = ["Starting a round of Boeren Bridge!"] + [
             f"Round {idx+1} is played with {c} cards"
@@ -90,13 +91,11 @@ class GameModel:
 
         if self.cur_trick == 0 and self.cur_player == 0:
             # start of a round
-            for p in self.players:
-                p.reset()
             self.deal_cards(self.cards_per_round[self.cur_round])
             for p in self.players:
-                if type(p) == GreedyKripkePlayer:
-                    p.reset_knowledgebase()
-                    p.kb.set_game_model(self)
+                p.reset()
+                p.reset_knowledgebase()
+                p.kb.set_game_model(self)
             self.trump = self.pick_trump()
             opener = self.get_opener()
             self.order_players(opener)
