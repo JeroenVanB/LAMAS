@@ -75,6 +75,94 @@ To decrease the possible states, we minimized the amount of cards used in the ga
   </tr>
 </table>
 
+
+### Kripke implementation
+
+We built an agent that determines which card to play based on Kripke knowledge. For every card in the game, the agent has a Kripke model with four different states. Each of the states correspond to one of the four players holding the card. Each of the agents have a set of relations between the possible states. As the game continues, the Kripke model is updated per played card. If a player plays a card, the agent now knows there is no player who could have that specific card. It can update its knowledge and decide what card to play. 
+If a player does not follow suit, the Kripke model is updated by removing all relations from other players to the current player for all cards of the trick suit. 
+
+<img src="kripke_model.png" alt="Example of the Kripke models">
+
+##### Formalization
+Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. 
+
+To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10 \}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
+
+The full names and used abbreviations of the players, suits and ranks can be found in the table below. 
+
+<table style="width:100%">
+  <tr>
+    <th>Name</th>
+    <th>Abbreviation</th>
+  </tr>
+  <tr>
+    <td>North</td>
+    <td>N</td>
+  </tr>
+  <tr>
+    <td>East</td>
+    <td>E</td>
+  </tr>
+  <tr>
+    <td>South</td>
+    <td>S</td>
+  </tr>
+  <tr>
+    <td>West</td>
+    <td>W</td>
+  </tr>
+  <tr>
+    <td>Clubs</td>
+    <td>C</td>
+  </tr>
+    <tr>
+    <td>Spades</td>
+    <td>SP</td>
+  </tr>
+    <tr>
+    <td>Hearts</td>
+    <td>H</td>
+  </tr>
+    <tr>
+    <td>Diamonds</td>
+    <td>D</td>
+  </tr>
+    <tr>
+    <td>Ace</td>
+    <td>A</td>
+  </tr>
+    <tr>
+    <td>King</td>
+    <td>K</td>
+  </tr>
+    <tr>
+    <td>Queen</td>
+    <td>Q</td>
+  </tr>
+    <tr>
+    <td>Jack</td>
+    <td>J</td>
+  </tr>
+  </tr>
+    <tr>
+    <td>10</td>
+    <td>10</td>
+  </tr>
+</table>
+
+
+##### Example 1 - Announcement 'Played card'
+If player North plays the Ace of Spades, no one else can hold that card. Therefore, the kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore. 
+the public announcement changes the common knowledge as follows:
+
+<img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
+
+##### Example 2 - Announcement 'Does not have suit'
+Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. 
+In formal, the public announcement changes the common knowledge as follows:
+
+<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="250">
+
 ### Game implementation
 
 The game is made in Python (with pygame), using an MVC pattern and a object oriented approach. In the GameModel class, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic. 
@@ -175,88 +263,7 @@ To give the user a better overview of what is happening in the game and models w
 The right hand side of the screen shows an interactive Kripke Model viewer. The screen is continuosly redrawn so that we can make use of buttons to redraw parts of the viewer but also to make it independent of the game loop. The user can use the suit and rank buttons to select a card in the current game. The Kripke Model of that card is then visualized above the buttons. The model shows the knowledge of the current card. 
 <img src="kripke_model_viewer.png" alt="Kripke Model Viewer">
 
-In the image above the Kripke Model of the Jack of Hearts is visualized. The true world is shown by a golden box. Possible world relations are shown with colored lines where each color represents a player.  Here player North has the card in its hand.
-
-### Kripke implementation
-
-We build an agent that determines which card to play, based on Kripke knowledge. For every card in the game, the agent has a Kripke model with four different states. Each of the states correspond to one of the four players holding the card. Each of the agents have a set of relations between the possible states. We visualize the Kripke models using a graphical representation next to the game UI. A screenshot can be seen in figure 1.
-
-<img src="kripke_model.png" alt="Example of the Kripke models">
-
-##### Formalization
-Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. 
-
-To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
-
-The full names and used abbreviations of the players, suits and ranks can be found in the table below. 
-
-<table style="width:100%">
-  <tr>
-    <th>Name</th>
-    <th>Abbreviation</th>
-  </tr>
-  <tr>
-    <td>North</td>
-    <td>N</td>
-  </tr>
-  <tr>
-    <td>East</td>
-    <td>E</td>
-  </tr>
-  <tr>
-    <td>South</td>
-    <td>S</td>
-  </tr>
-  <tr>
-    <td>West</td>
-    <td>W</td>
-  </tr>
-  <tr>
-    <td>Clubs</td>
-    <td>C</td>
-  </tr>
-    <tr>
-    <td>Spades</td>
-    <td>SP</td>
-  </tr>
-    <tr>
-    <td>Hearts</td>
-    <td>H</td>
-  </tr>
-    <tr>
-    <td>Diamonds</td>
-    <td>D</td>
-  </tr>
-    <tr>
-    <td>Ace</td>
-    <td>A</td>
-  </tr>
-    <tr>
-    <td>King</td>
-    <td>K</td>
-  </tr>
-    <tr>
-    <td>Queen</td>
-    <td>Q</td>
-  </tr>
-    <tr>
-    <td>Jack</td>
-    <td>J</td>
-  </tr>
-</table>
-
-
-##### Example 1 - Announcement 'Played card'
-If player North plays the Ace of Spades, no one else can hold that card. Therefore, the kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore. 
-the public announcement changes the common knowledge as follows:
-
-<img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
-
-##### Example 2 - Announcement 'Does not have suit'
-Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. 
-In formal, the public announcement changes the common knowledge as follows:
-
-<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="250">
+In the image above the Kripke Model of the Jack of Hearts is visualized. The true world is shown by a golden box. Possible world relations are shown with colored lines where each color represents a player.  Here player North has the card in its hand. It does not have any lines connected to the other states as they are not considere possible. The other players do have connections with other states. 
 
 ### Strategy
 
