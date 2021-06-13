@@ -3,6 +3,7 @@ By Daan Krol (s3142221),
    Jeroen van Brandenburg (s3193063), and 
    Julian Bruinsma (s3215601)
 
+
 ### Introduction
 In this project, we are going to analyze the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take.
 
@@ -76,20 +77,104 @@ To decrease the possible states, we minimized the amount of cards used in the ga
 
 ### Game implementation
 
-The game is made in Python (with pygame), using an MVC pattern and a object oriented approach. In the GameModel class, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic. The abstract class _Player_ is extended by different types of agents, such as _RandomAgent_ (which plays random cards), _GreedyAgent_ (which plays the highest cards) and _GreedyKripkeAgent_ (discussed below).
+The game is made in Python (with pygame), using an MVC pattern and a object oriented approach. In the GameModel class, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic. 
+
+##### Card Class
+
+An instance Card Class represents a clard, by keeping track of the rank, suit, owner and the value. The base value is determined by the rank, as shown in Table 2. When a card is played, the value is influenced by the trump and trick suit. When a card has the same suit as the trick suit, its value is increased by 13. When a card has the same suit as the trump, its value is incrased by 26.
+
+<table style="width:100%">
+  <tr>
+    <th>Rank</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Two</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>Three</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>Four</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>Five</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>Six</td>
+    <td>4</td>
+  </tr>
+    <tr>
+    <td>Seven</td>
+    <td>5</td>
+  </tr>
+    <tr>
+    <td>Eight</td>
+    <td>6</td>
+  </tr>
+    <tr>
+    <td>Nine</td>
+    <td>7</td>
+  </tr>
+    <tr>
+    <td>Ten</td>
+    <td>8</td>
+  </tr>
+    <tr>
+    <td>Jack</td>
+    <td>9</td>
+  </tr>
+    <tr>
+    <td>Queen</td>
+    <td>10</td>
+  </tr>
+    <tr>
+    <td>King</td>
+    <td>11</td>
+  </tr>
+    <tr>
+    <td>Ace</td>
+    <td>12</td>
+  </tr>
+</table>
+
+##### Deck Class
+
+During the game only one instance of the Deck class is present. It keeps track of all the cards in the game. The amount of cards in the deck depends on the round, as explained in the section Game Rules. 
+##### Player Class
+
+The player class is an abstract class in which some basic functions are defined, such as _calculate\_score()_ and _play\_card()_. Many other functions consider finding a specific card of the player e.g. _get\_highest\_card()_ and _get\_lowest\_card\_of\_suit()_. These functions are defined here, since they can be used in different types of tactics. 
+The abstract class _Player_ is extended by different types of agents, such as _RandomAgent_ (which plays random cards), _GreedyAgent_ (which plays the highest cards) and _GreedyKripkeAgent_ (which uses kripke models). These subclasses override the function _pick\_card()_ and _guess\_wins()_, in which the tactics are implemented. 
 
 ##### GameModel Class
 
-The GameModel contains all the variables and functions to run the game. 
-##### Player
+The GameModel contains all the variables and functions to run the game. The function _next_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a game or round should start or end. At the start of each round, the 
 
-##### Deck
 
-##### Card
+### Visualization 
+To visualize the game and the Kripke models a UI class is constructed. The UI is made using Pygame which enables you to draw basic shapes such as rectangles, lines and text to positions on the screen. Cards are visualized by showing their images on the screen. In the image below you can see the full visualisation of the game and Kripke model. 
 
-##### UI
+<img scr="game_UI.png" alt="Visualisation of the game and Kripke models">
 
-TODO
+
+#### Game UI
+
+The left hand side of the UI shows the game information such as current round, scores, trump and trick suits. For each player we show his hand to the user. Do note that the cards are ofcourse not visible to the players in the game. They have to rely on their knowledge about the game. At the center of the table you can see all players guesses and how many rounds they have actually won untill now. The game will be paused after each move so that the user has the time to observe all game and model changes. When the user presses the spacebar the game will continue to the next move of the current player. The player, game and model states will be updated internally. The UI class is notified that there is a change and it will redraw all game elements on the left hand side of the screen. 
+#### Message box
+
+
+To give the user a better overview of what is happening in the game and models we added a status box at the bottom. This box shows messages such as who's turn it is to play, what the trump is for this round or what the current trick suit is. All public announcements can be oberserved here so that the user has a better understanding of the changes to the Kripke models. In the image above you can find that player West had to change it's guess since it is not allowed for the sum of guess to be equal to the amount of tricks in the game. 
+
+#### Kripke Model Viewer 
+
+The right hand side of the screen shows an interactive Kripke Model viewer. The screen is continuosly redrawn so that we can make use of buttons to redraw parts of the viewer but also to make it independent of the game loop. The user can use the suit and rank buttons to select a card in the current game. The Kripke Model of that card is then visualized above the buttons. The model shows the knowledge of the current card. 
+<img src="kripke_model_viewer.png" alt="Kripke Model Viewer">
+
+In the image above the Kripke Model of the Jack of Hearts is visualized. The true world is shown by a golden box. Possible world relations are shown with colored lines where each color represents a player.  Here player North has the card in its hand.
 
 ### Kripke implementation
 
@@ -102,6 +187,64 @@ Every time a player plays a card, he makes an announcement. By using Public Anno
 
 To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
 
+The full names and used abbreviations of the players, suits and ranks can be found in the table below. 
+
+<table style="width:100%">
+  <tr>
+    <th>Name</th>
+    <th>Abbreviation</th>
+  </tr>
+  <tr>
+    <td>North</td>
+    <td>N</td>
+  </tr>
+  <tr>
+    <td>East</td>
+    <td>E</td>
+  </tr>
+  <tr>
+    <td>South</td>
+    <td>S</td>
+  </tr>
+  <tr>
+    <td>West</td>
+    <td>W</td>
+  </tr>
+  <tr>
+    <td>Clubs</td>
+    <td>C</td>
+  </tr>
+    <tr>
+    <td>Spades</td>
+    <td>SP</td>
+  </tr>
+    <tr>
+    <td>Hearts</td>
+    <td>H</td>
+  </tr>
+    <tr>
+    <td>Diamonds</td>
+    <td>D</td>
+  </tr>
+    <tr>
+    <td>Ace</td>
+    <td>A</td>
+  </tr>
+    <tr>
+    <td>King</td>
+    <td>K</td>
+  </tr>
+    <tr>
+    <td>Queen</td>
+    <td>Q</td>
+  </tr>
+    <tr>
+    <td>Jack</td>
+    <td>J</td>
+  </tr>
+</table>
+
+
 ##### Example 1 - Announcement 'Played card'
 If player North plays the Ace of Spades, no one else can hold that card. Therefore, the kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore. 
 the public announcement changes the common knowledge as follows:
@@ -113,8 +256,6 @@ Consider the Kripke model of the Queen of Hearts. Player South does not hold the
 In formal, the public announcement changes the common knowledge as follows:
 
 <img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="250">
-
-for all _r_ ∈ \{A, K, Q, J\}.
 
 ### Strategy
 
@@ -140,11 +281,4 @@ Using the representation of the MDP we can use Q-learning as a function approxim
 
 The implementation of such an algorithm is not the main goal of the course, but it could be interesting to combine Kripke models with a deep reinforcement learning algorithm. After training, we can investigate what influence the different Kripke models have on the tactics of the algorithm. 
 
-### Visualization 
-
-#### Card UI
-
-#### Message box
-
-#### Kripke models 
 
