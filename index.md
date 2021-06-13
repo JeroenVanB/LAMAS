@@ -152,7 +152,8 @@ The abstract class _Player_ is extended by different types of agents, such as _R
 
 ##### GameModel Class
 
-The GameModel contains all the variables and functions to run the game. The function _next_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a game or round should start or end. At the start of each round, the 
+The GameModel contains all the variables and functions to run the game. The function _next_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. 
+At the start of each round, the cards are dealt, a trump is chosen en the _opener_ is determined.  In the next four steps, each player plays a card, which is added to the dictionary _table_. After the last player, _determine\_winner()_ checks who played the winning card. That player becomes the new _opener_. After all the tricks of a round are finished, the points are calculated for each player. After the final round, the game ends.
 
 
 ### Visualization 
