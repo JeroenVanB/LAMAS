@@ -135,36 +135,59 @@ class UI:
         ]
         self.draw_multiline_text(t, (10, 725), self.kb_box)
         # Draw all lines in the Kripke model
-        self.draw_kb_lines()
-        # Draw all player boxes
+        num_lines = self.draw_kb_lines()
+        # Draw all worlds and find the true world
+        true_world = self.draw_worlds()
+        # If there is only one world possible, hide the others
+        if num_lines == 0:
+            self.hide_player_boxes(true_world=true_world)
+
+        # draw the whole box on the window surface
+        self.window_surface.blit(self.kb_box, (RESOLUTION[0] - KB_BOX_WIDTH, 0))
+
+    def draw_worlds(self):
+        """Draw all possible player boxes"""
         for seat, loc in KB_PLAYER_LOC.items():
             rect = pygame.Rect(loc, KB_PLAYER_BOX_SIZE)
             surface = pygame.Surface(KB_PLAYER_BOX_SIZE)
             surface.fill((255, 255, 255))
             self.kb_box.blit(surface, rect)
             pygame.draw.rect(self.kb_box, (0, 0, 0), rect, width=1)
-            self.draw_true_world_box()  # draw the true world box
+            true_world = self.draw_true_world_box()  # draw the true world box
             t = seat.name.capitalize() + " has card"
             self.kb_box.blit(self.font.render(t, True, (0, 0, 0)), (loc[0] + 2, loc[1]))
+        return true_world
 
-        # draw the whole box on the window surface
-        self.window_surface.blit(self.kb_box, (RESOLUTION[0] - KB_BOX_WIDTH, 0))
+    def hide_player_boxes(self, true_world: Seat):
+        """Hides all worlds except for the true world.
+
+        Args:
+            true_world (Seat): The true world
+        """
+        for seat, loc in KB_PLAYER_LOC.items():
+            if seat == true_world:
+                continue
+            rect = pygame.Rect(loc, KB_PLAYER_BOX_SIZE)
+            surface = pygame.Surface(KB_PLAYER_BOX_SIZE)
+            surface.fill((255, 255, 255))
+            self.kb_box.blit(surface, rect)
 
     def draw_true_world_box(self):
         """Draws a gold box around the true world in the Kripke Model."""
         if self.selected_rank is None or self.selected_suit is None:
-            return
+            return None
         c = Color(255, 215, 0)
         card = self.model.deck.get_card_by_rank_and_suit(
             self.selected_rank, self.selected_suit
         )
         if not card:
-            return
+            return None
         loc = KB_PLAYER_LOC[card.owner.seat]
         rect = pygame.Rect(loc, KB_PLAYER_BOX_SIZE)
         surface = pygame.Surface(KB_PLAYER_BOX_SIZE)
         surface.fill((255, 255, 255))
         pygame.draw.rect(self.kb_box, c, rect, width=2)
+        return card.owner.seat
 
     def draw_suit_rank_buttons(self, event_list):
         """Draws and updates the suit and rank buttons
@@ -194,8 +217,9 @@ class UI:
 
     def draw_kb_lines(self):
         """Draws all lines from possible states in the Kripke model viewer"""
+        num_lines = 0
         if self.selected_rank is None or self.selected_suit is None:
-            return
+            return num_lines
         for p in self.model.players:
             color = PLAYER_COLOR[p.seat]
             card = Card(self.selected_rank, self.selected_suit)
@@ -214,6 +238,8 @@ class UI:
                     start = self.get_line_location(p.seat, knowledge_seat=s)
                     end = self.get_line_location(p.seat, knowledge_seat=s2)
                     pygame.draw.line(self.kb_box, color, start, end, width=3)
+                    num_lines += 1
+        return num_lines
 
     def draw_legend(self):
         """Draws the legend in the Kripke Model viewer."""
@@ -313,9 +339,9 @@ class UI:
         for i, card in enumerate(cards):
             self.rank_buttons.append(
                 RadioButton(
-                    KB_CARD_BUTTON_LOC[0] + i * 45,
+                    KB_CARD_BUTTON_LOC[0] + i * 53,
                     KB_CARD_BUTTON_LOC[1],
-                    40,
+                    48,
                     30,
                     self.font,
                     str(card.rank.name).capitalize(),
