@@ -76,8 +76,20 @@ To decrease the possible states, we minimized the amount of cards used in the ga
 
 ### Game implementation
 
-The game is made in Python (with pygame), using an MVC pattern and a object oriented approach. In _game_model.py_, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic. The class _Player_ is extended by different types of agents, such as _RandomAgent_ (which plays random cards), _GreedyAgent_ (which plays the highest cards) and _GreedyKripkeAgent_ (discussed below).
+The game is made in Python (with pygame), using an MVC pattern and a object oriented approach. In the GameModel class, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic. The abstract class _Player_ is extended by different types of agents, such as _RandomAgent_ (which plays random cards), _GreedyAgent_ (which plays the highest cards) and _GreedyKripkeAgent_ (discussed below).
 
+##### GameModel Class
+
+The GameModel contains all the variables and functions to run the game. 
+##### Player
+
+##### Deck
+
+##### Card
+
+##### UI
+
+TODO
 
 ### Kripke implementation
 
@@ -85,7 +97,7 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 <img src="kripke_model.png" alt="Example of the Kripke models">
 
-##### Formalizatin
+##### Formalization
 Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. 
 
 To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
