@@ -6,7 +6,7 @@ Julian Bruinsma (s3215601)
 
 ### Introduction
 
-In this project, we are going to analyse the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take.
+In this project, we are going to analyze the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take.
 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
@@ -185,7 +185,9 @@ In the image above the Kripke Model of the Queen of Hearts is visualized. The tr
 
 We chose not to visualize reflexive relations since this would be redundant and it would result in a less clear visualization.
 
-TODO: ADD SCREEN AND TEXT ABOUT THE KRIPKE MODEL VIEWER WHEN THERE IS ONLY ONE POSSIBLE WORLD. In the game UI we can see that player North has just played a King of
+Observe the following example of a game:
+![Example of only one possible world](one_world.png)
+North has just opened the game and a public announcement is made that he played the Ace of Diamonds. It is now common knowledge that North has/had the Ace of Diamonds. On the right we find the Kripke model of this card. Since there is only possible word, the true world, we remove all other worlds.
 
 <!--
 ### Kripke implementation
@@ -194,7 +196,7 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 <img src="kripke_model.png" alt="Example of the Kripke models"> -->
 
-##### Formalization
+### Formalization
 
 Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models.
 
@@ -264,7 +266,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
 
 ##### Example 1 - Announcement 'Played card'
 
-If player North plays the Ace of Spades, no one else can hold that card. Therefore, the kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore.
+If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore.
 the public announcement changes the common knowledge as follows:
 
 <img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
@@ -278,7 +280,7 @@ In formal, the public announcement changes the common knowledge as follows:
 
 ### Strategy
 
-The Geedy Kripke Agent uses the kripke models to determine which card to play. He is greedy, since he always tries to win the trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the graph below (made with draw.io).
+The Greedy Kripke Agent uses the Kripke models to determine which card to play. He is greedy, since he always tries to win the trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the graph below (made with draw.io).
 
 Possible strategies are:
 
@@ -287,7 +289,7 @@ Possible strategies are:
 
 The Greedy Kripke Agent has to make assumptions about the game in order to play a good strategy. The graph below one of the questions is "Does he have the highest trump card?". Using his knowledge about all possible trump cards in the game, the agent can make the right move. It is not always certain if the player has the highest trump card because he might consider it possible that one or more players still have higher trump cards.
 
-The guessing is a very important part of the game. In the normal (non-simplified) version of the game a player can often win by guessing that he will not win a single trick. Players can actually receive bonus points when they guess 0 and the round contains more than 6 cards. When guessing 0 wins, the player has to switch to a whole new tactic which is not greedy. He has to make sure that he can throw away his high cards without ever winning a round with one. Since 'tactical guessing' results in rather complex behaviour we leave it as a possible extension for future work. However 'greedy guessing', guessing how much you will actually win, is implemented in our project. The Greedy Kripke Player has to make assumptions about the score of his cards based on the knowledge it has over the other cards and the current trump suit.
+The guessing is a very important part of the game. In the normal (non-simplified) version of the game a player can often win by guessing that he will not win a single trick. Players can actually receive bonus points when they guess 0 and the round contains more than 6 cards. When guessing 0 wins, the player has to switch to a whole new tactic which is not greedy. He has to make sure that he can throw away his high cards without ever winning a round with one. Since 'tactical guessing' results in rather complex behavior we leave it as a possible extension for future work. However 'greedy guessing', guessing how much you will actually win, is implemented in our project. The Greedy Kripke Player has to make assumptions about the score of his cards based on the knowledge it has over the other cards and the current trump suit.
 
 TODO EXPLAIN GUESSING
 
@@ -305,4 +307,4 @@ The card game can be seen as a Markov Decision Process. We will define the state
 
 Using the representation of the MDP we can use Q-learning in combination with a multilayer perceptron as a function approximator. This function will approximate Policy P, which is choosing the action with the highest expected reward.
 
-The implementation of such an algorithm is not the main goal of the course, but it could be interesting to combine Kripke models with a deep reinforcement learning algorithm. After training, the influence of different Kripke models on the tactics of the algorithm can be investigated. To see if the Kripke models can actually benifit the Q-learning agent, its performance could be compared to that of a greedy kripke agent (without Q-learning).
+The implementation of such an algorithm is not the main goal of the course, but it could be interesting to combine Kripke models with a deep reinforcement learning algorithm. After training, the influence of different Kripke models on the tactics of the algorithm can be investigated. To see if the Kripke models can actually benefit the Q-learning agent, its performance could be compared to that of a greedy Kripke agent (without Q-learning).
