@@ -1,3 +1,4 @@
+from typing import List
 from player import Player
 from random_player import RandomPlayer
 from greedy_player import GreedyPlayer
@@ -10,15 +11,9 @@ from public_announcement import PublicAnnouncement, AnnouncementType
 
 
 class GameModel:
-    def __init__(self):
-        # TODO determine rounds/cards per round
+    def __init__(self, players=["greedy", "greedy", "kripke", "kripke"]):
         self.cards_per_round = [3, 4, 5, 4, 3]
-        self.players = [
-            GreedyKripkePlayer(0, Seat(0)),
-            GreedyKripkePlayer(1, Seat(1)),
-            GreedyPlayer(2, Seat(2)),
-            GreedyPlayer(3, Seat(3)),
-        ]
+        self.set_players(players)
         for p in self.players:
             p.set_game_model(self)
 
@@ -46,6 +41,22 @@ class GameModel:
             f"Round {idx+1} is played with {c} cards"
             for idx, c in enumerate(self.cards_per_round)
         ]
+
+    def set_players(self, players: List[str]):
+        """Constructs player instances based on string names
+
+        Args:
+            players (List[str]): The names of the players. Can be: greedy, kripke, random
+        """
+        self.players = []
+        for idx, p in enumerate(players):
+            if p == "greedy":
+                player = GreedyPlayer(idx, Seat(idx))
+            elif p == "kripke":
+                player = GreedyKripkePlayer(idx, Seat(idx))
+            else:
+                player = RandomPlayer(idx, Seat(idx))
+            self.players.append(player)
 
     def next_move(self):
         """Execute the next move of the game. The move is determined by whose turn it is, or if the game or the round has already ended"""
