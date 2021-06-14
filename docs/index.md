@@ -6,7 +6,7 @@ Julian Bruinsma (s3215601)
 
 ### Introduction
 
-In this project, we are going to analyze the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take.
+In this project, we are going to analyse the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take.
 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
@@ -34,9 +34,9 @@ The player who played the highest card during a trick, takes the trick. The card
 
 #### Number of cards
 
-The number of cards depend on the rumber of rounds. The number of rounds can usually freedly be determined by the players. We chose to play 5 rounds.
+The number of cards depend on the number of rounds. The number of rounds can is determined by the players beforehand. We chose to play 5 rounds.
 In every round _r_, the players is dealt _t<sub>r</sub>_ cards. First, starting in the first round with _t<sub>1</sub>_ = 3. In each following round, every player is given _t<sub>r</sub>_ = _t<sub>r-1</sub>_+1 cards, up to 5 cards in total (in round 3). Then, starting with 2 more rounds are played, where the amount of cards decreases by 1. The game ends after round 5, where \_n<sub>5</sub>=3. See the table below for clarification.
-To decrease the possible states, we minimized the amount of cards used in the game. This way it is known which cards are in the game and wich are not. E.g. in round 1, only the (Queen, King, Ace) of all the suits are used. This is also clarified in the table below.
+To decrease the possible states, we minimized the amount of cards used in the game. This way it is known which cards are in the game and which are not. E.g. in round 1, only the (Queen, King, Ace) of all the suits are used. This is also clarified in the table below.
 
 ##### Table 1
 
@@ -83,11 +83,11 @@ To decrease the possible states, we minimized the amount of cards used in the ga
 
 ### Game implementation
 
-The game is made in Python (with pygame), using an MVC pattern and a object oriented approach. In the GameModel class, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic.
+The game is made in Python with [Pygame](https://www.pygame.org/), using a MVC pattern and an object oriented approach. In the GameModel class, all the logic of the game is handled. The classes _Player_, _Deck_ and _Card_ facilitate an easy implementation of the logic.
 
 ##### Card Class
 
-An instance Card Class represents a clard, by keeping track of the rank, suit, owner and the value. The base value is determined by the rank, as shown in Table 2. When a card is played, the value is influenced by the trump and trick suit. When a card has the same suit as the trick suit, its value is increased by 13. When a card has the same suit as the trump, its value is incrased by 26.
+An instance of the Card Class represents a card, by keeping track of the rank, suit, owner and the value. The base value is determined by the rank, as shown in Table 2. When a card is played, the value is influenced by the trump and trick suit. When a card has the same suit as the trick suit, its value is increased by 13. When a card has the same suit as the trump, its value is increased by 26.
 
 <table style="width:100%">
   <tr>
@@ -159,31 +159,31 @@ The abstract class _Player_ is extended by different types of agents, such as _R
 
 ##### GameModel Class
 
-The GameModel contains all the variables and functions to run the game. The function _next_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end.
+The GameModel contains all the variables and functions to run the game. The function _next_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. It also lets the current player make a move.
 At the start of each round, the cards are dealt, a trump is chosen en the _opener_ is determined. In the next four steps, each player plays a card, which is added to the dictionary _table_. After the last player, _determine_winner()_ checks who played the winning card. That player becomes the new _opener_. After all the tricks of a round are finished, the points are calculated for each player. After the final round, the game ends.
 
 ### Visualization
 
-To visualize the game and the Kripke models a UI class is constructed. The UI is made using Pygame which enables you to draw basic shapes such as rectangles, lines and text to positions on the screen. Cards are visualized by showing their images on the screen. In the image below you can see the full visualisation of the game and Kripke model.
+To visualize the game and the Kripke models a UI class is constructed. The UI is made using Pygame which enables you to draw basic shapes such as rectangles, lines and text to positions on the screen. Cards are visualized by showing their images on the screen. In the image below you can see the full visualization of the game and Kripke model.
 
-![Visualisation of the game and Kripke models](game_UI.png)
+![Visualization of the game and Kripke models](game_UI.png)
 
 #### Game UI
 
-The left hand side of the UI shows the game information such as the current round, scores, trump and trick suits. For each player we show his hand to the user. Do note that the cards are ofcourse not visible to the players in the game. They have to rely on their knowledge about the game. At the center of the table you can see all players guesses and how many rounds they have actually won untill now. The game will be paused after each move so that the user has the time to observe all game and model changes. When the user presses the spacebar the game will continue to the next move of the current player. The player, game and model states will be updated internally. The UI class is notified that there is a change and it will redraw all game elements on the left hand side of the screen.
+The left hand side of the UI shows the game information such as the current round, scores, trump and trick suits. For each player we show his hand to the user. Do note that the cards are of course not visible to the players in the game. They have to rely on their knowledge about the game. At the center of the table you can see all players guesses and how many rounds they have actually won until now. The game will be paused after each move so that the user has the time to observe all game and model changes. When the user presses the spacebar the game will continue to the next move of the current player. The player, game and model states will be updated internally. The UI class is notified that there is a change and it will redraw all game elements on the left hand side of the screen.
 
 #### Message box
 
-To give the user a better overview of what is happening in the game and models we added a status box at the bottom. This box shows messages such as who's turn it is to play, what the trump is for this round or what the current trick suit is. All public announcements can be oberserved here so that the user has a better understanding of the changes to the Kripke models. In the image above you can find that player West had to change it's guess since it is not allowed for the sum of guess to be equal to the amount of tricks in the game.
+To give the user a better overview of what is happening in the game and models we added a status box at the bottom. This box shows messages such as who's turn it is to play, what the trump is for this round or what the current trick suit is. All public announcements can be observed here so that the user has a better understanding of the changes to the Kripke models. In the image above you can find that player West had to change it's guess since it is not allowed for the sum of guess to be equal to the amount of tricks in the game.
 
 #### Kripke Model Viewer
 
-The right hand side of the screen shows an interactive Kripke Model viewer. The screen is continuosly redrawn so that we can make use of buttons to redraw parts of the viewer but also to make it independent of the game loop. The user can use the suit and rank buttons to select a card in the current game. The Kripke Model of that card is then visualized above the buttons. The model shows the knowledge of the current card.
+The right hand side of the screen shows an interactive Kripke Model viewer. The screen is continuously redrawn so that we can make use of buttons to redraw parts of the viewer but also to make it independent of the game loop. The user can use the suit and rank buttons to select a card in the current game. The Kripke Model of that card is then visualized above the buttons. The model shows the knowledge of the current card.
 <img src="kripke_model_viewer.png" alt="Kripke Model Viewer">
 
 In the image above the Kripke Model of the Queen of Hearts is visualized. The true world is shown by a golden box. Possible world relations are represented by colored lines where each color represents a player. Here Player west has the card in its hand and thus only considers the true world possible so there is no line being drawn. All other players consider it possible that all other players have the card except for the player himself.
 
-We chose not to visualize reflexive relations since this would be redundant and it would result in a less clear visualisation.
+We chose not to visualize reflexive relations since this would be redundant and it would result in a less clear visualization.
 
 TODO: ADD SCREEN AND TEXT ABOUT THE KRIPKE MODEL VIEWER WHEN THERE IS ONLY ONE POSSIBLE WORLD. In the game UI we can see that player North has just played a King of
 
@@ -295,7 +295,7 @@ TODO EXPLAIN GUESSING
 
 ### Possible extensions
 
-A possible extension for inferring tactis is implementing a (Deep) Q-Learning algorithm. Instead of implementing rules based on the knowledge base manually, we train a Q-Learning network to extract these rules and tactics itself. The network could have a Kripke model as an input as it is a perfect representation of the state.
+A possible extension for inferring tactics is implementing a (Deep) Q-Learning algorithm. Instead of implementing rules based on the knowledge base manually, we train a Q-Learning network to extract these rules and tactics itself. The network could have a Kripke model as an input as it is a perfect representation of the state.
 
 The card game can be seen as a Markov Decision Process. We will define the state, action and reward as the following:
 

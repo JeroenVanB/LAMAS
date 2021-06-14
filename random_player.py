@@ -27,6 +27,3 @@ class RandomPlayer(Player):
     
     def guess_wins(self, trump, total_tricks):
         return random.randint(0, total_tricks)
-
-    def receive_announcement(self, announcement: PublicAnnouncement):
-        pass

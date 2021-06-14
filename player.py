@@ -57,7 +57,9 @@ class Player(ABC):
             trump (Suit): The trump of the roun
             n_cards (int): The amount of cards each player holds
         """
-        raise NotImplementedError('Abstract class function call: Should be overridden by subclass')
+        raise NotImplementedError(
+            "Abstract class function call: Should be overridden by subclass"
+        )
 
     def change_guess(self, n_cards):
         """Changing the amount of tricks the player guesses to win in this round
@@ -107,7 +109,9 @@ class Player(ABC):
         Returns:
             Card: chosen card
         """
-        raise NotImplementedError('Abstract class function call: Should be overridden by subclass')
+        raise NotImplementedError(
+            "Abstract class function call: Should be overridden by subclass"
+        )
 
     def get_cards_of_suit(self, suit: Suit) -> list:
         """Get the player's cards of a given suit
@@ -266,16 +270,26 @@ class Player(ABC):
         )
 
     def reset_knowledgebase(self):
-        """Reset the knowledge base of the player
-        """        
+        """Reset the knowledge base of the player"""
         self.kb = KnowledgeBase(
             player=self, all_cards=self.all_cards, own_cards=self.cards
         )
-    
+
     def receive_announcement(self, announcement: PublicAnnouncement):
         """Receive an announcement and apply the new knowledge by updating the kripke models
 
         Args:
             announcement (PublicAnnouncement): The annoucement object, containing the information of the anncouncement
-        """ 
-        raise NotImplementedError('Abstract class function call: Should be overridden by subclass')
+        """
+        t = announcement.type
+        sender = announcement.sender
+        card = announcement.card
+        if t == AnnouncementType.card_played:
+            # A card is played, so we now know the owner of that card
+            # (and can exclude the possiblity of others having that card)
+            self.kb.set_card_knowledge(card, sender)
+        elif t == AnnouncementType.does_not_have_suit:
+            # A player does not have cards of a specific suit
+            self.kb.set_all_cards_of_suit_of_player(
+                suit=self.game_model.trick_suit, player=sender, value=False
+            )
