@@ -3,6 +3,7 @@ from player import Player
 from random_player import RandomPlayer
 from greedy_player import GreedyPlayer
 from greedy_kripke_player import GreedyKripkePlayer
+from full_kripke_player import FullKripkePlayer
 from seat import Seat
 from deck import Deck
 from card import Card, Suit
@@ -11,7 +12,7 @@ from public_announcement import PublicAnnouncement, AnnouncementType
 
 
 class GameModel:
-    def __init__(self, players=["greedy", "greedy", "kripke", "kripke"]):
+    def __init__(self, players=["full_kripke", "full_kripke", "full_kripke", "full_kripke"]):
         self.cards_per_round = [3, 4, 5, 4, 3]
         self.set_players(players)
         for p in self.players:
@@ -52,8 +53,10 @@ class GameModel:
         for idx, p in enumerate(players):
             if p == "greedy":
                 player = GreedyPlayer(idx, Seat(idx))
-            elif p == "kripke":
+            elif p == "greedy_kripke":
                 player = GreedyKripkePlayer(idx, Seat(idx))
+            elif p == "full_kripke":
+                player = FullKripkePlayer(idx, (Seat(idx)))
             else:
                 player = RandomPlayer(idx, Seat(idx))
             self.players.append(player)
@@ -67,7 +70,7 @@ class GameModel:
             self.cur_trick += 1
 
             # Determine the winner of the trick
-            winner = self.determine_winner(self.trump, self.trick_suit)
+            winner = self.determine_winner()
             winner.add_win()
             self.status += [f"{winner.seat.name} wins the trick!"]
 
@@ -210,23 +213,30 @@ class GameModel:
         """
         return Suit(random.randint(0, 3))
 
-    def determine_winner(self, trump, trick_suit):
+    def determine_winner(self):
         """Determine the winner of the last played trick
 
-        Args:
-            trump (Suit): Tuimp suit of the round
-            trick_suit (Suit): The trick suit
         Returns:
             Player: The winner of the trick
         """
+        
+        return self.highest_card_of_table().owner
+    
+    def highest_card_of_table(self):
+        """Get the highest card of the table
+
+        Returns:
+            Card: The highest card of the table
+        """        
         highest_value = 0
-        winner = None
+        card = None
         for _, c in self.table.items():
-            c.evaluate(trump, trick_suit)
-            if c.played_value > highest_value:
-                highest_value = c.played_value
-                winner = c.owner
-        return winner
+            if c is not None:
+                c.evaluate(self.trump, self.trick_suit)
+                if c.played_value > highest_value:
+                    highest_value = c.played_value
+                    card = c
+        return card
 
     def make_announcement(
         self, sender: Player, card: Card, announcement_type: AnnouncementType

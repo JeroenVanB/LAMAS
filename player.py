@@ -301,3 +301,31 @@ class Player(ABC):
             Card: The random picked card
         """        
         return cards[random.randrange(len(cards))]
+
+    def contains_lower(self, card_list, high_card):
+        """Does the provided card list, contain a lower card then the given high card
+
+        Args:
+            card_list (List[card]): The given card list
+            high_card (Card): The card with with the list is compared
+
+        Returns:
+            bool: Wether the list contains a lower card or not
+        """        
+        high_eval = high_card.evaluate(self.game_model.trump, self.game_model.trick_suit)
+        for c in card_list:
+            if c.evaluate(self.game_model.trump, self.game_model.trick_suit) < high_eval:
+                return True
+        return False
+
+    def get_highest_card_below(self, card_list, high_card):
+        high_eval = high_card.evaluate(self.game_model.trump, self.game_model.trick_suit)
+        selected_card = None
+        selected_card_eval = 0
+        for c in card_list:
+            cur_eval = c.evaluate(self.game_model.trump, self.game_model.trick_suit)
+            if cur_eval < high_eval and cur_eval > selected_card_eval:
+                selected_card = c
+                selected_card_eval = cur_eval
+        return selected_card
+            

@@ -1,3 +1,4 @@
+from full_kripke_player import FullKripkePlayer
 import sys
 from random_player import RandomPlayer
 from greedy_player import GreedyPlayer
@@ -12,9 +13,9 @@ else:
     # Run experiments
 
     num_games = int(sys.argv[1])
-    scores = {"greedy": 0, "greedy_kripke": 0, "random": 0}
+    scores = {"greedy": 0, "greedy_kripke": 0, "full_kripke": 0, "random": 0}
 
-    players = ["random", "random", "greedy", "greedy"]
+    players = ["full_kripke", "full_kripke", "greedy", "greedy"]
     model = GameModel(players=players)
     print(f"Playing {num_games} games with {[type(p) for p in model.players]}")
     for game in tqdm(range(num_games)):
@@ -30,6 +31,8 @@ else:
         for p in model.players:
             if type(p) == GreedyKripkePlayer:
                 scores["greedy_kripke"] += p.score / 2
+            elif type(p) == FullKripkePlayer:
+                scores["full_kripke"] += p.score / 2
             elif type(p) == GreedyPlayer:
                 scores["greedy"] += p.score / 2
             elif type(p) == RandomPlayer:
