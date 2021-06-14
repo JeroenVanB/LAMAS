@@ -16,18 +16,65 @@ class GreedyPlayer(Player):
         Returns:
             Card: the card that is picked
         """
-        # FIXME implement game rules (he can now  play any card he wants)
-        cards_of_suit = []
-        if self.game_model.trick_suit is not None:
-            cards_of_suit = self.get_cards_of_suit(self.game_model.trick_suit)
-        # If the player has the trick suit, he must follow suit
-        if len(cards_of_suit) > 0:
-            played_card = self.get_highest_card(cards_of_suit)
+        if self.wins < self.guessed_wins:
+            if self.opener:
+                return self.get_highest_card(self.cards)
+            else:
+                # Do I have a trick suit?
+                suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
+                if suit_cards:
+                    return self.get_highest_card(suit_cards)
+                else:
+                    return self.get_highest_card(self.cards)
         else:
-            # The player does not have the trick suit, so may play what he wants
-            played_card = random.choice(self.cards)
-            if self.game_model.trick_suit:
-                self.game_model.make_announcement(self, None, AnnouncementType.does_not_have_suit)
-        return played_card
+            # This is the tactic of the random player
+            if self.opener:
+                return self.get_random_card(self.cards)
+            else:
+                # Do I have a trick suit?
+                suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
+                if suit_cards:
+                    return self.get_random_card(suit_cards)
+                else:
+                    return self.get_random_card(self.cards)
+    
+    def guess_wins(self, trump, total_tricks):
+            """Guess the amount of tricks the player is going to win in this round
+
+            Args:
+                trump (Suit): The trump of the roun
+                n_cards (int): The amount of cards each player holds
+            """
+            # How the guessing is done:
+            # Calculate the average value of a card of the player
+            total_value_hand = 0
+            mean_value_hand = 0
+            for c in self.kb.own_cards:
+                total_value_hand += c.pre_evaluate(trump=trump)
+            mean_value_hand = total_value_hand/len(self.kb.own_cards)
+
+            # Calculate the average value of a card in the game
+            total_value_game = 0
+            mean_value_game = 0
+            for c in self.kb.all_cards:
+                total_value_game += c.pre_evaluate(trump=trump)
+            mean_value_game = total_value_game/len(self.kb.all_cards)
+
+            # Normalize the value
+            normalized_value_hand = mean_value_hand/mean_value_game
+
+            # If the cards are evaluated far below the mean
+            if normalized_value_hand < 0.8:
+                guess = 0
+            # If the cards are evaluated around the mean
+            elif normalized_value_hand < 1.1:
+                guess = int(total_tricks/4)
+            # If the cards are evaluated higher than the mean
+            elif normalized_value_hand < 1.3:
+                guess = int(total_tricks/4 * 2)
+            # If the cards are evaluated much higher than the mean
+            else:
+                guess = total_tricks
+            self.guessed_wins = guess
 
 

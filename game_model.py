@@ -15,8 +15,8 @@ class GameModel:
         self.cards_per_round = [3, 4, 5, 4, 3]
         self.players = [GreedyKripkePlayer(0, Seat(0)),
                         RandomPlayer(1, Seat(1)),
-                        RandomPlayer(2, Seat(2)),
-                        RandomPlayer(3, Seat(3))]
+                        GreedyPlayer(2, Seat(2)),
+                        GreedyPlayer(3, Seat(3))]
         for p in self.players:
             p.set_game_model(self)
 

@@ -293,3 +293,11 @@ class Player(ABC):
             self.kb.set_all_cards_of_suit_of_player(
                 suit=self.game_model.trick_suit, player=sender, value=False
             )
+
+    def get_random_card(self, cards):
+        """Get a random card from a list of cards
+
+        Returns:
+            Card: The random picked card
+        """        
+        return cards[random.randrange(len(cards))]

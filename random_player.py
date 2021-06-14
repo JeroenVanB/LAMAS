@@ -21,9 +21,17 @@ class RandomPlayer(Player):
         Returns:
             Card: card that will be played
         """
-        # FIXME implement game rules (he can now  play any card he wants)
-        card = self.cards[random.randrange(len(self.cards))]
-        return card
+        if self.opener:
+            return self.get_random_card(self.cards)
+        else:
+            # Do I have a trick suit?
+            suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
+            if suit_cards:
+                return self.get_random_card(suit_cards)
+            else:
+                return self.get_random_card(self.cards)
+
+
     
     def guess_wins(self, trump, total_tricks):
         self.guessed_wins = random.randint(0, total_tricks)
