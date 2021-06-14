@@ -35,6 +35,18 @@ class Card:
             self.played_value = self.rank.value
         return self.played_value
 
+    def pre_evaluate(self, trump):
+        """Evaluatate the value of a card at the start of the game (there is not trick suit yet)
+
+        Args:
+            trump (Suit): The trick suit
+        """        
+        if self.suit == trump:
+            self.played_value = self.rank.value + 13
+        else:
+            self.played_value = self.rank.value
+        return self.played_value
+        
     def set_owner(self, player):
         """Set the owner of the card
 

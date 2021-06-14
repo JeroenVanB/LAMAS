@@ -13,7 +13,7 @@ class GameModel:
     def __init__(self):
         # TODO determine rounds/cards per round
         self.cards_per_round = [3, 4, 5, 4, 3]
-        self.players = [RandomPlayer(0, Seat(0)),
+        self.players = [GreedyKripkePlayer(0, Seat(0)),
                         RandomPlayer(1, Seat(1)),
                         RandomPlayer(2, Seat(2)),
                         RandomPlayer(3, Seat(3))]

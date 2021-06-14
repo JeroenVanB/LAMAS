@@ -162,7 +162,7 @@ class GreedyKripkePlayer(Player):
             total_value_hand = 0
             mean_value_hand = 0
             for c in self.kb.own_cards:
-                total_value_hand += c.evaluate(trump=trump, trick_suit=None)
+                total_value_hand += c.pre_evaluate(trump=trump)
             mean_value_hand = total_value_hand/len(self.kb.own_cards)
             # print('mean_value_hand:', mean_value_hand)
 
@@ -170,7 +170,7 @@ class GreedyKripkePlayer(Player):
             total_value_game = 0
             mean_value_game = 0
             for c in self.kb.all_cards:
-                total_value_game += c.evaluate(trump=trump, trick_suit=None)
+                total_value_game += c.pre_evaluate(trump=trump)
             mean_value_game = total_value_game/len(self.kb.all_cards)
             # print('mean_value_game:', mean_value_game)
 
@@ -181,13 +181,13 @@ class GreedyKripkePlayer(Player):
             if normalized_value_hand < 0.8:
                 guess = 0
             # If the cards are evaluated around the mean
-            elif normalized_value_hand < 1.2:
+            elif normalized_value_hand < 1.1:
                 guess = int(total_tricks/4)
             # If the cards are evaluated higher than the mean
-            elif normalized_value_hand < 1.4:
+            elif normalized_value_hand < 1.3:
                 guess = int(total_tricks/4 * 2)
             # If the cards are evaluated much higher than the mean
             else:
                 guess = total_tricks
-            print('mean_value_normalized:', mean_value_hand/mean_value_game,'\tguesses', guess)
+            # print('mean_value_normalized:', mean_value_hand/mean_value_game,'\tguesses', guess)
             self.guessed_wins = guess

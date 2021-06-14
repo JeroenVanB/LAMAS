@@ -26,4 +26,4 @@ class RandomPlayer(Player):
         return card
     
     def guess_wins(self, trump, total_tricks):
-        return random.randint(0, total_tricks)
+        self.guessed_wins = random.randint(0, total_tricks)
