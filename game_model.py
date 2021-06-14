@@ -13,10 +13,12 @@ class GameModel:
     def __init__(self):
         # TODO determine rounds/cards per round
         self.cards_per_round = [3, 4, 5, 4, 3]
-        self.players = [GreedyKripkePlayer(0, Seat(0)),
-                        RandomPlayer(1, Seat(1)),
-                        GreedyPlayer(2, Seat(2)),
-                        GreedyPlayer(3, Seat(3))]
+        self.players = [
+            RandomPlayer(0, Seat(0)),
+            RandomPlayer(1, Seat(1)),
+            GreedyKripkePlayer(2, Seat(2)),
+            GreedyKripkePlayer(3, Seat(3)),
+        ]
         for p in self.players:
             p.set_game_model(self)
 
@@ -47,7 +49,6 @@ class GameModel:
 
     def next_move(self):
         """Execute the next move of the game. The move is determined by whose turn it is, or if the game or the round has already ended"""
-        print("====  looking at next move.  ====")
         self.status = []
         if self.cur_player > 3:
             # Trick has ended
@@ -209,18 +210,11 @@ class GameModel:
         """
         highest_value = 0
         winner = None
-        print(
-            "Evaluating winner after a round with the following played cards:",
-            [c.name for _, c in self.table.items()],
-            f"\nTrump: {trump.name}, Trick: {trick_suit.name}",
-        )
         for _, c in self.table.items():
             c.evaluate(trump, trick_suit)
-            print(f"evaluating: {c.name}: {c.played_value}")
             if c.played_value > highest_value:
                 highest_value = c.played_value
                 winner = c.owner
-        print("evalutating: Winner=", winner.name)
         return winner
 
     def make_announcement(
