@@ -184,10 +184,10 @@ class GreedyKripkePlayer(Player):
         if normalized_value_hand < 0.8:
             guess = 0
         # If the cards are evaluated around the mean
-        elif normalized_value_hand < 1.2:
+        elif normalized_value_hand < 1.1:
             guess = int(total_tricks / 4)
         # If the cards are evaluated higher than the mean
-        elif normalized_value_hand < 1.4:
+        elif normalized_value_hand < 1.3:
             guess = int(total_tricks / 4 * 2)
         # If the cards are evaluated much higher than the mean
         else:
