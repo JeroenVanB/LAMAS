@@ -166,7 +166,7 @@ At the start of each round, the cards are dealt, a trump is chosen en the _opene
 
 To visualize the game and the Kripke models a UI class is constructed. The UI is made using Pygame which enables you to draw basic shapes such as rectangles, lines and text to positions on the screen. Cards are visualized by showing their images on the screen. In the image below you can see the full visualisation of the game and Kripke model.
 
-<img scr="game_UI.png" alt="Visualisation of the game and Kripke models">
+![Visualisation of the game and Kripke models](game_UI.png)
 
 #### Game UI
 
@@ -278,14 +278,18 @@ In formal, the public announcement changes the common knowledge as follows:
 
 ### Strategy
 
-The GeedyKripkeAgent uses the kripke models to determine which card to play. He is greedy, since he always tries to win the trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the graph below (made with draw.io).
+The Geedy Kripke Agent uses the kripke models to determine which card to play. He is greedy, since he always tries to win the trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the graph below (made with draw.io).
 
 Possible strategies are:
 
 - When a player knows that he has the highest card of the trick suit, playing that card will often win the trick
 - When a player does not have a card of the trick suit, he can play a trump card
 
-The guessing is a very important part of the game. Since the guessing takes place before playing any cards, the only knowedge that the agent has, are his own cards (and the trump suit). We still have to come up with a way to determine a good estimation. It seems likely, that we will create a rule, based on the average score of the cards in the hand.
+The Greedy Kripke Agent has to make assumptions about the game in order to play a good strategy. The graph below one of the questions is "Does he have the highest trump card?". Using his knowledge about all possible trump cards in the game, the agent can make the right move. It is not always certain if the player has the highest trump card because he might consider it possible that one or more players still have higher trump cards.
+
+The guessing is a very important part of the game. In the normal (non-simplified) version of the game a player can often win by guessing that he will not win a single trick. Players can actually receive bonus points when they guess 0 and the round contains more than 6 cards. When guessing 0 wins, the player has to switch to a whole new tactic which is not greedy. He has to make sure that he can throw away his high cards without ever winning a round with one. Since 'tactical guessing' results in rather complex behaviour we leave it as a possible extension for future work. However 'greedy guessing', guessing how much you will actually win, is implemented in our project. The Greedy Kripke Player has to make assumptions about the score of his cards based on the knowledge it has over the other cards and the current trump suit.
+
+TODO EXPLAIN GUESSING
 
 [![](greedy_kripke.jpg)Rules for greedy kripke player](greedy_kripke.jpg)
 
