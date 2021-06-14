@@ -54,9 +54,6 @@ class GreedyKripkePlayer(Player):
                     cards = self.kb.get_highest_non_trump_cards()
                     for c in cards:
                         card = c if c.owner == self else None
-                    if card is not None:
-                        print("highest card:", card.name)
-    
                     if card is not None and card.owner == self:
                         print("6 card is:", card.name)
                         return card
