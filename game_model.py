@@ -14,10 +14,10 @@ class GameModel:
         # TODO determine rounds/cards per round
         self.cards_per_round = [3, 4, 5, 4, 3]
         self.players = [
-            GreedyPlayer(0, Seat(0)),
-            GreedyPlayer(1, Seat(1)),
-            GreedyKripkePlayer(2, Seat(2)),
-            GreedyKripkePlayer(3, Seat(3)),
+            GreedyKripkePlayer(0, Seat(0)),
+            GreedyKripkePlayer(1, Seat(1)),
+            GreedyPlayer(2, Seat(2)),
+            GreedyPlayer(3, Seat(3)),
         ]
         for p in self.players:
             p.set_game_model(self)
