@@ -12,7 +12,6 @@ class GreedyKripkePlayer(Player):
 
     def pick_card(self) -> Card:
         """Pick a card based on a tactic.
-
         Returns:
             Card: card that will be played
         """
@@ -33,7 +32,6 @@ class GreedyKripkePlayer(Player):
                         # If there are multiple highest card in the hand return just 1
                         for c in cards:
                             card = c if c.owner == self else None 
-                        
                         if card is not None and card.owner == self:
                             # Do the others still have cards of that suit?
                             if self.kb.other_players_have_suit(card.suit):
@@ -51,59 +49,32 @@ class GreedyKripkePlayer(Player):
                                 print("5 card is:", self.get_lowest_card().name)
                                 return self.get_lowest_card()
 
-        if self.opener:
-            # check if other players still have trump cards
-            if self.kb.other_players_have_suit(self.game_model.trump):
-                # check if I have the highest trump
-                trump_cards = self.get_trump_cards()
-                card = self.kb.get_highest_card_of_suit(self.game_model.trump)
-                if trump_cards and card.owner == self:  # I have highest trump card
-                    return card
-                else:
-                    # Do I have highest non-trump?
+                else:  # other players do not have trump cards
+                    # Check if I have highest non-trump
                     cards = self.kb.get_highest_non_trump_cards()
                     for c in cards:
                         card = c if c.owner == self else None
-
+                    if card is not None:
+                        print("highest card:", card.name)
+    
                     if card is not None and card.owner == self:
-                        # Do the others still have cards of that suit?
-                        if self.kb.other_players_have_suit(card.suit):
-                            return card
-                        else:
-                            return self.get_lowest_card()  # play worst
+                        print("6 card is:", card.name)
+                        return card
                     else:  # Do I have two cards of the same suit, that are not trump?
                         card = self.has_two_cards_of_non_trump()
                         if card is not None:
-                            return card  # lowest of the two cards
+                            print("6 card is:", card.name)
+                            return card  # Return lowest of two cards
                         else:
-                            return self.get_lowest_card()
+                            print("7 card is:", self.get_lowest_card().name)
+                            return self.get_lowest_card()  # Random lowest card
 
-            else:  # other players do not have trump cards
-                # Check if I have highest non-trump
-                cards = self.kb.get_highest_non_trump_cards()
-                for c in cards:
-                    card = c if c.owner == self else None
-                if card is not None and card.owner == self:
-                    return card
-                else:  # Do I have two cards of the same suit, that are not trump?
-                    card = self.has_two_cards_of_non_trump()
-                    if card is not None:
-                        return card  # Return lowest of two cards
-                    else:
-                        return self.get_lowest_card()  # Random lowest card
-
-        # Player is not the opener
-        else:
-            # Do I have a trick suit?
-            if self.get_cards_of_suit(self.game_model.trick_suit):
-                # Did someone play a trump card?
-                if self.game_model.trump_on_table():
-                    return self.get_lowest_card_of_trick_suit()
-                else:
-                    card = self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
-                    if card.owner == self:  # i have higest trick suit card
-                        return card
-                    else:  # play lowest trick card (obligated)
+            # Player is not the opener
+            else:
+                # Do I have a trick suit?
+                if self.get_cards_of_suit(self.game_model.trick_suit):
+                    # Did someone play a trump card?
+                    if self.game_model.trump_on_table():
                         return self.get_lowest_card_of_trick_suit()
                     else:
                         card = self.kb.get_highest_card_of_suit(self.game_model.trick_suit)
@@ -114,51 +85,77 @@ class GreedyKripkePlayer(Player):
                             print("9 card is:", self.get_lowest_card_of_trick_suit().name)
                             return self.get_lowest_card_of_trick_suit()
 
-            else:  # I do not have the trick suit
-                self.game_model.make_announcement(
-                    sender=self,
-                    card=None,
-                    announcement_type=AnnouncementType.does_not_have_suit,
-                )
-                if self.get_trump_cards():  # Do I have a trump card?
-                    # Am I the last player?
-                    if self.game_model.cur_player == 3:
-                        # There is a trump card on the table
-                        if self.game_model.trump_on_table():
-                            # Is the trump card on the table higher than the one in the hand
-                            if self.highest_trump_of_table().evaluate(
-                                self.game_model.trump, self.game_model.trick_suit
-                            ) > self.get_highest_card(
-                                self.get_cards_of_suit(self.game_model.trump)
-                            ).evaluate(
-                                self.game_model.trump, self.game_model.trick_suit
-                            ):
-                                return self.get_lowest_card()
-                            else:
-                                return self.get_highest_card(
+                else:  # I do not have the trick suit
+                    self.game_model.make_announcement(
+                        sender=self,
+                        card=None,
+                        announcement_type=AnnouncementType.does_not_have_suit,
+                    )
+                    if self.get_trump_cards():  # Do I have a trump card?
+                        # Am I the last player?
+                        if self.game_model.cur_player == 3:
+                            # There is a trump card on the table
+                            if self.game_model.trump_on_table():
+                                # Is the trump card on the table higher than the one in the hand
+                                if self.highest_trump_of_table().evaluate(
+                                    self.game_model.trump, self.game_model.trick_suit
+                                ) > self.get_highest_card(
                                     self.get_cards_of_suit(self.game_model.trump)
-                                )
-                        else:
-                            return self.get_lowest_card()
-                    # Am I not the last player
-                    else:
-                        # Others have trick suit
-                        if self.kb.other_players_have_suit(self.game_model.trick_suit):
-                            # Others have trump cards
-                            if self.kb.other_players_have_suit(self.game_model.trump):
-                                # If you have the highest trump card, return that card
-                                if self.has_highest_trump_card():
-                                    return self.has_highest_trump_card()
-                                else:
+                                ).evaluate(
+                                    self.game_model.trump, self.game_model.trick_suit
+                                ):
+                                    print("10 card is:", self.get_lowest_card().name)
                                     return self.get_lowest_card()
-                            else:  # others don't have trumps
-                                return self.get_lowest_cards_of_suit(
-                                    self.game_model.trump
-                                )
-                        else:  # no one else has a trump
-                            # play lowest trump
-                            return self.get_lowest_cards_of_suit(self.game_model.trump)
-                return self.get_lowest_card()
+                                else:
+                                    print(
+                                        "11 card is:",
+                                        self.get_highest_card(
+                                            self.get_cards_of_suit(self.game_model.trump)
+                                        ).name,
+                                    )
+                                    return self.get_highest_card(
+                                        self.get_cards_of_suit(self.game_model.trump)
+                                    )
+                            else:
+                                return self.get_lowest_card()
+                        # Am I not the last player
+                        else:
+                            # Others have trick suit
+                            if self.kb.other_players_have_suit(self.game_model.trick_suit):
+                                # Others have trump cards
+                                if self.kb.other_players_have_suit(self.game_model.trump):
+                                    # If you have the highest trump card, return that card
+                                    if self.has_highest_trump_card():
+                                        print(
+                                            "12 card is:",
+                                            self.has_highest_trump_card().name,
+                                        )
+                                        return self.has_highest_trump_card()
+                                    else:
+                                        print("13 card is:", self.get_lowest_card().name)
+                                        return self.get_lowest_card()
+                                else:  # others don't have trumps
+                                    print("14 card is:", self.get_lowest_card().name)
+                                    return self.get_lowest_cards_of_suit(
+                                        self.game_model.trump
+                                    )
+                            else:  # no one else has a trump
+                                # play lowest trump
+                                print("15 card is:", self.get_lowest_card().name)
+                                return self.get_lowest_cards_of_suit(self.game_model.trump)
+                    return self.get_lowest_card()
+        # If he does not need a win, play a random card
+        else:
+            # This is the tactic of the random player
+            if self.opener:
+                return self.get_random_card(self.cards)
+            else:
+                # Do I have a trick suit?
+                suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
+                if suit_cards:
+                    return self.get_random_card(suit_cards)
+                else:
+                    return self.get_random_card(self.cards)
 
     def guess_wins(self, trump, total_tricks):
         """Guess the amount of tricks the player is going to win in this round
