@@ -164,7 +164,7 @@ To visualize the game and the Kripke models a UI class is constructed. The UI is
 
 #### Game UI
 
-The left hand side of the UI shows the game information such as current round, scores, trump and trick suits. For each player we show his hand to the user. Do note that the cards are ofcourse not visible to the players in the game. They have to rely on their knowledge about the game. At the center of the table you can see all players guesses and how many rounds they have actually won untill now. The game will be paused after each move so that the user has the time to observe all game and model changes. When the user presses the spacebar the game will continue to the next move of the current player. The player, game and model states will be updated internally. The UI class is notified that there is a change and it will redraw all game elements on the left hand side of the screen. 
+The left hand side of the UI shows the game information such as current round, scores, trump and trick suits. For each player we show his hand to the user. Do note that the cards are ofcourse not visible to the players in the game. They have to rely on their knowledge about the game. At the center of the table you can see all players\' guesses and how many rounds they have actually won untill now. The game will be paused after each move so that the user has the time to observe all game and model changes. When the user presses the spacebar the game will continue to the next move of the current player. The player, game and model states will be updated internally. The UI class is notified that there is a change and it will redraw all game elements on the left hand side of the screen. 
 #### Message box
 
 

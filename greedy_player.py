@@ -42,7 +42,7 @@ class GreedyPlayer(Player):
             """Guess the amount of tricks the player is going to win in this round
 
             Args:
-                trump (Suit): The trump of the roun
+                trump (Suit): The trump of the round
                 n_cards (int): The amount of cards each player holds
             """
             # How the guessing is done:
