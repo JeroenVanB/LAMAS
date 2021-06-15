@@ -19,7 +19,7 @@ There are many variants of the game: 'Oh hell!', 'Wizard' or 'Nomination Whist'.
 #### Points
 
 The aim of the game is to get the most points. Points can be obtained by winning tricks and (most importantly) correctly guessing how many tricks the player himself will take in a round.
-If the player correctly guesses the total number of tricks he has taken, he will receive two points for each trick taken, with a 10 points bonus. A special reward is given to players if they correctly guess taking 0 tricks, in rounds with 6 or more cards. Here, the bonus points increase from 10 to 20.
+If the player correctly guesses the total number of tricks he has taken, he will receive two points for each trick taken, with a 10 points bonus. 
 If the player guesses wrong, he will get two points subtracted for each trick he was off. The player with the most points after 15 rounds wins the game.
 
 #### Gameplay
@@ -49,6 +49,7 @@ To decrease the possible states, we minimized the amount of cards used in the ga
 | 5      | 3                | Queen, King, Ace           | -->
 
 <table style="width:100%">
+<caption>Table 1: Number of cards in each round.</caption>
   <tr>
     <th>Round</th>
     <th>Number of cards</th>
@@ -90,6 +91,7 @@ The game is made in Python with [Pygame](https://www.pygame.org/), using a MVC p
 An instance of the Card Class represents a card, by keeping track of the rank, suit, owner and the value. The base value is determined by the rank, as shown in Table 2. When a card is played, the value is influenced by the trump and trick suit. When a card has the same suit as the trick suit, its value is increased by 13. When a card has the same suit as the trump, its value is increased by 26.
 
 <table style="width:100%">
+<caption>Table 2: Value of each rach. </caption>
   <tr>
     <th>Rank</th>
     <th>Value</th>
@@ -154,14 +156,16 @@ During the game only one instance of the Deck class is present. It keeps track o
 
 ##### Player Class
 
-The player class is an abstract class in which some basic functions are defined, such as _calculate_score()_ and _play_card()_. Many other functions consider finding a specific card of the player e.g. _get_highest_card()_ and _get_lowest_card_of_suit()_. These functions are defined here, since they can be used in different types of tactics.
-The abstract class _Player_ is extended by different types of agents, such as _RandomAgent_ (which plays random cards), _GreedyAgent_ (which plays the highest cards) and _GreedyKripkeAgent_ (which uses kripke models). These subclasses override the function _pick_card()_ and _guess_wins()_, in which the tactics are implemented.
-
+The player class is an abstract class in which some basic functions are defined, such as _calculate\_score()_ and _play\_card()_. Many other functions consider finding a specific card of the player e.g. _get_highest\_card()_ and _get_lowest_card_of_suit()_. These functions are defined here, since they can be used in different types of tactics.
+The abstract class _Player_ is extended by different types of agents. The subclasses override the function _pick\_card()_ and _guess\_wins()_, in which the tactics are implemented. This way, we created two simple agents called the _RandomAgent_ (which plays random cards) and the _GreedyAgent_ (which plays the highest cards). The two subclasses that we mainly focussed on are the _GreedyKripkeAgent_ (GKA) and _FullKripkeAgent_ (FKA). These both make use of a Kripke model, to determine which cards to play. The GKA always tries to win a trick, using a set of rules based on a Kripke model. If a GKA has already won as much games, as he guessed, he will play a random card. The FKA also uses the same tactics as the GKA to win tricks, but also has a losing strategy. These exact rules of these strategies explained below in the section 'Strategy'.
 ##### GameModel Class
 
 The GameModel contains all the variables and functions to run the game. The function _next_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. It also lets the current player make a move.
 At the start of each round, the cards are dealt, a trump is chosen en the _opener_ is determined. In the next four steps, each player plays a card, which is added to the dictionary _table_. After the last player, _determine_winner()_ checks who played the winning card. That player becomes the new _opener_. After all the tricks of a round are finished, the points are calculated for each player. After the final round, the game ends.
 
+##### TODO: Announcement class (and how the announcements are used to update the kripke model)
+
+##### TODO: Knowledge_base class
 ### Visualization
 
 To visualize the game and the Kripke models a UI class is constructed. The UI is made using Pygame which enables you to draw basic shapes such as rectangles, lines and text to positions on the screen. Cards are visualized by showing their images on the screen. In the image below you can see the full visualization of the game and Kripke model.
@@ -181,13 +185,13 @@ To give the user a better overview of what is happening in the game and models w
 The right hand side of the screen shows an interactive Kripke Model viewer. The screen is continuously redrawn so that we can make use of buttons to redraw parts of the viewer but also to make it independent of the game loop. The user can use the suit and rank buttons to select a card in the current game. The Kripke Model of that card is then visualized above the buttons. The model shows the knowledge of the current card.
 <img src="kripke_model_viewer.png" alt="Kripke Model Viewer">
 
-In the image above the Kripke Model of the Queen of Hearts is visualized. The true world is shown by a golden box. Possible world relations are represented by colored lines where each color represents a player. Here Player west has the card in its hand and thus only considers the true world possible so there is no line being drawn. All other players consider it possible that all other players have the card except for the player himself.
+In the image above the Kripke Model of the Queen of Hearts is visualized. The true world is shown by a golden box. Possible world relations are represented by colored lines where each color represents a player. Here, Player West has the card in its hand and thus only considers the true world possible so there is no line being drawn. All other players consider it possible that all other players have the card except for the player himself.
 
 As this is a S5 model, it is known that there is a reflexive relation between the worlds and themselves. However, we chose to remove the reflexive relations to increase clarity in the kripke model. To indicate the reflexive relation of the true world, i.e. the world where the player who holds the card knows that he holds the card, we highlight the box of that world.
 
 Observe the following example of a game:
 ![Example of only one possible world](one_world.png)
-North has just opened the game and a public announcement is made that he played the Ace of Diamonds. It is now common knowledge that North has/had the Ace of Diamonds. On the right we find the Kripke model of this card. Since there is only possible word, the true world, we remove all other worlds.
+North has just opened the game and a public announcement is made that he played the Ace of Diamonds. It is now common knowledge that North has/had the Ace of Diamonds. On the right we find the Kripke model of this card. Since there is only one possible word, the true world, we remove all other worlds.
 
 <!--
 ### Kripke implementation
@@ -198,13 +202,14 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 ### Formalization
 
-Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. By using Public Announcement Logic, we can increase the common knowldege in the game. Additionally, using the common knowledge, players can make inferences themselves to chose the best card to play. 
+Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. By using Public Announcement Logic, we can increase the common knowledge in the game. Since the announcements are always true, and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states. This can eliminate the possibilities of players having certain cards. For a more formal defin
 
 To formalize the model we use the following notation: _x_S_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
 
-The full names and used abbreviations of the players, suits and ranks can be found in the table below.
+The full names and used abbreviations of the players, suits and ranks can be found in the tables 1, 2, and 3, respectively. 
 
 <table style="width:100%">
+<caption>Table 3: Player names.</caption>
   <tr>
     <th>Name</th>
     <th>Abbreviation</th>
@@ -221,6 +226,13 @@ The full names and used abbreviations of the players, suits and ranks can be fou
     <td>South</td>
     <td>S</td>
   </tr>
+</table>
+
+<table style="width:100%">
+<caption>Table 4: Suits.</caption>
+  <tr>
+    <th>Name</th>
+    <th>Abbreviation</th>
   <tr>
     <td>West</td>
     <td>W</td>
@@ -240,6 +252,13 @@ The full names and used abbreviations of the players, suits and ranks can be fou
     <tr>
     <td>Diamonds</td>
     <td>D</td>
+  </table>
+  
+<table style="width:100%">
+<caption>Table 5: Ranks. </caption>
+  <tr>
+    <th>Name</th>
+    <th>Abbreviation</th>
   </tr>
     <tr>
     <td>Ace</td>
@@ -280,20 +299,55 @@ In formal, the public announcement changes the common knowledge as follows:
 
 ### Strategy
 
-The Greedy Kripke Agent uses the Kripke models to determine which card to play. He is greedy, since he always tries to win the trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the graph below (made with draw.io).
+The Greedy Kripke Agent and Full Kripke Agent use the Kripke models to determine which card to play. The GKA is greedy, since he only has a strategy to win a trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the win-graph below (made with draw.io).
 
-Possible strategies are:
+[![](greedy_kripke.jpg)Rules for winning using a kripke model](greedy_kripke.jpg)
 
-- When a player knows that he has the highest card of the trick suit, playing that card will often win the trick
-- When a player does not have a card of the trick suit, he can play a trump card
+The FKA extends the GKA, by also using applying moves based on strategy to deliberatly lose tricks when the guessed wins are already reached. The strategy for losing is also presended in the lose-graph.
+TODO mention that the lose-graph does not yet make use of kripke knowledge. This can be done in the future (ref to possible extensions)
 
-The Greedy Kripke Agent has to make assumptions about the game in order to play a good strategy. The graph below one of the questions is "Does he have the highest trump card?". Using his knowledge about all possible trump cards in the game, the agent can make the right move. It is not always certain if the player has the highest trump card because he might consider it possible that one or more players still have higher trump cards.
+[![](kripke_graph_lose.jpg)Rules for losing using a kripke model](kripke_graph_lose.jpg)
+
+Examples of applied strategies:
+
+- When a player is the opener, playing the highest trump card will always win the trick (GKA/FKA)
+
+  This strategy is implemented in the win-graph in the following path: 
+  - Is he the opener? -> Yes
+  - Do the others still have trump cards? -> Yes
+  - Does he have the highest trump card? -> Yes
+  - Play the highest trump card
+
+  The question 'Do the others till have trump cards?' can be answered by using the kripke models. If the player considers it possible that one of the players owns a trump card, the answer to the question is yes. In other rounds trump cards can be used to 'steal' tricks from the player that played the highest (non trump) trick suit card. Therefore, opening with the highest trump card is a good habit, which forces the other players to play their trump cards. This way, the opener will remain the opener in the next round, in which stealing tricks is less likely (since there are less trump cards in the game).
+
+- When a player knows that he has the highest card of the trick suit, playing that card will often win the trick (GKA/FKA)
+
+  This strategy is implemented in the win-graph in the following path: 
+  - Is he the opener? -> No
+  - Does he have trick suit? -> Yes
+  - Did someone play a trump card? - No
+  - Does he have the highest trick suit card? -> Yes
+  - Play the highest trick suit card
+
+  The agent has to make assumptions about the game in order to play a good strategy. In the win-graph one of the questions is "Does he have the highest trick suit card?". Using his knowledge about all possible trick cards in the game, the agent can make the right move. However, it is not always certain if the other players still have trick suit cards. If they don't, they might use a trump card to win the trick anyway. This shows that our graph is not certain of leading to a win, but we believe it definitely has a high chance of doing so.
+
+
+- A player already has reached his guessed wins, so he wants to lose tricks. In a trick, another player played a trump card. He does have the highest trick suit card in the game, so he plays it. (FKA)
+  This strategy is implemented in the lose-graph in the following path:
+  - Is he the opener? -> No
+  - Does he have trick suit? -> Yes
+  - Did someone play a trump card? -> Yes
+  - Play the highest trick suit card
+
+  The player wants to lose all following tricks, since he has already reached his goal. High (non-trump) cards are likely to win tricks. It is difficult to lose tricks with them. Therefore, it is a good habit to play them when someone else has played a trump card.
+
+
+
+TODO: Explain how we implemented the guessing
+
 
 The guessing is a very important part of the game. In the normal (non-simplified) version of the game a player can often win by guessing that he will not win a single trick. Players can actually receive bonus points when they guess 0 and the round contains more than 6 cards. When guessing 0 wins, the player has to switch to a whole new tactic which is not greedy. He has to make sure that he can throw away his high cards without ever winning a round with one. Since 'tactical guessing' results in rather complex behavior we leave it as a possible extension for future work. However 'greedy guessing', guessing how much you will actually win, is implemented in our project. The Greedy Kripke Player has to make assumptions about the score of his cards based on the knowledge it has over the other cards and the current trump suit.
 
-TODO EXPLAIN GUESSING
-
-[![](greedy_kripke.jpg)Rules for greedy kripke player](greedy_kripke.jpg)
 
 ### Possible extensions
 
@@ -316,3 +370,17 @@ The implementation of such an algorithm is not the main goal of the course, but 
 Our implementation of the game is a simplified version because of time constraints. As previously discussed we focus only on 'greedy guessing' in which the agent guesses the amount of plays he will win. The player then uses a greedy tactic to get the most wins out of the game. While this results in a relatively good score this is only played by beginners. In Boeren Bridge players often use 'tactical guessing'. This means guessing and playing for 0 wins. This can get you bonus points if you succeed and can result in more points. However the player has to adopt a whole new tactic. The question is now "How can I lose my high cards without winning the trick?". It would be interesting to extend our implementation so that there are agents that use the Kripke models for both greedy and non-greedy dynamic behavior.
 
 It would be interesting to extend the Q-learning approach mentioned above with tactical guessing. A second neural network could be used to make a correct guess and to chose which tactic to apply: greedy or non-greedy.
+
+
+#### TODO: Explain how the lose graph can be updated so it used kripke knowledge:
+ Is he opener -> Yes
+Do you have the highest card of a non-trump suit -> Yes
+Does anyone not have cards of that suit, but still have trump cards -> Yes
+Play that highest non-trump suit card
+#### Higher order Logic (K_1K_2)
+
+TODO: Uitwerken punten
+-We only use PAL and K1
+-Make use of the fact that a player uses a certain strategy for guessing
+-Make use of the fact that a player uses a certain strategy for playing cards
+-Not that well applicable for games with few cards
