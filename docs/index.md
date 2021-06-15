@@ -7,7 +7,7 @@ Julian Bruinsma (s3215601)
 ### Introduction
 <!-- Ook een soort van abstract -->
 
-In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. 
+In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project we are testing the capabilities of agents using kripke knowlegde by comparing them with simple agents.
 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
@@ -270,12 +270,9 @@ The _KnowledgeBase_ class is constructed to represent the knowledge of every pla
 #TODO: finish up section
 
 ##### TODO: Announcement class (and how the announcements are used to update the kripke model)
-To use PAL in the game model, a public announcement class is created. If a player plays a card or cannot follow suit, it sends an announcement to all the other players in the game, which then update their Kripke model. If the player plays a card, it is removed from the players' knowledge bases and all the relations in the Kripke model are removed. If a player cannot follow suit, the knowledge bases are updated to remove all possible cards of the trick suit for that specific player. Additionally, the Kripke models are also updated and all relations for the cards of the trick suit for that player are removed. 
+To use PAL in the game model, a _PublicAnnouncement_ class is created. If a player plays a card or cannot follow suit, he sends an announcement to all the other players in the game, which then update the corresponding Kripke model. If a player receives the announcement 'card\_played', he removes all the relations in the Kripke model of that card. Since the card has been played, the players should not consider it possible for another player to have the card. If a player receive the announcement 'does\_not\_have\_suit', the Kripke models are updated by removing the relations of the sender in the kripke models of all possible cards of the trick suit.
 
-#FIXME: kan denk ik wel duidelijker. ook even methods erbij denk ik 
-
-
-
+#FIXME: kan denk ik wel duidelijker. ook even methods erbij denk ik #FIXME 2: Mss afbeeldingen erbij van hoe het geupdate wordt?
 
 ### Visualization
 
