@@ -10,6 +10,8 @@ In this project, we are going to analyze the Dutch game called _Boeren Bridge_. 
 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
+
+### TODO Research question
 ### Game Rules
 
 #### Variations
@@ -202,7 +204,7 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 ### Formalization
 
-Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. By using Public Announcement Logic, we can increase the common knowledge in the game. Since the announcements are always true, and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states. This can eliminate the possibilities of players having certain cards. For a more formal defin
+Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. By using Public Announcement Logic, we can increase the common knowledge in the game. Since the announcements are always true, and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states. This can eliminate the possibilities of players having certain cards. Therefore, an announcement can result in common knowledge. For a more formal proof of the relation between Public Announcement Logic and common knowledge we refer to the book by _Dynamic Epistemic Logic_ by _Hans van Ditmarsch_. 
 
 To formalize the model we use the following notation: _x_S_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
 
@@ -348,6 +350,14 @@ TODO: Explain how we implemented the guessing
 
 The guessing is a very important part of the game. In the normal (non-simplified) version of the game a player can often win by guessing that he will not win a single trick. Players can actually receive bonus points when they guess 0 and the round contains more than 6 cards. When guessing 0 wins, the player has to switch to a whole new tactic which is not greedy. He has to make sure that he can throw away his high cards without ever winning a round with one. Since 'tactical guessing' results in rather complex behavior we leave it as a possible extension for future work. However 'greedy guessing', guessing how much you will actually win, is implemented in our project. The Greedy Kripke Player has to make assumptions about the score of his cards based on the knowledge it has over the other cards and the current trump suit.
 
+
+### TODO : Experiments
+
+### TODO: Results
+
+### TODO: Discussion
+
+### TODO: Conclusion
 
 ### Possible extensions
 
