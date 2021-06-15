@@ -6,6 +6,7 @@ from greedy_kripke_player import GreedyKripkePlayer
 from game_model import GameModel
 from UI import UI
 from tqdm import tqdm
+from statistics import mean, stdev
 
 if len(sys.argv) == 1:
     ui = UI(GameModel())
@@ -13,9 +14,9 @@ else:
     # Run experiments
 
     num_games = int(sys.argv[1])
-    scores = {"greedy": 0, "greedy_kripke": 0, "full_kripke": 0, "random": 0}
+    scores = {"greedy": [], "greedy_kripke": [], "full_kripke": [], "random": []}
 
-    players = ["full_kripke", "full_kripke", "greedy", "greedy"]
+    players = ["full_kripke", "greedy_kripke", "greedy", "random"]
     model = GameModel(players=players)
     print(f"Playing {num_games} games with {[type(p) for p in model.players]}")
     for game in tqdm(range(num_games)):
@@ -30,13 +31,14 @@ else:
         # get scores
         for p in model.players:
             if type(p) == GreedyKripkePlayer:
-                scores["greedy_kripke"] += p.score / 2
+                scores["greedy_kripke"].append(p.score)
             elif type(p) == FullKripkePlayer:
-                scores["full_kripke"] += p.score / 2
+                scores["full_kripke"].append(p.score)
             elif type(p) == GreedyPlayer:
-                scores["greedy"] += p.score / 2
+                scores["greedy"].append(p.score)
             elif type(p) == RandomPlayer:
-                scores["random"] += p.score / 2
+                scores["random"].append(p.score)
     print(f"\nAverage score over {num_games} games per player.")
     for k, v in scores.items():
-        print(k, " \t\tscored ", v / num_games)
+        if v:
+            print(k, " \t\tscored ", mean(v), "\t\tstd", stdev(v), "\t\tlowest", min(v), "\t\tmax", max(v))

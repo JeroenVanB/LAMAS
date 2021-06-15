@@ -16,27 +16,27 @@ class GreedyPlayer(Player):
         Returns:
             Card: the card that is picked
         """
-        if self.wins < self.guessed_wins:
-            if self.opener:
-                return self.get_highest_card(self.cards)
-            else:
-                # Do I have a trick suit?
-                suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
-                if suit_cards:
-                    return self.get_highest_card(suit_cards)
-                else:
-                    return self.get_highest_card(self.cards)
+        # if self.wins < self.guessed_wins:
+        if self.opener:
+            return self.get_highest_card(self.cards)
         else:
-            # This is the tactic of the random player
-            if self.opener:
-                return self.get_random_card(self.cards)
+            # Do I have a trick suit?
+            suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
+            if suit_cards:
+                return self.get_highest_card(suit_cards)
             else:
-                # Do I have a trick suit?
-                suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
-                if suit_cards:
-                    return self.get_random_card(suit_cards)
-                else:
-                    return self.get_random_card(self.cards)
+                return self.get_highest_card(self.cards)
+        # else:
+        #     # This is the tactic of the random player
+        #     if self.opener:
+        #         return self.get_random_card(self.cards)
+        #     else:
+        #         # Do I have a trick suit?
+        #         suit_cards = self.get_cards_of_suit(self.game_model.trick_suit)
+        #         if suit_cards:
+        #             return self.get_random_card(suit_cards)
+        #         else:
+        #             return self.get_random_card(self.cards)
     
     def guess_wins(self, trump, total_tricks):
             """Guess the amount of tricks the player is going to win in this round
