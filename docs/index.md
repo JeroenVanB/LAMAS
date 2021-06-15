@@ -183,7 +183,7 @@ The right hand side of the screen shows an interactive Kripke Model viewer. The 
 
 In the image above the Kripke Model of the Queen of Hearts is visualized. The true world is shown by a golden box. Possible world relations are represented by colored lines where each color represents a player. Here Player west has the card in its hand and thus only considers the true world possible so there is no line being drawn. All other players consider it possible that all other players have the card except for the player himself.
 
-We chose not to visualize reflexive relations since this would be redundant and it would result in a less clear visualization.
+As this is a S5 model, it is known that there is a reflexive relation between the worlds and themselves. However, we chose to remove the reflexive relations to increase clarity in the kripke model. To indicate the reflexive relation of the true world, i.e. the world where the player who holds the card knows that he holds the card, we highlight the box of that world.
 
 Observe the following example of a game:
 ![Example of only one possible world](one_world.png)
@@ -198,7 +198,7 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 ### Formalization
 
-Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models.
+Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. By using Public Announcement Logic, we can increase the common knowldege in the game. Additionally, using the common knowledge, players can make inferences themselves to chose the best card to play. 
 
 To formalize the model we use the following notation: _x_S_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
 
