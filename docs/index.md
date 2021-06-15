@@ -5,13 +5,14 @@ Jeroen van Brandenburg (s3193063), and
 Julian Bruinsma (s3215601)
 
 ### Introduction
+<!-- Ook een soort van abstract -->
 
-In this project, we are going to analyze the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take.
+In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. 
 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
 
-### TODO Research question
+##### TODO Research question/Wat gaan we onderzoeken/testen
 ### Game Rules
 
 #### Variations
@@ -168,6 +169,7 @@ At the start of each round, the cards are dealt, a trump is chosen en the _opene
 ##### TODO: Announcement class (and how the announcements are used to update the kripke model)
 
 ##### TODO: Knowledge_base class
+
 ### Visualization
 
 To visualize the game and the Kripke models a UI class is constructed. The UI is made using Pygame which enables you to draw basic shapes such as rectangles, lines and text to positions on the screen. Cards are visualized by showing their images on the screen. In the image below you can see the full visualization of the game and Kripke model.
@@ -254,7 +256,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
     <tr>
     <td>Diamonds</td>
     <td>D</td>
-  </table>
+</table>
   
 <table style="width:100%">
 <caption>Table 5: Ranks. </caption>
@@ -356,6 +358,9 @@ The guessing is a very important part of the game. In the normal (non-simplified
 ### TODO: Results
 
 ### TODO: Discussion
+
+- GKA is very similar to Greedy
+- 
 
 ### TODO: Conclusion
 
