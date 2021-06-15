@@ -111,7 +111,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
     <td>South</td>
     <td>S</td>
   </tr>
-  </table>
+</table>
 
 <table style="width:100%">
 <caption>Table 4: Suits.</caption>
@@ -137,7 +137,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
     <tr>
     <td>Diamonds</td>
     <td>D</td>
-  </table>
+</table>
   
 <table style="width:100%">
 <caption>Table 5: Ranks. </caption>
@@ -166,7 +166,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
     <td>10</td>
     <td>10</td>
   </tr>
-  </table>
+</table>
 
 ##### Example 1 - Announcement 'Played card'
 
@@ -362,14 +362,20 @@ TODO: Explain how we implemented the guessing
 The guessing is a very important part of the game. In the normal (non-simplified) version of the game a player can often win by guessing that he will not win a single trick. Players can actually receive bonus points when they guess 0 and the round contains more than 6 cards. When guessing 0 wins, the player has to switch to a whole new tactic which is not greedy. He has to make sure that he can throw away his high cards without ever winning a round with one. Since 'tactical guessing' results in rather complex behavior we leave it as a possible extension for future work. However 'greedy guessing', guessing how much you will actually win, is implemented in our project. The Greedy Kripke Player has to make assumptions about the score of his cards based on the knowledge it has over the other cards and the current trump suit.
 
 
-### TODO : Experiments
+### Experiments
+TODO
+To test the performance of the four different agents (Random, Greedy, GreedyKripke, FullKripke), they all played against eachother. The performance is averaged over 100.000 games.
+
+
 
 ### TODO: Results
 
 ### TODO: Discussion
 
-- GKA is very similar to Greedy
-- 
+- GKA is very similar to Greedy (Almost always plays high cards)
+- We only play with few cards
+- The Strategie based on kripke models is heuristically determined
+- FKA loss-graph is not optimized (see Extensions)
 
 ### TODO: Conclusion
 
