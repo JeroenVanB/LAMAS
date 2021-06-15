@@ -12,7 +12,7 @@ In this project, we are going to analyze the application of Kripke knowledge in 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
 
-##### TODO Research question/Wat gaan we onderzoeken/testen
+##### TODO Research question/Wat gaan we onderzoeken/testen (moet dit bij experiments als extra?)
 ### Game Rules
 
 #### Variations
@@ -84,6 +84,104 @@ To decrease the possible states, we minimized the amount of cards used in the ga
     <td>Queen, King, Ace</td>
   </tr>
 </table>
+
+### Formalization
+
+Every time a player plays a card, he makes an announcement. By using Public Announcement Logic (PAL), we can reduce the amount of possible states in the Kripke models. By using PAL, we can increase the common knowledge in the game. Since the announcements are always true, and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states. This can eliminate the possibilities of players having certain cards. Therefore, an announcement can result in common knowledge. For a more formal proof of the relation between PAL and common knowledge we refer to the book by _Dynamic Epistemic Logic_ by _Hans van Ditmarsch_. 
+
+To formalize the model we use the following notation: _x_S_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
+
+The full names and used abbreviations of the players, suits and ranks can be found in the tables 1, 2, and 3, respectively. 
+
+<table style="width:100%">
+<caption>Table 3: Player names.</caption>
+  <tr>
+    <th>Name</th>
+    <th>Abbreviation</th>
+  </tr>
+  <tr>
+    <td>North</td>
+    <td>N</td>
+  </tr>
+  <tr>
+    <td>East</td>
+    <td>E</td>
+  </tr>
+  <tr>
+    <td>South</td>
+    <td>S</td>
+  </tr>
+  </table>
+
+<table style="width:100%">
+<caption>Table 4: Suits.</caption>
+  <tr>
+    <th>Name</th>
+    <th>Abbreviation</th>
+  <tr>
+    <td>West</td>
+    <td>W</td>
+  </tr>
+  <tr>
+    <td>Clubs</td>
+    <td>C</td>
+  </tr>
+    <tr>
+    <td>Spades</td>
+    <td>SP</td>
+  </tr>
+    <tr>
+    <td>Hearts</td>
+    <td>H</td>
+  </tr>
+    <tr>
+    <td>Diamonds</td>
+    <td>D</td>
+  </table>
+  
+<table style="width:100%">
+<caption>Table 5: Ranks. </caption>
+  <tr>
+    <th>Name</th>
+    <th>Abbreviation</th>
+  </tr>
+    <tr>
+    <td>Ace</td>
+    <td>A</td>
+  </tr>
+    <tr>
+    <td>King</td>
+    <td>K</td>
+  </tr>
+    <tr>
+    <td>Queen</td>
+    <td>Q</td>
+  </tr>
+    <tr>
+    <td>Jack</td>
+    <td>J</td>
+  </tr>
+  </tr>
+    <tr>
+    <td>10</td>
+    <td>10</td>
+  </tr>
+  </table>
+
+##### Example 1 - Announcement 'Played card'
+
+If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore.
+the public announcement changes the common knowledge as follows:
+
+<img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
+
+##### Example 2 - Announcement 'Does not have suit'
+
+Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts.
+In formal, the public announcement changes the common knowledge as follows:
+
+<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="400">
+
 
 ### Game implementation
 
@@ -159,16 +257,25 @@ During the game only one instance of the Deck class is present. It keeps track o
 
 ##### Player Class
 
-The player class is an abstract class in which some basic functions are defined, such as _calculate\_score()_ and _play\_card()_. Many other functions consider finding a specific card of the player e.g. _get_highest\_card()_ and _get_lowest_card_of_suit()_. These functions are defined here, since they can be used in different types of tactics.
+The player class is an abstract class in which some basic functions are defined, such as _calculate\_score()_ and _play\_card()_. Many other functions consider finding a specific card of the player e.g. _get_highest\_card()_ and _get\_lowest\_card\_of\_suit()_. These functions are defined here, since they can be used in different types of tactics.
 The abstract class _Player_ is extended by different types of agents. The subclasses override the function _pick\_card()_ and _guess\_wins()_, in which the tactics are implemented. This way, we created two simple agents called the _RandomAgent_ (which plays random cards) and the _GreedyAgent_ (which plays the highest cards). The two subclasses that we mainly focussed on are the _GreedyKripkeAgent_ (GKA) and _FullKripkeAgent_ (FKA). These both make use of a Kripke model, to determine which cards to play. The GKA always tries to win a trick, using a set of rules based on a Kripke model. If a GKA has already won as much games, as he guessed, he will play a random card. The FKA also uses the same tactics as the GKA to win tricks, but also has a losing strategy. These exact rules of these strategies explained below in the section 'Strategy'.
 ##### GameModel Class
 
-The GameModel contains all the variables and functions to run the game. The function _next_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. It also lets the current player make a move.
-At the start of each round, the cards are dealt, a trump is chosen en the _opener_ is determined. In the next four steps, each player plays a card, which is added to the dictionary _table_. After the last player, _determine_winner()_ checks who played the winning card. That player becomes the new _opener_. After all the tricks of a round are finished, the points are calculated for each player. After the final round, the game ends.
-
-##### TODO: Announcement class (and how the announcements are used to update the kripke model)
+The GameModel contains all the variables and functions to run the game. The function _next\_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. It also lets the current player make a move.
+At the start of each round, the cards are dealt, a trump is chosen en the _opener_ is determined. In the next four steps, each player plays a card, which is added to the dictionary _table_. After the last player, _determine\_winner()_ checks who played the winning card. That player becomes the new _opener_. After all the tricks of a round are finished, the points are calculated for each player. After the final round, the game ends.
 
 ##### TODO: Knowledge_base class
+The _KnowledgeBase_ class is constructed to represent the knowledge of every player during the game.  It initizales the knowledge base to consider it possible that every other player has a card _unless_ it has the card itself. This is done by the function _knowledge\_of\_remaining\_cards\_in\_deck()_. To set the knowledge of the player itself, the function _set\_knowledge\_of\_own\_hand()_ is used. The function _remove\_card_ is used to remove a card from the the knowledge base of the player if the card is played by another player. 
+
+#TODO: finish up section
+
+##### TODO: Announcement class (and how the announcements are used to update the kripke model)
+To use PAL in the game model, a public announcement class is created. If a player plays a card or cannot follow suit, it sends an announcement to all the other players in the game, which then update their Kripke model. If the player plays a card, it is removed from the players' knowledge bases and all the relations in the Kripke model are removed. If a player cannot follow suit, the knowledge bases are updated to remove all possible cards of the trick suit for that specific player. Additionally, the Kripke models are also updated and all relations for the cards of the trick suit for that player are removed. 
+
+#FIXME: kan denk ik wel duidelijker. ook even methods erbij denk ik 
+
+
+
 
 ### Visualization
 
@@ -204,102 +311,7 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 <img src="kripke_model.png" alt="Example of the Kripke models"> -->
 
-### Formalization
 
-Every time a player plays a card, he makes an announcement. By using Public Announcement Logic, we can reduce the amount of possible states in the Kripke models. By using Public Announcement Logic, we can increase the common knowledge in the game. Since the announcements are always true, and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states. This can eliminate the possibilities of players having certain cards. Therefore, an announcement can result in common knowledge. For a more formal proof of the relation between Public Announcement Logic and common knowledge we refer to the book by _Dynamic Epistemic Logic_ by _Hans van Ditmarsch_. 
-
-To formalize the model we use the following notation: _x_S_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
-
-The full names and used abbreviations of the players, suits and ranks can be found in the tables 1, 2, and 3, respectively. 
-
-<table style="width:100%">
-<caption>Table 3: Player names.</caption>
-  <tr>
-    <th>Name</th>
-    <th>Abbreviation</th>
-  </tr>
-  <tr>
-    <td>North</td>
-    <td>N</td>
-  </tr>
-  <tr>
-    <td>East</td>
-    <td>E</td>
-  </tr>
-  <tr>
-    <td>South</td>
-    <td>S</td>
-  </tr>
-</table>
-
-<table style="width:100%">
-<caption>Table 4: Suits.</caption>
-  <tr>
-    <th>Name</th>
-    <th>Abbreviation</th>
-  <tr>
-    <td>West</td>
-    <td>W</td>
-  </tr>
-  <tr>
-    <td>Clubs</td>
-    <td>C</td>
-  </tr>
-    <tr>
-    <td>Spades</td>
-    <td>SP</td>
-  </tr>
-    <tr>
-    <td>Hearts</td>
-    <td>H</td>
-  </tr>
-    <tr>
-    <td>Diamonds</td>
-    <td>D</td>
-</table>
-  
-<table style="width:100%">
-<caption>Table 5: Ranks. </caption>
-  <tr>
-    <th>Name</th>
-    <th>Abbreviation</th>
-  </tr>
-    <tr>
-    <td>Ace</td>
-    <td>A</td>
-  </tr>
-    <tr>
-    <td>King</td>
-    <td>K</td>
-  </tr>
-    <tr>
-    <td>Queen</td>
-    <td>Q</td>
-  </tr>
-    <tr>
-    <td>Jack</td>
-    <td>J</td>
-  </tr>
-  </tr>
-    <tr>
-    <td>10</td>
-    <td>10</td>
-  </tr>
-</table>
-
-##### Example 1 - Announcement 'Played card'
-
-If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore.
-the public announcement changes the common knowledge as follows:
-
-<img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
-
-##### Example 2 - Announcement 'Does not have suit'
-
-Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts.
-In formal, the public announcement changes the common knowledge as follows:
-
-<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="400">
 
 ### Strategy
 
