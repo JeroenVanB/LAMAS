@@ -116,10 +116,6 @@ The full names and used abbreviations of the players, suits and ranks can be fou
     <th>Name</th>
     <th>Abbreviation</th>
   <tr>
-    <td>West</td>
-    <td>W</td>
-  </tr>
-  <tr>
     <td>Clubs</td>
     <td>C</td>
   </tr>
@@ -256,7 +252,7 @@ During the game only one instance of the Deck class is present. It keeps track o
 The player class is an abstract class in which some basic functions are defined, such as _calculate_score()_ and _play_card()_. Many other functions consider finding a specific card of the player e.g. _get_highest_card()_ and _get_lowest_card_of_suit()_. These functions are defined here, since they can be used in different types of tactics.
 The abstract class _Player_ is extended by different types of agents. The subclasses override the function _pick_card()_ and _guess_wins()_, in which the tactics are implemented. This way, we created two simple agents called the _RandomAgent_ (RA), which plays random cards, and the _GreedyAgent_ (GA), which plays the highest cards. The two subclasses that we mainly focussed on are the _GreedyKripkeAgent_ (GKA) and _FullKripkeAgent_ (FKA). These both make use of a Kripke model, to determine which cards to play. The GKA always tries to win a trick, using a set of rules based on a Kripke model. If a GKA has already won as much games, as he guessed, he will play a random card. The FKA also uses the same tactics as the GKA to win tricks, but also has a losing strategy. These exact rules of these strategies explained below in the section 'Strategy'.
 
-##### GameModel Class
+### GameModel Class
 
 The GameModel contains all the variables and functions to run the game. The function _next_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. It also lets the current player make a move.
 At the start of each round, the cards are dealt, a trump is chosen en the _opener_ is determined. In the next four steps, each player plays a card, which is added to the dictionary _table_. After the last player, _determine_winner()_ checks who played the winning card. That player becomes the new _opener_. After all the tricks of a round are finished, the points are calculated for each player. After the final round, the game ends.
@@ -367,81 +363,54 @@ The guessing is a very important part of the game. Since tactical guessing resul
 
 ## Experiments
 
-TODO
 To test the performance of the four different agents (Random, Greedy, GreedyKripke, FullKripke), they all played against eachother. The performance is averaged over 100.000 games.
 
-## TODO: Results
+## Results
+
+Table 6 shows the mean scores and standard deviation after four different agents have played 100.000 games against one another.
 
 <table style="width:100%">
-<caption>Table 2: Value of each rank. </caption>
+<caption>Table 6: Mean scores per player </caption>
   <tr>
     <th>Player</th>
-    <th>Score</th>
+    <th>Mean Score</th>
     <th>Standard Deviation
   </tr>
   <tr>
     <td>Greedy</td>
+    <td>20.89</td>
+    <td>15.82</td>
+  </tr>
+  <tr>
     <td>Greedy Kripke</td>
+    <td>22.87</td>
+    <td>15.54</td>
   </tr>
   <tr>
-    <td>Three</td>
-    <td>1</td>
+    <td>Full Kripke</td>
+    <td>22.77</td>
+    <td>15.57</td>
   </tr>
   <tr>
-    <td>Four</td>
-    <td>2</td>
-  </tr>
-  <tr>
-    <td>Five</td>
-    <td>3</td>
-  </tr>
-  <tr>
-    <td>Six</td>
-    <td>4</td>
-  </tr>
-  <tr>
-    <td>Seven</td>
-    <td>5</td>
-  </tr>
-  <tr>
-    <td>Eight</td>
-    <td>6</td>
-  </tr>
-  <tr>
-    <td>Nine</td>
-    <td>7</td>
-  </tr>
-  <tr>
-    <td>Ten</td>
-    <td>8</td>
-  </tr>
-  <tr>
-    <td>Jack</td>
-    <td>9</td>
-  </tr>
-  <tr>
-    <td>Queen</td>
-    <td>10</td>
-  </tr>
-  <tr>
-    <td>King</td>
-    <td>11</td>
-  </tr>
-  <tr>
-    <td>Ace</td>
-    <td>12</td>
+    <td>Random</td>
+    <td>-3.53</td>
+    <td>14.74</td>
   </tr>
 </table>
 
 ## Discussion
 
+The results in Table 6 show that Agents who use strategies which are based on Kripke knowledge (KGA, FKA) outperform simple agents (RA, GA). The RA clearly performs the worst, while the GKA performs the best.
+
 - GKA is very similar to Greedy (Almost always plays high cards)
   The GreedyKripkeAgent performs very similar to the GreedyAgent. This can be explained by the fact that there play style is very similar. They guess their wins using the same strategy and if they do not want to win a trick, they both play a random card. They only differ in their playing style when trying to win tricks. The GKA uses Kripke knowledge, where the GA always plays the highest card. However, the strategy of GKA often leads to playing the highest card, which results in similar play.
 
 - We only play with few cards
-  In our experiments we play 5 different rounds, with a maximum of 5 cards. We deliberately chose this setup, since with more cards the optimal strategy is more difficult to find. We therefore simplified the game to
+  In our experiments we play 5 different rounds, with a maximum of 5 cards. We deliberately chose this setup, since the optimal strategy is more difficult to find in games with more cards. We therefore simplified the game to enable us to heuristically create strategies based on Kripke models.
 - The Strategy based on kripke models is heuristically determined
+  The strategy based on the Kripke models is heuristically determined. The implemented strategies are based on our own experience of the game and therefore might be sub-optimal. This can obviously influence the conclusion of our experiments (weather or the use of Kripke models is useful in card games like this).
 - The guessing is similar across 3 of the agents
+
 - FKA loss-graph is not optimized (see Extensions)
 
 ## TODO: Conclusion
@@ -480,7 +449,7 @@ Currently, FKA is the only agent that uses the lose-graph. As mentioned before, 
 - Do those players still need a win, and will he try to win the trick? -> Yes
 - Play that highest non-trump suit card
 
-The second and third question are based on knowledge provided by the Kripke models. The second question can be answered by checking the Kripke models of higher trick suit cards (higher than the one the player is holding). If these models do not consider it possible that other players hold it, the question can be answered with 'Yes' (the questioning agent hold the highest). The third question can be answered by first checking if there are possible states in which the other players do not have trick suit cards, but still have trump cards. The fourth question is much more difficult to answer, since this question depends on the play style of other agents. Therefore, we
+The second and third question are based on knowledge provided by the Kripke models. The second question can be answered by checking the Kripke models of higher trick suit cards (higher than the one the player is holding). If these models do not consider it possible that other players hold it, the question can be answered with 'Yes' (the questioning agent hold the highest). The third question can be answered by first checking if there are possible states in which the other players do not have trick suit cards, but still have trump cards. The fourth question is much more difficult to answer, since this question depends on the play style of other agents. This considers knowledge that is not certain (will the player play that card?), which could be implemented using probabilities (is it a likely move). Since we believe these implementations are outside the scope of this project, we leave this for further research.
 
 ### Higher order Logic (K_1K_2)
 
