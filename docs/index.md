@@ -33,7 +33,7 @@ Next, _t_ = _n_ tricks are played, in which each player plays one card. During t
 
 ### Winning tricks
 
-The player who played the highest card during a trick, takes the trick. The cards follow the usual order, where 2 is the lowest and Ace is the highest (2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace). When a player plays a card of a different suit than the opener, it is considered the lowest and can never win. Trump cards, however, are always higher than the other cards.
+The player who played the highest card during a trick, takes the trick. The cards follow the usual order, where 2 is the lowest and Ace is the highest: (2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace). When a player plays a card of a different suit than the opener, it is considered the lowest and can never win. Trump cards, however, are always higher than the other cards.
 
 ### Number of cards
 
@@ -109,6 +109,10 @@ The full names and used abbreviations of the players, suits and ranks can be fou
     <td>South</td>
     <td>S</td>
   </tr>
+  <tr>
+    <td>West</td>
+    <td>W</td>
+  </tr>
 </table>
 
 <table style="width:100%">
@@ -116,6 +120,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
   <tr>
     <th>Name</th>
     <th>Abbreviation</th>
+  </tr>
   <tr>
     <td>Clubs</td>
     <td>C</td>
