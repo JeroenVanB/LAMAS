@@ -380,8 +380,8 @@ To test the performance of the four different agents (Random, Greedy, GreedyKrip
     <th>Standard Deviation
   </tr>
   <tr>
-    <td>Two</td>
-    <td>0</td>
+    <td>Greedy</td>
+    <td>Greedy Kripke</td>
   </tr>
   <tr>
     <td>Three</td>
@@ -476,7 +476,7 @@ Currently, FKA is the only agent that uses the lose-graph. As mentioned before, 
 - Do those players still need a win, and will he try to win the trick? -> Yes
 - Play that highest non-trump suit card
 
-The second and third question are based on knowledge provided by the Kripke models. The second question can be answered by checking the Kripke models of higher trick suit cards (higher than the one the player is holding). If these models do not consider it possible that other players hold it, the question can be answered with 'Yes' (the questioning agent hold the highest). The third question can be answered by first checking if there are possible states in which the other players do not have trick suit cards, but still have trump cards. The fourth question is much more difficult to answer, since this question depends on the play style of other agents.
+The second and third question are based on knowledge provided by the Kripke models. The second question can be answered by checking the Kripke models of higher trick suit cards (higher than the one the player is holding). If these models do not consider it possible that other players hold it, the question can be answered with 'Yes' (the questioning agent hold the highest). The third question can be answered by first checking if there are possible states in which the other players do not have trick suit cards, but still have trump cards. The fourth question is much more difficult to answer, since this question depends on the play style of other agents. Therefore, we
 
 ### Higher order Logic (K_1K_2)
 
