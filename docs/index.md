@@ -264,7 +264,7 @@ During the game only one instance of the Deck class is present. It keeps track o
 ##### Player Class
 
 The player class is an abstract class in which some basic functions are defined, such as _calculate\_score()_ and _play\_card()_. Many other functions consider finding a specific card of the player e.g. _get_highest\_card()_ and _get\_lowest\_card\_of\_suit()_. These functions are defined here, since they can be used in different types of tactics.
-The abstract class _Player_ is extended by different types of agents. The subclasses override the function _pick\_card()_ and _guess\_wins()_, in which the tactics are implemented. This way, we created two simple agents called the _RandomAgent_ (which plays random cards) and the _GreedyAgent_ (which plays the highest cards). The two subclasses that we mainly focussed on are the _GreedyKripkeAgent_ (GKA) and _FullKripkeAgent_ (FKA). These both make use of a Kripke model, to determine which cards to play. The GKA always tries to win a trick, using a set of rules based on a Kripke model. If a GKA has already won as much games, as he guessed, he will play a random card. The FKA also uses the same tactics as the GKA to win tricks, but also has a losing strategy. These exact rules of these strategies explained below in the section 'Strategy'.
+The abstract class _Player_ is extended by different types of agents. The subclasses override the function _pick\_card()_ and _guess\_wins()_, in which the tactics are implemented. This way, we created two simple agents called the _RandomAgent_ (RA), which plays random cards, and the _GreedyAgent_ (GA), which plays the highest cards. The two subclasses that we mainly focussed on are the _GreedyKripkeAgent_ (GKA) and _FullKripkeAgent_ (FKA). These both make use of a Kripke model, to determine which cards to play. The GKA always tries to win a trick, using a set of rules based on a Kripke model. If a GKA has already won as much games, as he guessed, he will play a random card. The FKA also uses the same tactics as the GKA to win tricks, but also has a losing strategy. These exact rules of these strategies explained below in the section 'Strategy'.
 ##### GameModel Class
 
 The GameModel contains all the variables and functions to run the game. The function _next\_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. It also lets the current player make a move.
@@ -386,11 +386,16 @@ To test the performance of the four different agents (Random, Greedy, GreedyKrip
 
 ### TODO: Results
 
-### TODO: Discussion
+### Discussion
+
 
 - GKA is very similar to Greedy (Almost always plays high cards)
+The GreedyKripkeAgent performs very similar to the GreedyAgent. This can be explained by the fact that there play style is very similar. They guess their wins using the same strategy and if they do not want to win a trick, they both play a random card. They only differ in their playing style when trying to win tricks. The GKA uses Kripke knowledge, where the GA always plays the highest card. However, the strategy of GKA often leads to playing the highest card, which results in similar play.
+
 - We only play with few cards
-- The Strategie based on kripke models is heuristically determined
+In our experiments we play 5 different rounds, with a maximum of 5 cards. We deliberately chose this setup, since with more cards the optimal strategy is more difficult to find. We therefore simplified the game to 
+- The Strategy based on kripke models is heuristically determined
+- The guessing is similar across 3 of the agents
 - FKA loss-graph is not optimized (see Extensions)
 
 ### TODO: Conclusion
