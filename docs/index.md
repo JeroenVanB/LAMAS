@@ -201,14 +201,14 @@ The full names and used abbreviations of the players, suits and ranks can be fou
   </tr>
 </table>
 
-#### Example 1 - Announcement 'Played card'
+### Example 1 - Announcement 'Played card'
 
 If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore.
 the public announcement changes the common knowledge as follows:
 
 <img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
 
-#### Example 2 - Announcement 'Does not have suit'
+### Example 2 - Announcement 'Does not have suit'
 
 Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts.
 In formal, the public announcement changes the common knowledge as follows:
