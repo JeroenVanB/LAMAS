@@ -22,7 +22,8 @@ class FullKripkePlayer(Player):
                 if self.kb.other_players_have_suit(self.game_model.trump):
                     # check if I have the highest trump
                     trump_cards = self.get_trump_cards()
-                    card = self.kb.get_highest_card_of_suit(self.game_model.trump)
+                    card = self.kb.get_highest_card_of_suit(
+                        self.game_model.trump)
                     if trump_cards and card.owner == self:  # I have highest trump card
                         return card
                     else:
@@ -89,7 +90,8 @@ class FullKripkePlayer(Player):
                                 if self.highest_trump_of_table().evaluate(
                                     self.game_model.trump, self.game_model.trick_suit
                                 ) > self.get_highest_card(
-                                    self.get_cards_of_suit(self.game_model.trump)
+                                    self.get_cards_of_suit(
+                                        self.game_model.trump)
                                 ).evaluate(
                                     self.game_model.trump, self.game_model.trick_suit
                                 ):
@@ -97,7 +99,8 @@ class FullKripkePlayer(Player):
                                     return self.get_lowest_card()
                                 else:
                                     return self.get_highest_card(
-                                        self.get_cards_of_suit(self.game_model.trump)
+                                        self.get_cards_of_suit(
+                                            self.game_model.trump)
                                     )
                             else:
 
@@ -148,14 +151,15 @@ class FullKripkePlayer(Player):
                             return self.get_highest_card(self.get_cards_of_suit(self.game_model.trick_suit))
                         else:  # Play the highest trick suit card that still loses
                             highest_losing = self.get_highest_card_below(
-                                self.get_cards_of_suit(self.game_model.trick_suit),
+                                self.get_cards_of_suit(
+                                    self.game_model.trick_suit),
                                 self.game_model.highest_card_of_table()
                             )
                             if highest_losing is not None:
                                 return highest_losing
                             else:
                                 return self.get_highest_card(self.get_cards_of_suit(self.game_model.trick_suit))
-                else: # He does not have trick suit
+                else:  # He does not have trick suit
                     self.game_model.make_announcement(
                         sender=self,
                         card=None,
@@ -184,18 +188,11 @@ class FullKripkePlayer(Player):
         total_value_hand = 0
         mean_value_hand = 0
         for c in self.kb.own_cards:
-            total_value_hand += c.evaluate(trump=trump, trick_suit=None)
+            total_value_hand += c.pre_evaluate(trump=trump)
         mean_value_hand = total_value_hand / len(self.kb.own_cards)
 
-        # Calculate the average value of a card in the game
-        total_value_game = 0
-        mean_value_game = 0
-        for c in self.kb.all_cards:
-            total_value_game += c.evaluate(trump=trump, trick_suit=None)
-        mean_value_game = total_value_game / len(self.kb.all_cards)
-
         # Normalize the value
-        normalized_value_hand = mean_value_hand / mean_value_game
+        normalized_value_hand = mean_value_hand / self.game_model.mean_card_value
 
         # If the cards are evaluated far below the mean
         if normalized_value_hand < 0.8:

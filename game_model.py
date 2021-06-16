@@ -31,6 +31,7 @@ class GameModel:
         self.cur_trick = 0
         self.cur_player = 0
         self.finished = False
+        self.mean_card_value = 0
 
         self.deal_cards(self.cards_per_round[self.cur_round])
         for p in self.players:
@@ -114,6 +115,7 @@ class GameModel:
             self.trump = self.pick_trump()
             opener = self.get_opener()
             self.order_players(opener)
+            self.calculate_mean_card_value()
             self.make_guesses(self.trump, self.cards_per_round[self.cur_round])
             self.status += [
                 f"Trump is {self.trump.name}, {opener.name} has to open the game"
@@ -136,7 +138,7 @@ class GameModel:
         Returns:
             list: The Players that still need to play a card
         """
-        return self.players[self.cur_player + 1 : len(self.players)]
+        return self.players[self.cur_player + 1: len(self.players)]
 
     def make_guesses(self, trump, n_cards):
         """Let all the players guess how many tricks they will win in the next round
@@ -170,7 +172,7 @@ class GameModel:
         self.remaining_cards = self.deck.cards
         assert len(self.deck.cards) == len(self.players) * n_cards
         for idx, p in enumerate(self.players):
-            p.set_cards(self.deck.cards[idx * n_cards : (1 + idx) * n_cards])
+            p.set_cards(self.deck.cards[idx * n_cards: (1 + idx) * n_cards])
             p.set_all_cards(self.deck.cards)
 
     def reset_table(self):
@@ -219,15 +221,15 @@ class GameModel:
         Returns:
             Player: The winner of the trick
         """
-        
+
         return self.highest_card_of_table().owner
-    
+
     def highest_card_of_table(self):
         """Get the highest card of the table
 
         Returns:
             Card: The highest card of the table
-        """        
+        """
         highest_value = 0
         card = None
         for _, c in self.table.items():
@@ -248,14 +250,16 @@ class GameModel:
             card (Card): The card that the sender played
             announcement_type (AnnouncementType): The type of announcement which is send to all the players
         """
-        public_announcement = PublicAnnouncement(sender, announcement_type, card)
+        public_announcement = PublicAnnouncement(
+            sender, announcement_type, card)
         for player in self.players:
             player.receive_announcement(public_announcement)
 
         # Show messages in the UI
         msg = []
         if announcement_type == AnnouncementType.card_played:
-            msg += [f"Public Announcement: Player {sender.name} plays {card.name}"]
+            msg += [
+                f"Public Announcement: Player {sender.name} plays {card.name}"]
         elif announcement_type == AnnouncementType.does_not_have_suit:
             msg += [
                 f"Public Announcement: Player {sender.name} does not have suit {Suit(self.trick_suit).name}"
@@ -273,6 +277,13 @@ class GameModel:
             if c is not None and c.suit == self.trump:
                 return True
         return False
+
+    def calculate_mean_card_value(self):
+        """ Calculate the mean value of a card in the game. """
+        total_value_game = 0
+        for c in self.deck.cards:
+            total_value_game += c.pre_evaluate(trump=self.trump)
+        self.mean_card_value = total_value_game / len(self.deck.cards)
 
 
 if __name__ == "__main__":

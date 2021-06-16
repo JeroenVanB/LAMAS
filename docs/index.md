@@ -1,3 +1,9 @@
+
+
+
+
+
+
 ## LAMAS Project --- BoerenBridge
 
 By Daan Krol (s3142221),
@@ -7,7 +13,7 @@ Julian Bruinsma (s3215601)
 ### Introduction
 <!-- Ook een soort van abstract -->
 
-In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project we are testing the capabilities of agents using kripke knowlegde by comparing them with simple agents.
+In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project we are testing the performance of agents that use Kripke knowlegde and compare it with agents that use simple tactics that are not based on Kripke knowledge.
 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
@@ -264,13 +270,22 @@ The abstract class _Player_ is extended by different types of agents. The subcla
 The GameModel contains all the variables and functions to run the game. The function _next\_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. It also lets the current player make a move.
 At the start of each round, the cards are dealt, a trump is chosen en the _opener_ is determined. In the next four steps, each player plays a card, which is added to the dictionary _table_. After the last player, _determine\_winner()_ checks who played the winning card. That player becomes the new _opener_. After all the tricks of a round are finished, the points are calculated for each player. After the final round, the game ends.
 
-##### TODO: Knowledge_base class
+##### Knowledge_base class
 The _KnowledgeBase_ class is constructed to represent the knowledge of every player during the game.  It initizales the knowledge base by considering it possible that every other player has a card _unless_ it has the card itself. This is done by the function _knowledge\_of\_remaining\_cards\_in\_deck()_. To set the knowledge of the player itself, the function _set\_knowledge\_of\_own\_hand()_ is used. The function _remove\_card_ is used to remove a card from the the knowledge base of the player if the card is played by another player. The belief about the cards in the game are also determined using the functions _get\_highest\_card\_of\_suit()_ and _get\_highest\_non\_trump\_cards()_ that return the highest card of a suit and the highest trump card that are currently in the game, respectively. 
 The knowledge base also contains the belief about which cards are in the game and what player might have a certain card. Using the function _other\_players\_have\_suit()_ it is determined if another player might also have the suit that you want to play. The function _player\_might\_have\_suit()_ determines the belief of a player that other players might have a card of a certain suit. 
 
 
 ##### TODO: Announcement class (and how the announcements are used to update the kripke model)
-To use PAL in the game model, a _PublicAnnouncement_ class is created. If a player plays a card or cannot follow suit, he sends an announcement to all the other players in the game, which then update the corresponding Kripke model. If a player receives the announcement 'card\_played', he removes all the relations in the Kripke model of that card. Since the card has been played, the players should not consider it possible for another player to have the card. If a player receive the announcement 'does\_not\_have\_suit', the Kripke models are updated by removing the relations of the sender in the kripke models of all possible cards of the trick suit.
+To use PAL in the game model, a _PublicAnnouncement_ class is created. If a player plays a card or cannot follow suit, he sends an announcement to all the other players in the game, which then update the corresponding Kripke model. If a player receives the announcement 'card\_played', the player now does no longer consider that the other players have the card. The worlds and relations are updated accordingly to reflect this change. In the Kripke Model Viewer we show the Kripke models for a card for all players.
+<!--  Hier even mooi plaatje in zetten -->
+
+<p float="left">
+  <img src="knowledge_before_announcement.png" width="100" />
+  <img src="game_UI.png" width="100" />
+</p>
+
+
+he removes all the relations in the Kripke model of that card. Since the card has been played, the players should not consider it possible for another player to have the card. If a player receives the announcement 'does\_not\_have\_suit', the Kripke models are updated by removing the relations of the sender in the Kripke models of all possible cards of the trick suit.
 
 #FIXME: kan denk ik wel duidelijker. ook even methods erbij denk ik #FIXME 2: Mss afbeeldingen erbij van hoe het geupdate wordt?
 
@@ -311,6 +326,8 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 
 ### Strategy
+
+##### Playing cards
 
 The Greedy Kripke Agent and Full Kripke Agent use the Kripke models to determine which card to play. The GKA is greedy, since he only has a strategy to win a trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the win-graph below (made with draw.io).
 
@@ -354,12 +371,11 @@ Examples of applied strategies:
 
   The player wants to lose all following tricks, since he has already reached his goal. High (non-trump) cards are likely to win tricks. It is difficult to lose tricks with them. Therefore, it is a good habit to play them when someone else has played a trump card.
 
+Unfortunately, the lose-gaph does not use make use of Kripke knowledge. The graph was heuristically created to optimize the play of the agent. We did think of some exceptional rules that do take the Kripke knowledge into account, but these situations are very rare. An example is explained in the section 'Possible Extensions'
 
+##### Guessing
 
-TODO: Explain how we implemented the guessing
-
-
-The guessing is a very important part of the game. In the normal (non-simplified) version of the game a player can often win by guessing that he will not win a single trick. Players can actually receive bonus points when they guess 0 and the round contains more than 6 cards. When guessing 0 wins, the player has to switch to a whole new tactic which is not greedy. He has to make sure that he can throw away his high cards without ever winning a round with one. Since 'tactical guessing' results in rather complex behavior we leave it as a possible extension for future work. However 'greedy guessing', guessing how much you will actually win, is implemented in our project. The Greedy Kripke Player has to make assumptions about the score of his cards based on the knowledge it has over the other cards and the current trump suit.
+The guessing is a very important part of the game. Since tactical guessing results in rather complex behavior we heuristically determined two simple approaches. The RandomAgent randomly guesses a number between 0 and the amount of tricks. All the other agents use a system in which uses a the average mean of the cards (_mean\_value\_hand_) in the hand is compared to the mean value of all the cards in the game (_mean\_value\_game_). These values are calculated using the function _pre\_evaluate()_ in the Card class, which take the trump into account (but ignores the trick suit, since there is none). If the _mean\_value\_hand_ is less than 90% of _mean\_value\_game_, the player guesses 0 tricks. If it is between 90% and 110% of _mean\_value\_game_, the player guesses he will win 1 trick. Between 110% and 130%, he guesses 2 tricks. For more than 130%, the player guesses to win all tricks, which is 4. This method uses all the available knowledge at the start of the game: w
 
 
 ### Experiments
