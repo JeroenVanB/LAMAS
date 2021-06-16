@@ -275,8 +275,8 @@ The knowledge base also contains the belief about which cards are in the game an
 To use PAL in the game model, a _PublicAnnouncement_ class is created. If a player plays a card or cannot follow suit, he sends an announcement to all the other players in the game, which then update the corresponding Kripke model. If a player receives the announcement 'card_played', the player now does no longer consider that the other players have the card. The worlds and relations are updated accordingly to reflect this change. In the Kripke Model Viewer we show the Kripke models for a card for all players.
 
 <p style='display: block;margin-left: auto; margin-right: auto;'>
-  <img src="knowledge_before_announcement.png" width="100" />
-  <img src="knowledge_after_announcement.png" width="100" />
+  <img src="knowledge_before_announcement.png" width="50%" />
+  <img src="knowledge_after_announcement.png" width="50%" />
 </p>
 
 Here above are two images of the Kripke Model viewer for the Queen of Spades. On the left we see the model before player East has made a move. Players North and South consider it possible that player East has the card. In the right image the same model can be observed after player East has made a move. East had to follow the suit of player North but he wasn't able to do so. A public announcement 'does_not_have_suit' is sent and received by all players. All players now know that player East does not have any Spades and they update all Kripke models of the Spade cards. In the Kripke Model viewer we now observe that no player thinks it is possible that East has the Queen of Spades as there are no relations, visualized by lines, to the "East has card" world.
