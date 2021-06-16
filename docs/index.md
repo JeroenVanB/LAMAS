@@ -12,7 +12,8 @@ In this project, we are going to analyze the application of Kripke knowledge in 
 
 <!-- ##### TODO Research question/Wat gaan we onderzoeken/testen (moet dit bij experiments als extra?) -->
 
-## Game Rules
+## Game Rules 
+
 
 ### Variations
 
