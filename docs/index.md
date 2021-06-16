@@ -380,7 +380,7 @@ Table 6 shows the mean scores and standard deviation after four different agents
   <tr>
     <th>Player</th>
     <th>Mean Score</th>
-    <th>Standard Deviation
+    <th>Standard Deviation</th>
   </tr>
   <tr>
     <td>Greedy</td>
@@ -416,7 +416,7 @@ The results in Table 6 show that Agents who use strategies which are based on Kr
 - The Strategy based on Kripke models is heuristically determined
   The strategy based on the Kripke models is heuristically determined. The implemented strategies are based on our own experience of the game and therefore might be sub-optimal. This can obviously influence the conclusion of our experiments (weather or the use of Kripke models is useful in card games like this).
 - The guessing is similar across 3 of the agents
-
+  The implementation of the guesses is similar across the three agents GA, GKA and FKA. 
 - FKA loss-graph is not optimized (see Extensions)
 
 ## TODO: Conclusion
