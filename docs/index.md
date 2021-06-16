@@ -38,7 +38,7 @@ The player who played the highest card during a trick, takes the trick. The card
 ### Number of cards
 
 The number of cards depend on the number of rounds. The number of rounds can is determined by the players beforehand. We chose to play 5 rounds.
-In every round _r_, the players is dealt _t<sub>r</sub>_ cards. First, starting in the first round with _t<sub>1</sub>_ = 3. In each following round, every player is given _t<sub>r</sub>_ = _t<sub>r-1</sub>_+1 cards, up to 5 cards in total (in round 3). Then, starting with 2 more rounds are played, where the amount of cards decreases by 1. The game ends after round 5, where \_n<sub>5</sub>=3. See the table below for clarification.
+In every round _r_, the players is dealt _t<sub>r</sub>_ cards. First, starting in the first round with _t<sub>1</sub> = 3_. In each following round, every player is given _t<sub>r</sub> = t<sub>r-1</sub> + 1_ cards, up to 5 cards in total (in round 3). Then, starting with 2 more rounds are played, where the amount of cards decreases by 1. The game ends after round 5, where _n<sub>5</sub> = 3_. See the table below for clarification.
 To decrease the possible states, we minimized the amount of cards used in the game. This way it is known which cards are in the game and which are not. E.g. in round 1, only the (Queen, King, Ace) of all the suits are used. This is also clarified in the table below.
 
 <!-- | Round  | Number of cards  | Cards                      |
@@ -87,7 +87,7 @@ To decrease the possible states, we minimized the amount of cards used in the ga
 
 Every time a player plays a card, he makes an announcement. By using Public Announcement Logic (PAL), we can reduce the amount of possible states in the Kripke models. By using PAL, we can increase the common knowledge in the game. Since the announcements are always true, and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states. This can eliminate the possibilities of players having certain cards. Therefore, an announcement can result in common knowledge. For a more formal proof of the relation between PAL and common knowledge we refer to the book by _Dynamic Epistemic Logic_ by _Hans van Ditmarsch_.
 
-To formalize the model we use the following notation: _x_S_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
+To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
 
 The full names and used abbreviations of the players, suits and ranks can be found in the tables 1, 2, and 3, respectively.
 
