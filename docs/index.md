@@ -382,11 +382,7 @@ To test the performance of the four different agents (Random, Greedy, GreedyKrip
 
 ## Results
 
-Table 6 shows the mean scores and standard deviation after four different agents have played 100.000 games against one another.
-
-TODO change result (wrong starting player)
-
-kan dit weg? de todo? nee
+Table 6 shows the mean scores and standard deviation after four different agents have played 100.000 games against one another. We can see that the standard deviation is relatively large. This is due to the fact that a winning player wins 10 points plus two times the number of tricks it has won. However, if it does not reach its number of tricks or it gets too many tricks it gets negative points. This is a fine line between winning and losing, which is why the scores can differ throughout the game, even with good tactics. 
 
 <table style="width:100%">
 <caption>Table 6: Mean scores per player </caption>
