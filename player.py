@@ -26,7 +26,7 @@ class Player(ABC):
 
         self.wins = 0
         self.guessed_wins = 0
-        self.opener = self.seat == Seat.NORTH
+        self.opener = False
         self.kb = None
 
     def set_game_model(self, game_model):
@@ -74,7 +74,7 @@ class Player(ABC):
             self.guessed_wins = x
 
     def reset(self):
-        """Reset the amounf of wins and guessed wins"""
+        """Reset the amount of wins and guessed wins"""
         self.wins = 0
         self.guessed_wins = 0
 

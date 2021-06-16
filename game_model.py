@@ -38,6 +38,9 @@ class GameModel:
             p.reset()
             p.reset_knowledgebase()
             p.kb.set_game_model(self)
+        
+        # let a random player start the very first hand
+        random.choice(self.players).opener = True
 
         self.status = ["Starting a round of Boeren Bridge!"] + [
             f"Round {idx+1} is played with {c} cards"
@@ -199,7 +202,7 @@ class GameModel:
         raise Exception("Error: Opener could not be found")
 
     def order_players(self, opener):
-        """Order the players in self.players in the order in which the cards will be playerd
+        """Order the players in self.players in the order in which the cards will be played
 
         Args:
             opener (Player): The opener of the next trick
