@@ -38,6 +38,10 @@ Julian Bruinsma (s3215601)
 <!-- 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small> -->
 
+
+Final todo's:
+- Check usage Player vs Agent
+- Check if greedy kripke always plays using graph (not random if he reached the guesses)
 ## Introduction
 
 In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project we are testing the performance of agents that use Kripke knowledge and compare it with agents that use simple tactics that are not based on Kripke knowledge.
@@ -481,15 +485,21 @@ Table 7 shows the mean wins and standard deviation after four different agents h
 The results in Table 6 show that Agents who use strategies which are based on Kripke knowledge (KGA, FKA) outperform simple agents (RA, GA). The RA clearly performs the worst, while the GKA performs the best.
 
 - GKA is very similar to Greedy (Almost always plays high cards)
-  The GreedyKripkeAgent performs very similar to the GreedyAgent. This can be explained by the fact that there play style is very similar. They guess their wins using the same strategy and if they do not want to win a trick, they both play a random card. They only differ in their playing style when trying to win tricks. The GKA uses Kripke knowledge, where the GA always plays the highest card. However, the strategy of GKA often leads to playing the highest card, which results in similar play.
+  The GreedyKripkeAgent performs very similar to the GreedyAgent. This can be explained by the fact that their playstyle is very similar. They guess their wins using the same strategy and if they do not want to win a trick, they both play a random card. They only differ in their playing style when trying to win tricks. The GKA uses Kripke knowledge, where the GA always plays the highest card. However, the strategy of GKA often leads to playing the highest card, which results in similar play.
 
 - We only play with few cards
-  In our experiments we play 5 different rounds, with a maximum of 5 cards. We deliberately chose this setup, since the optimal strategy is more difficult to find in games with more cards. We therefore simplified the game to enable us to heuristically create strategies based on Kripke models.
-- The Strategy based on Kripke models is heuristically determined
+  In our experiments we play 5 different rounds, with a maximum of 5 cards. We deliberately chose this setup, since the optimal strategy is more difficult to find in games with more cards. As with more cards the strategy can be much more complex than the one that the agents use. We therefore simplified the game to enable us to heuristically create strategies based on Kripke models. This might thus not be a completely good representation of the real game but that was not the point of this project. 
+  
+  The Greedy agent will always pick his highest card from his hand. This will result in the agent having played all its high cards at the start of the game. When the game is almost over he will not have any high cards and can lose the game. We did not observe this effect when using only 
+  
+  
+- The Strategy based on Kripke models is heuristically determined (and FKA loss-graph is not optimized (see Extensions))
   The strategy based on the Kripke models is heuristically determined. The implemented strategies are based on our own experience of the game and therefore might be sub-optimal. This can obviously influence the conclusion of our experiments (weather or the use of Kripke models is useful in card games like this).
+  Also the losing strategy of the FKA is heuristically determined. This can influence the results in the same way.
+  
 - The guessing is similar across 3 of the agents
-  The implementation of the guesses is similar across the three agents GA, GKA and FKA. To confirm the influence of the Kripke models on the capabilities of the agents, we also tested the agents in a setup where they always tried to win. They did not use their losing strategies, when they reached their guessed wins, but instead 
-- FKA loss-graph is not optimized (see Extensions)
+  A player can only obtain points if he guesses his wins correctly. The implementation of the guesses is the same across the three agents GA, GKA and FKA. To confirm the influence of the Kripke models on the capabilities of the agents, we also tested the agents in a setup where they always tried to win. I.e. they did not use their losing strategies, when they reached their guessed wins. These results are shown in Table 7. The difference in score indicates how well the differen strategies work. When an agent tries to win, the strategie of the GKA and FKA outperforms the GA and RA.
+  
 
 ## Possible extensions
 
@@ -533,4 +543,5 @@ TODO: Uitwerken punten
 -Make use of the fact that a player uses a certain strategy for playing cards
 -Not that well applicable for games with few cards
 
-Currently, we only make use of PAL and first order knowledge. After an announcement a player knows something about someone else, but we do not represent that the player knows the other players know that he knows. 
+Currently, we only make use of PAL and first order knowledge. After an announcement a player knows something about someone else, but we do not represent that the player knows the other players know that he knows. As in our implementation the agent only uses a strategy for both guessing and playing cards, it is not necessary to use higher order knowledge. 
+For guessing, the player only needs to know the value of its cards. He does not know the cards of the other players and it does not matter if he knows that they know that. 
