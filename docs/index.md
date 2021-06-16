@@ -34,7 +34,6 @@ Julian Bruinsma (s3215601)
 - [Possible extensions](#possible-extensions)
   * [Q-learning](#q-learning)
   * [Tactical guessing](#tactical-guessing)
-  * [TODO: Explain how the lose graph can be updated so it used Kripke knowledge:](#todo--explain-how-the-lose-graph-can-be-updated-so-it-used-kripke-knowledge-)
   * [Kipke knowledge in lose-graph](#kipke-knowledge-in-lose-graph)
   * [Higher order Logic (K_1K_2)](#higher-order-logic--k-1k-2-)
 <!-- 
@@ -410,41 +409,13 @@ To test the performance of the four different agents (Random, Greedy, GreedyKrip
 ## Results
 
 Table 6 shows the mean scores and standard deviation after four different agents have played 100.000 games against one another.
+
 TODO change result (wrong starting player)
+
+kan dit weg? de todo? nee
 
 <table style="width:100%">
 <caption>Table 6: Mean scores per player </caption>
-  <tr>
-    <th>Player</th>
-    <th>Wins</th>
-    <th>Standard Deviation</th>
-  </tr>
-  <tr>
-    <td>Greedy</td>
-    <td>20.89</td>
-    <td>15.82</td>
-  </tr>
-  <tr>
-    <td>Greedy Kripke</td>
-    <td>22.87</td>
-    <td>15.54</td>
-  </tr>
-  <tr>
-    <td>Full Kripke</td>
-    <td>22.77</td>
-    <td>15.57</td>
-  </tr>
-  <tr>
-    <td>Random</td>
-    <td>-3.53</td>
-    <td>14.74</td>
-  </tr>
-</table>
-
-Table 7 shows the mean wins and standard deviation after four different agents have played 100.000 games against one another.
-
-<table style="width:100%">
-<caption>Table 7: Mean scores per player </caption>
   <tr>
     <th>Player</th>
     <th>Mean Score</th>
@@ -472,6 +443,40 @@ Table 7 shows the mean wins and standard deviation after four different agents h
   </tr>
 </table>
 
+Table 7 shows the mean wins and standard deviation after four different agents have played 100.000 games against one another, while aiming for the most wins. Note that the GreedyKripkeAgent and FullKripkeAgent use the same strategy to win. Therefore, the results are the same.
+
+<table style="width:100%">
+<caption>Table 7: Mean scores per player </caption>
+  <tr>
+    <th>Player</th>
+    <th>Wins</th>
+    <th>Standard Deviation</th>
+  </tr>
+  <tr>
+    <td>Greedy</td>
+    <td>4.66</td>
+    <td>2.17</td>
+  </tr>
+  <tr>
+    <td>Greedy Kripke</td>
+    <td>5.00</td>
+    <td>2.18</td>
+  </tr>
+  <tr>
+    <td>(Full Kripke)</td>
+    <td>(4.99)</td>
+    <td>(2.18)</td>
+  </tr>
+  <tr>
+    <td>Random</td>
+    <td>4.35</td>
+    <td>2.08</td>
+  </tr>
+</table>
+
+
+
+
 ## Discussion
 
 The results in Table 6 show that Agents who use strategies which are based on Kripke knowledge (KGA, FKA) outperform simple agents (RA, GA). The RA clearly performs the worst, while the GKA performs the best.
@@ -484,7 +489,7 @@ The results in Table 6 show that Agents who use strategies which are based on Kr
 - The Strategy based on Kripke models is heuristically determined
   The strategy based on the Kripke models is heuristically determined. The implemented strategies are based on our own experience of the game and therefore might be sub-optimal. This can obviously influence the conclusion of our experiments (weather or the use of Kripke models is useful in card games like this).
 - The guessing is similar across 3 of the agents
-  The implementation of the guesses is similar across the three agents GA, GKA and FKA. 
+  The implementation of the guesses is similar across the three agents GA, GKA and FKA. To confirm the influence of the Kripke models on the capabilities of the agents, we also tested the agents in a setup where they always tried to win. They did not use their losing strategies, when they reached their guessed wins, but instead 
 - FKA loss-graph is not optimized (see Extensions)
 
 ## TODO: Conclusion
@@ -511,8 +516,6 @@ Our implementation of the game is a simplified version because of time constrain
 
 It would be interesting to extend the Q-learning approach mentioned above with tactical guessing. A second neural network could be used to make a correct guess and to chose which tactic to apply: greedy or non-greedy.
 
-### TODO: Explain how the lose graph can be updated so it used Kripke knowledge:
-
 ### Kipke knowledge in lose-graph
 
 Currently, FKA is the only agent that uses the lose-graph. As mentioned before, the implemented strategies do not use Kripke knowledge, since it would be excessive for the current setup. However, the strategies can be extended by applying more rules, which do make use of Kripke knowledge. Consider the following example for a losing strategy:
@@ -532,3 +535,5 @@ TODO: Uitwerken punten
 -Make use of the fact that a player uses a certain strategy for guessing
 -Make use of the fact that a player uses a certain strategy for playing cards
 -Not that well applicable for games with few cards
+
+Currently, we only make use of PAL and first order knowledge. After an announcement a player knows something about someone else, but we do not represent that the player knows they know that he knows. 
