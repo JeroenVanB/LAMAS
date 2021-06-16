@@ -319,12 +319,12 @@ We build an agent that determines which card to play, based on Kripke knowledge.
 
 The Greedy Kripke Agent and Full Kripke Agent use the Kripke models to determine which card to play. The GKA is greedy, since he only has a strategy to win a trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the win-graph below (made with draw.io).
 
-[![](greedy_kripke.jpg)Rules for winning using a kripke model](greedy_kripke.jpg)
+[![](greedy_kripke.jpg)Rules for winning using a Kripke model](greedy_kripke.jpg)
 
 The FKA extends the GKA, by also using applying moves based on strategy to deliberatly lose tricks when the guessed wins are already reached. The strategy for losing is also presended in the lose-graph.
-TODO mention that the lose-graph does not yet make use of kripke knowledge. This can be done in the future (ref to possible extensions)
+TODO mention that the lose-graph does not yet make use of Kripke knowledge. This can be done in the future (ref to possible extensions)
 
-[![](kripke_graph_lose.jpg)Rules for losing using a kripke model](kripke_graph_lose.jpg)
+[![](kripke_graph_lose.jpg)Rules for losing using a Kripke model](kripke_graph_lose.jpg)
 
 Examples of applied strategies:
 
@@ -337,7 +337,7 @@ Examples of applied strategies:
   - Does he have the highest trump card? -> Yes
   - Play the highest trump card
 
-  The question 'Do the others till have trump cards?' can be answered by using the kripke models. If the player considers it possible that one of the players owns a trump card, the answer to the question is yes. In other rounds trump cards can be used to 'steal' tricks from the player that played the highest (non trump) trick suit card. Therefore, opening with the highest trump card is a good habit, which forces the other players to play their trump cards. This way, the opener will remain the opener in the next round, in which stealing tricks is less likely (since there are less trump cards in the game).
+  The question 'Do the others till have trump cards?' can be answered by using the Kripke models. If the player considers it possible that one of the players owns a trump card, the answer to the question is yes. In other rounds trump cards can be used to 'steal' tricks from the player that played the highest (non trump) trick suit card. Therefore, opening with the highest trump card is a good habit, which forces the other players to play their trump cards. This way, the opener will remain the opener in the next round, in which stealing tricks is less likely (since there are less trump cards in the game).
 
 - When a player knows that he has the highest card of the trick suit, playing that card will often win the trick (GKA/FKA)
 
@@ -413,7 +413,7 @@ The results in Table 6 show that Agents who use strategies which are based on Kr
 
 - We only play with few cards
   In our experiments we play 5 different rounds, with a maximum of 5 cards. We deliberately chose this setup, since the optimal strategy is more difficult to find in games with more cards. We therefore simplified the game to enable us to heuristically create strategies based on Kripke models.
-- The Strategy based on kripke models is heuristically determined
+- The Strategy based on Kripke models is heuristically determined
   The strategy based on the Kripke models is heuristically determined. The implemented strategies are based on our own experience of the game and therefore might be sub-optimal. This can obviously influence the conclusion of our experiments (weather or the use of Kripke models is useful in card games like this).
 - The guessing is similar across 3 of the agents
 
@@ -443,7 +443,7 @@ Our implementation of the game is a simplified version because of time constrain
 
 It would be interesting to extend the Q-learning approach mentioned above with tactical guessing. A second neural network could be used to make a correct guess and to chose which tactic to apply: greedy or non-greedy.
 
-### TODO: Explain how the lose graph can be updated so it used kripke knowledge:
+### TODO: Explain how the lose graph can be updated so it used Kripke knowledge:
 
 ### Kipke knowledge in lose-graph
 
