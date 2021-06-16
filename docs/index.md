@@ -30,7 +30,6 @@ Julian Bruinsma (s3215601)
 - [Experiments](#experiments)
 - [Results](#results)
 - [Discussion](#discussion)
-- [TODO: Conclusion](#todo--conclusion)
 - [Possible extensions](#possible-extensions)
   * [Q-learning](#q-learning)
   * [Tactical guessing](#tactical-guessing)
@@ -492,8 +491,6 @@ The results in Table 6 show that Agents who use strategies which are based on Kr
   The implementation of the guesses is similar across the three agents GA, GKA and FKA. To confirm the influence of the Kripke models on the capabilities of the agents, we also tested the agents in a setup where they always tried to win. They did not use their losing strategies, when they reached their guessed wins, but instead 
 - FKA loss-graph is not optimized (see Extensions)
 
-## TODO: Conclusion
-
 ## Possible extensions
 
 ### Q-learning
@@ -536,4 +533,4 @@ TODO: Uitwerken punten
 -Make use of the fact that a player uses a certain strategy for playing cards
 -Not that well applicable for games with few cards
 
-Currently, we only make use of PAL and first order knowledge. After an announcement a player knows something about someone else, but we do not represent that the player knows they know that he knows. 
+Currently, we only make use of PAL and first order knowledge. After an announcement a player knows something about someone else, but we do not represent that the player knows the other players know that he knows. 
