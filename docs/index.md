@@ -53,7 +53,7 @@ All code of this project can be found in the [Github repository](https://github.
 
 ### Variations
 
-There are many variants of the game: 'Oh hell!', 'Wizard' or 'Nomination Whist'. We decided to implement a version, which we usually play. To prevent state explosion, we simplified some game rules, e.g. the number of cards. We implemented a version with 5 rounds and only the highest cards of the normal deck of cards are used. The trump changes each round and is chosen randomly.
+There are many variants of the game: 'Oh hell!', 'Wizard' or 'Nomination Whist'. We decided to implement a version which we usually play. To prevent state explosion, we simplified some game rules, e.g. the number of cards. We implemented a version with 5 rounds and only the highest cards of the normal deck of cards are used. The trump changes each round and is chosen randomly.
 
 ### Points
 
