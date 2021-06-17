@@ -208,7 +208,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
 If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). First the knowledge is updated in the current round to show that North has the card.
 The public announcement changes the common knowledge as follows:
 
-<img src="announcement_plays_card_in_round.png" alt="Formal definition of the announcement 'Played card'">
+<img src="announcement_plays_card_in_round.png" alt="Formal definition of the announcement 'Played card'", width="450>
 
 Then, after the round has finished, the knowledge is updated and indicates that no one has the Ace of Spades anymore. 
 
@@ -219,7 +219,7 @@ Then, after the round has finished, the knowledge is updated and indicates that 
 Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. For every card with the Hearts suit the state "East has card" is eliminated.
 In formal, the public announcement changes the common knowledge as follows:
 
-<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="400">
+<img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="450">
 
 ## Game implementation
 
