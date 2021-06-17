@@ -40,17 +40,13 @@ Julian Bruinsma (s3215601)
 
 
 Final todo's:
-- Check usage Player vs Agent
-- Check if greedy kripke always plays using graph (not random if he reached the guesses)
 - 'Website' layout
-- Remove "???" from tactic flowchart
 ## Introduction
 
 In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the number of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project, we are testing the performance of agents that use Kripke knowledge and compare it with agents that use simple tactics that are not based on Kripke knowledge.
 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
-<!-- ##### TODO Research question/Wat gaan we onderzoeken/testen (moet dit bij experiments als extra?) -->
 
 ## Game Rules 
 
@@ -440,12 +436,7 @@ Table 7 shows the mean wins and standard deviation after four different agents h
 </table>
 
 
-
-
 ## Discussion
-
-TODO update: GKA does not outperform GA (GreedyKipke is better, see average tricks won. He just does not stop winning. He's out of control!)
-TODO: Discuss why GKA is better than FKA
 
 The results in Table 6 show that agents who use strategies which are based on Kripke knowledge (GKA, FKA) outperform simple agents (RA, GA). The RA clearly performs the worst, while the GKA performs the best.
 
@@ -500,12 +491,6 @@ Currently, FKA is the only agent that uses the lose-graph. As mentioned before, 
 The second and third question are based on knowledge provided by the Kripke models. The second question can be answered by checking the Kripke models of higher trick suit cards (higher than the one the player is holding). If these models do not consider it possible that other players hold it, the question can be answered with 'Yes' (the questioning agent holds the highest). The third question can be answered by first checking if there are possible states in which the other players do not have trick suit cards, but still have trump cards. The fourth question is much more difficult to answer, since this question depends on the play style of other agents. This considers knowledge that is not certain (will the player play that card?), which could be implemented using probabilities (is it a likely move). Since we believe these implementations are outside the scope of this project, we leave this for further research.
 
 ### Higher order Logic (K_1K_2)
-
-<!-- TODO: Uitwerken punten
--We only use PAL and K1
--Make use of the fact that a player uses a certain strategy for guessing
--Make use of the fact that a player uses a certain strategy for playing cards
--Not that well applicable for games with few cards -->
 
 Currently, we only make use of PAL and first order knowledge. After an announcement a player knows something about someone else, but we do not represent that the player knows the other players know that he knows. As in our implementation the agent only uses a strategy for both guessing and playing cards, it is not necessary to use higher order knowledge. 
 For guessing, the player only needs to know the value of his cards. He does not know the cards of the other players and it does not matter if he knows that they know that. In other versions of Boeren Bridge players receive a bonus if they guess 0 wins and get it correctly. This requires more complex behavior, in terms of tactical guessing. While he might be able to win a trick, he wil deliberately lose tricks, to receive bonus points. When a player guesses 0 it might be possible that he is using tactical guessing or that he really has bad cards. When a player knows that another player knows that he is tactical guessing, he might have to change some of his tactics. Future research could take a bigger focus on this form of higher order logic.
