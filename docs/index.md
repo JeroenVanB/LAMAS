@@ -208,7 +208,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
 If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). First the knowledge is updated in the current round to show that North has the card.
 The public announcement changes the common knowledge as follows:
 
-<img src="announcement_plays_card_in_round.png" alt="Formal definition of the announcement 'Played card' when in round", width="450>
+<img src="announcement_plays_card_in_round.png" alt="Formal definition of the announcement 'Played card' when in round" width="450>
 
 Then, after the round has finished, the knowledge is updated and indicates that no one has the Ace of Spades anymore. 
 
