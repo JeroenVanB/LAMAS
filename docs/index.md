@@ -4,56 +4,47 @@ Julian Bruinsma (s3215601)
 
 - [Introduction](#introduction)
 - [Game Rules](#game-rules)
-  * [Variations](#variations)
-  * [Points](#points)
-  * [Gameplay](#gameplay)
-  * [Winning tricks](#winning-tricks)
-  * [Number of cards](#number-of-cards)
+  - [Variations](#variations)
+  - [Points](#points)
+  - [Gameplay](#gameplay)
+  - [Winning tricks](#winning-tricks)
+  - [Number of cards](#number-of-cards)
 - [Formalization](#formalization)
-  * [Example 1: Announcement 'Played card'](#example-1--announcement--played-card-)
-  * [Example 2: Announcement 'Does not have suit'](#example-2--announcement--does-not-have-suit-)
+  - [Example 1: Announcement 'Played card'](#example-1--announcement--played-card-)
+  - [Example 2: Announcement 'Does not have suit'](#example-2--announcement--does-not-have-suit-)
 - [Game implementation](#game-implementation)
-  * [Card Class](#card-class)
-  * [Deck Class](#deck-class)
-  * [Player Class](#player-class)
-  * [GameModel Class](#gamemodel-class)
-  * [Knowledge_base class](#knowledge-base-class)
-  * [Announcement class](#announcement-class)
+  - [Card Class](#card-class)
+  - [Deck Class](#deck-class)
+  - [Player Class](#player-class)
+  - [GameModel Class](#gamemodel-class)
+  - [Knowledge_base class](#knowledge-base-class)
+  - [Announcement class](#announcement-class)
 - [Visualization](#visualization)
-  * [Game UI](#game-ui)
-  * [Message box](#message-box)
-  * [Kripke Model Viewer](#kripke-model-viewer)
-  * [Kripke implementation](#kripke-implementation)
+  - [Game UI](#game-ui)
+  - [Message box](#message-box)
+  - [Kripke Model Viewer](#kripke-model-viewer)
+  - [Kripke implementation](#kripke-implementation)
 - [Strategy](#strategy)
-  * [Playing cards](#playing-cards)
-  * [Guessing](#guessing)
+  - [Playing cards](#playing-cards)
+  - [Guessing](#guessing)
 - [Experiments](#experiments)
 - [Results](#results)
 - [Discussion](#discussion)
 - [Possible extensions](#possible-extensions)
-  * [Q-learning](#q-learning)
-  * [Tactical guessing](#tactical-guessing)
-  * [Kipke knowledge in lose-graph](#kipke-knowledge-in-lose-graph)
-  * [Higher order Logic (K_1K_2)](#higher-order-logic--k-1k-2-)
-<!-- 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small> -->
+  - [Q-learning](#q-learning)
+  - [Tactical guessing](#tactical-guessing)
+  - [Kipke knowledge in lose-graph](#kipke-knowledge-in-lose-graph)
+  - [Higher order Logic (K_1K_2)](#higher-order-logic--k-1k-2-)
+  <!--
+  <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small> -->
 
-
-Final todo's:
-- Check usage Player vs Agent
-- Check if greedy kripke always plays using graph (not random if he reached the guesses)
-- 'Website' layout
-- Remove "???" from tactic flowchart
 ## Introduction
 
 In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the number of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project, we are testing the performance of agents that use Kripke knowledge and compare it with agents that use simple tactics that are not based on Kripke knowledge.
 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
-<!-- ##### TODO Research question/Wat gaan we onderzoeken/testen (moet dit bij experiments als extra?) -->
-
-## Game Rules 
-
+## Game Rules
 
 ### Variations
 
@@ -124,9 +115,10 @@ To decrease the possible states, we minimized the number of cards used in the ga
 </table>
 
 ## Formalization
+
 To formalize the game we make use of Public Announcement Logic (PAL) to update the Kripke S5 models, to which we will refer as Kripke models for convenience. Every time a player plays a card, he makes an announcement. By using PAL, we can reduce the number of possible states in the Kripke models and increase the common knowledge in the game. Since the announcements are always true and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states, and even result in some possible states to be eliminated. This can eliminate the possibilities of players having certain cards. Therefore, an announcement can result in common knowledge. For a more formal proof of the relation between PAL and common knowledge we refer to the book by _Dynamic Epistemic Logic_ by _Hans van Ditmarsch_.
 
-To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
+To formalize the model we use the following notation: _x_S_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
 
 The full names and used abbreviations of the players, suits and ranks can be found in the tables 2, 3, and 4, respectively.
 
@@ -208,14 +200,14 @@ The full names and used abbreviations of the players, suits and ranks can be fou
 
 ### Example 1: Announcement 'Played card'
 
-If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore and the state is eliminated. 
+If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore and the state is eliminated.
 the public announcement changes the common knowledge as follows:
 
 <img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
 
 ### Example 2: Announcement 'Does not have suit'
 
-Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. For every card with the Hearts suit the state "East has card" is eliminated. 
+Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. For every card with the Hearts suit the state "East has card" is eliminated.
 In formal, the public announcement changes the common knowledge as follows:
 
 <img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="400">
@@ -262,29 +254,29 @@ During the game only one instance of the Deck class is present. It keeps track o
 
 ### Player Class
 
-The player class is an abstract class in which some basic functions are defined, such as _calculate_score()_ and _play\_card()_. Many other functions consider finding a specific card of the player e.g. _get\_highest\_card()_ and _get\_lowest\_card\_of\_suit()_. These functions are defined here, since they can be used in different types of tactics.
-The abstract class _Player_ is extended by different types of agents. The subclasses override the function _pick\_card()_ and _guess\_wins()_, in which the tactics are implemented. This way, we created two simple agents called the _RandomAgent_ (RA), which plays random cards, and the _GreedyAgent_ (GA), which always plays the highest cards. The two subclasses that we mainly focussed on are the _GreedyKripkeAgent_ (GKA) and _FullKripkeAgent_ (FKA). These both make use of a Kripke model, to determine which cards to play. The GKA always tries to win a trick, using a set of rules based on a Kripke model. The FKA also uses the same tactics as the GKA to win tricks, but also has a losing strategy. These exact implementation of these strategies is explained below in the section 'Strategy'.
+The player class is an abstract class in which some basic functions are defined, such as _calculate_score()_ and _play_card()_. Many other functions consider finding a specific card of the player e.g. _get_highest_card()_ and _get_lowest_card_of_suit()_. These functions are defined here, since they can be used in different types of tactics.
+The abstract class _Player_ is extended by different types of agents. The subclasses override the function _pick_card()_ and _guess_wins()_, in which the tactics are implemented. This way, we created two simple agents called the _RandomAgent_ (RA), which plays random cards, and the _GreedyAgent_ (GA), which always plays the highest cards. The two subclasses that we mainly focused on are the _GreedyKripkeAgent_ (GKA) and _FullKripkeAgent_ (FKA). These both make use of a Kripke model, to determine which cards to play. The GKA always tries to win a trick, using a set of rules based on a Kripke model. The FKA also uses the same tactics as the GKA to win tricks, but also has a losing strategy. These exact implementation of these strategies is explained below in the section 'Strategy'.
 
 ### GameModel Class
 
-The GameModel contains all the variables and functions to run the game. The function _next\_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. It also lets the current player make a move.
-At the start of each round, the cards are dealt, a trump is chosen and the _opener_ is determined. In the next four steps, each player plays a card, which is added to the dictionary _table_. After the last player, _determine\_winner()_ checks who played the winning card. That player becomes the new _opener_. After all the tricks of a round are finished, the points are calculated for each player. After the final round, the game ends.
+The GameModel contains all the variables and functions to run the game. The function _next_move()_ keeps being executed in the main loop. It determines whose turn it is and checks if a trick, round or game should start or end. It also lets the current player make a move.
+At the start of each round, the cards are dealt, a trump is chosen and the _opener_ is determined. In the next four steps, each player plays a card, which is added to the dictionary _table_. After the last player, _determine_winner()_ checks who played the winning card. That player becomes the new _opener_. After all the tricks of a round are finished, the points are calculated for each player. After the final round, the game ends.
 
 ### Knowledge_base class
 
-The _KnowledgeBase_ class is constructed to represent the knowledge of every player during the game. It initizales the knowledge base by considering it possible that every other player has a card _unless_ it has the card itself. This is done by the function _knowledge_of_remaining_cards_in_deck()_. To set the knowledge of the player itself, the function _set_knowledge_of_own_hand()_ is used. The function _remove\_card_ is used to remove a card from the the knowledge base of the player if the card is played by another player. The belief about the cards in the game are also determined using the functions _get\_highest\_card\_of\_suit()_ and _get\_highest\_non\_trump\_cards()_ that return the highest card of a suit and the highest trump card that are currently in the game, respectively.
-The knowledge base also contains the belief about which cards are in the game and what player might have a certain card. Using the function _other\_players\_have\_suit()_ it is determined if another player might also have the suit that you want to play. The function _player\_might\_have\_suit()_ determines the belief of a player that other players might have a card of a certain suit.
+The _KnowledgeBase_ class is constructed to represent the knowledge of every player during the game. It initializes the knowledge base by considering it possible that every other player has a card _unless_ it has the card itself. This is done by the function _knowledge_of_remaining_cards_in_deck()_. To set the knowledge of the player itself, the function _set_knowledge_of_own_hand()_ is used. The function _remove_card_ is used to remove a card from the the knowledge base of the player if the card is played by another player. The belief about the cards in the game are also determined using the functions _get_highest_card_of_suit()_ and _get_highest_non_trump_cards()_ that return the highest card of a suit and the highest trump card that are currently in the game, respectively.
+The knowledge base also contains the belief about which cards are in the game and what player might have a certain card. Using the function _other_players_have_suit()_ it is determined if another player might also have the suit that you want to play. The function _player_might_have_suit()_ determines the belief of a player that other players might have a card of a certain suit.
 
 ### Announcement class
 
-To use PAL in the game model, a _PublicAnnouncement_ class is created. If a player plays a card or cannot follow suit, he sends an announcement to all the other players in the game, which is then used to update the corresponding Kripke model. If a player receives the announcement 'card\_played', the player now does no longer consider that the other players have the card. The worlds and relations are updated accordingly to reflect this change. In the Kripke Model Viewer we show the Kripke models for a card for all players.
+To use PAL in the game model, a _PublicAnnouncement_ class is created. If a player plays a card or cannot follow suit, he sends an announcement to all the other players in the game, which is then used to update the corresponding Kripke model. If a player receives the announcement 'card_played', the player now does no longer consider that the other players have the card. The worlds and relations are updated accordingly to reflect this change. In the Kripke Model Viewer we show the Kripke models for a card for all players.
 
 <p style='display: block;margin-left: auto; margin-right: auto;'>
   <img src="knowledge_before_announcement.png" width="49%" />
   <img src="knowledge_after_announcement.png" width="49%" />
 </p>
 
-Above are two images of the Kripke Model viewer for the Queen of Spades. On the left we see the model before player East has made a move. Players North and South consider it possible that player East has the card. In the right image the same model can be observed after player East has made a move. East had to follow the suit of player North but he wasn't able to do so. A public announcement 'does\_not\_have\_suit' is sent and received by all players. All players now know that player East does not have any Spades and they update all Kripke models of the Spade cards. In the Kripke Model viewer we now observe that no player thinks it is possible that East has the Queen of Spades as there are no relations, visualized by lines, to the "East has card" world.
+Above are two images of the Kripke Model viewer for the Queen of Spades. On the left we see the model before player East has made a move. Players North and South consider it possible that player East has the card. In the right image the same model can be observed after player East has made a move. East had to follow the suit of player North but he wasn't able to do so. A public announcement 'does_not_have_suit' is sent and received by all players. All players now know that player East does not have any Spades and they update all Kripke models of the Spade cards. In the Kripke Model viewer we now observe that no player thinks it is possible that East has the Queen of Spades as there are no relations, visualized by lines, to the "East has card" world.
 
 ## Visualization
 
@@ -298,9 +290,7 @@ The left hand side of the UI shows the game information such as the current roun
 
 ### Message box
 
-To give the user a better overview of what is happening in the game and models, we added a status box at the bottom. This box shows messages such as who's turn it is to play, what the trump is for this round or what the current trick suit is. All public announcements can be observed here so that the user has a better understanding of the changes to the Kripke models. In the image above you can find that player West had to change it's guess since it is not allowed for the sum of guess to be equal to the number of tricks in the game. 
-
-<!-- #TODO add image or refer to another image?? -->
+To give the user a better overview of what is happening in the game and models, we added a status box at the bottom. This box shows messages such as who's turn it is to play, what the trump is for this round or what the current trick suit is. All public announcements can be observed here so that the user has a better understanding of the changes to the Kripke models. In the image above you can find that player West had to change it's guess since it is not allowed for the sum of guess to be equal to the number of tricks in the game.
 
 ### Kripke Model Viewer
 
@@ -324,8 +314,7 @@ The Greedy Kripke agent (GKA) and Full Kripke agent (FKA) use the Kripke models 
 
 [![](greedy_kripke.jpg)Rules for winning using a Kripke model](greedy_kripke.jpg)
 
-The FKA extends the GKA, by also using applying moves based on strategy to deliberatly lose tricks when the guessed wins are already reached. The strategy for losing is also presended in the lose-graph.
-
+The FKA extends the GKA, by also using applying moves based on strategy to deliberately lose tricks when the guessed wins are already reached. The strategy for losing is also presented in the lose-graph.
 
 [![](kripke_graph_lose.jpg)Rules for losing using a Kripke model](kripke_graph_lose.jpg)
 
@@ -369,15 +358,15 @@ Unfortunately, the lose-graph does not use make use of Kripke knowledge. The gra
 
 ### Guessing
 
-The guessing is a very important part of the game. Since tactical guessing results in rather complex behavior we heuristically determined two simple approaches. The Random agent randomly guesses a number between 0 and the number of tricks. All the other agents use a system in which the average mean of the cards (_mean\_value\_hand_) in the hand is compared to the mean value of all the cards in the game (_mean\_value\_game_). These values are calculated using the function _pre\_evaluate()_ in the Card class, which takes the trump into account but ignores the trick suit, since there is none. If the _mean\_value\_hand_ is less than 90% of _mean\_value\_game_, the player guesses 0 tricks. If it is between 90% and 110% of _mean\_value\_game_, the player guesses he will win 1/4th of the total trick. Between 110% and 130%, he guesses 2/4ths of the total tricks. For more than 130%, the player guesses to win all tricks. This method uses all the available knowledge at the start of the game: which cards the player has and which other cards are in the game.
+The guessing is a very important part of the game. Since tactical guessing results in rather complex behavior we heuristically determined two simple approaches. The Random agent randomly guesses a number between 0 and the number of tricks. All the other agents use a system in which the average mean of the cards (_mean_value_hand_) in the hand is compared to the mean value of all the cards in the game (_mean_value_game_). These values are calculated using the function _pre_evaluate()_ in the Card class, which takes the trump into account but ignores the trick suit, since there is none. If the _mean_value_hand_ is less than 90% of _mean_value_game_, the player guesses 0 tricks. If it is between 90% and 110% of _mean_value_game_, the player guesses he will win 1/4th of the total trick. Between 110% and 130%, he guesses 2/4ths of the total tricks. For more than 130%, the player guesses to win all tricks. This method uses all the available knowledge at the start of the game: which cards the player has and which other cards are in the game.
 
 ## Experiments
 
-To test the performance of the four different agents, Random, Greedy, Greedy Kripke and Full Kripke, they all played against eachother. The performance is averaged over 100.000 games.
+To test the performance of the four different agents, Random, Greedy, Greedy Kripke and Full Kripke, they all played against each other. The performance is averaged over 100.000 games.
 
 ## Results
 
-Table 6 shows the mean scores and standard deviation after four different agents have played 100.000 games against one another. We can see that the standard deviation is relatively large. This is due to the fact that a winning player wins 10 points plus two times the number of tricks it has won. However, if it does not reach its number of tricks or it gets too many tricks it gets negative points. This is a fine line between winning and losing, which is why the scores can differ throughout the game, even with good tactics. 
+Table 6 shows the mean scores and standard deviation after four different agents have played 100.000 games against one another. We can see that the standard deviation is relatively large. This is due to the fact that a winning player wins 10 points plus two times the number of tricks it has won. However, if it does not reach its number of tricks or it gets too many tricks it gets negative points. This is a fine line between winning and losing, which is why the scores can differ throughout the game, even with good tactics.
 
 <table style="width:100%">
 <caption>Table 6: Mean scores per player </caption>
@@ -439,31 +428,31 @@ Table 7 shows the mean wins and standard deviation after four different agents h
   </tr>
 </table>
 
-
-
-
 ## Discussion
 
-TODO update: GKA does not outperform GA (GreedyKipke is better, see average tricks won. He just does not stop winning. He's out of control!)
-TODO: Discuss why GKA is better than FKA
+<!-- TODO update: GKA does not outperform GA (GreedyKipke is better, see average tricks won. He just does not stop winning. He's out of control!)
+TODO: Discuss why GKA is better than FKA -->
 
 The results in Table 6 show that agents who use strategies which are based on Kripke knowledge (GKA, FKA) outperform simple agents (RA, GA). The RA clearly performs the worst, while the GKA performs the best.
 
 <!-- - GKA is very similar to the Greedy agent. (Almost always plays high cards) -->
-  The Greedy Kripke agent performs very similar to the Greedy agent. This can be explained by the fact that their playstyle is very similar. They guess their wins using the same strategy and try to win as many tricks as possible. The only difference in their playing style is how they try to win the the tricks. The GKA uses Kripke knowledge, where the GA always plays the highest card. However, the strategy of GKA often leads to playing the highest card, which results in similar play.
+
+The Greedy Kripke agent performs very similar to the Greedy agent. This can be explained by the fact that their playstyle is very similar. They guess their wins using the same strategy and try to win as many tricks as possible. The only difference in their playing style is how they try to win the the tricks. The GKA uses Kripke knowledge, where the GA always plays the highest card. However, the strategy of GKA often leads to playing the highest card, which results in similar play.
 
 <!-- - We only play with few cards -->
-  In our experiments we play 5 different rounds, with a maximum of 5 cards. We deliberately chose this setup, since the optimal strategy is more difficult to find in games with more cards. As with more cards the strategy can be much more complex than the one that the agents use. We therefore simplified the game to enable us to heuristically create strategies based on Kripke models. This might thus not be a complete representation of the real game but that was not the goal of this project. 
-  
-  The Greedy agent will always pick his highest card from his hand. As this strategy could work when there are few cards in the game, when more cards are added the higher the possibility that it will have no high cards left in his hands and will not reach its guess. It will also continue with a winning strategy even if it has reached its guess. In contrast, the Full Kripke agent is implemented such that it tries to win tricks by playing its lowest card that still wins. This will result in higher cards at the end of the game and could increase the probability of reaching the guess. Additionally, it does not try to win when it has already reached its guess. 
-  
+
+In our experiments we play 5 different rounds, with a maximum of 5 cards. We deliberately chose this setup, since the optimal strategy is more difficult to find in games with more cards. As with more cards the strategy can be much more complex than the one that the agents use. We therefore simplified the game to enable us to heuristically create strategies based on Kripke models. This might thus not be a complete representation of the real game but that was not the goal of this project.
+
+The Greedy agent will always pick his highest card from his hand. As this strategy could work when there are few cards in the game, when more cards are added the higher the possibility that it will have no high cards left in his hands and will not reach its guess. It will also continue with a winning strategy even if it has reached its guess. In contrast, the Full Kripke agent is implemented such that it tries to win tricks by playing its lowest card that still wins. This will result in higher cards at the end of the game and could increase the probability of reaching the guess. Additionally, it does not try to win when it has already reached its guess.
+
 <!-- - The Strategy based on Kripke models is heuristically determined (and FKA loss-graph is not optimized (see Extensions)) -->
-  The strategy based on the Kripke models is heuristically determined. The implemented strategies are based on our own experience of the game and therefore might be sub-optimal. This can obviously influence the conclusion of our experiments, if Kripke knowledge is useful in this card game. Also the losing strategy of the FKA is heuristically determined. This can influence the results in the same way.
-  
+
+The strategy based on the Kripke models is heuristically determined. The implemented strategies are based on our own experience of the game and therefore might be sub-optimal. This can obviously influence the conclusion of our experiments, if Kripke knowledge is useful in this card game. Also the losing strategy of the FKA is heuristically determined. This can influence the results in the same way.
+
 <!-- - The guessing is similar across 3 of the agents -->
-  A player can only obtain points if he guesses his wins correctly. The implementation of the guesses is the same across the three agents GA, GKA and FKA. To confirm the influence of the Kripke models on the capabilities of the agents, we also tested the agents in a setup where they always tried to win. I.e. they did not use their losing strategies, when they reached their guessed wins. These results are shown in Table 7. The difference in score indicates how well the different strategies work. When an agent tries to win, the strategy of the GKA and FKA outperforms the GA and RA.
-  These results might also explain why the GA outperforms the GKA in the game results of Table 6. It might be possible that the GKA has a better winning strategy and exceeds his guesses more often. This results in a lower overall score, due to the negative points it gets when exceeding the guesses.
-  
+
+A player can only obtain points if he guesses his wins correctly. The implementation of the guesses is the same across the three agents GA, GKA and FKA. To confirm the influence of the Kripke models on the capabilities of the agents, we also tested the agents in a setup where they always tried to win. I.e. they did not use their losing strategies, when they reached their guessed wins. These results are shown in Table 7. The difference in score indicates how well the different strategies work. When an agent tries to win, the strategy of the GKA and FKA outperforms the GA and RA.
+These results might also explain why the GA outperforms the GKA in the game results of Table 6. It might be possible that the GKA has a better winning strategy and exceeds his guesses more often. This results in a lower overall score, due to the negative points it gets when exceeding the guesses.
 
 ## Possible extensions
 
@@ -473,13 +462,13 @@ A possible extension for inferring tactics is implementing a (Deep) Q-Learning a
 
 The card game can be seen as a Markov Decision Process (MDP). We will define the state, action and reward as the following:
 
-- State _S_: A list of 52 one hot encoded vectors, one for every card. Each card representation consist of 4 bits, one for every player. Here a 1 will represent a possible owner, and 0 otherwise. 
+- State _S_: A list of 52 one hot encoded vectors, one for every card. Each card representation consist of 4 bits, one for every player. Here a 1 will represent a possible owner, and 0 otherwise.
 - Action _A_: A list of 52 possible cards to play. Since the player only has a subset of these cards, the possible actions can be reduced, based on the available cards.
-- Reward _R(s,a)_: Results in a 1 for a win, and a 0 for a loss. The effect of using the real in-game score rewards could also be used. 
+- Reward _R(s,a)_: Results in a 1 for a win, and a 0 for a loss. The effect of using the real in-game score rewards could also be used.
 
 Using the representation of the MDP we can use Q-learning in combination with a multilayer perceptron as a function approximator. This function will approximate Policy P, which is choosing the action with the highest expected reward.
 
-The implementation of such an algorithm is not the main goal of the course, but it could be interesting to combine Kripke models with a deep reinforcement learning algorithm. After training, the influence of different Kripke models on the tactics of the algorithm can be investigated. To see if the Kripke models can actually benefit the Q-learning agent, its performance could be compared to that of a greedy Kripke agent (without Q-learning) or to Q-learning agent that uses a different state represenation that does not contain Kripke knowledge. 
+The implementation of such an algorithm is not the main goal of the course, but it could be interesting to combine Kripke models with a deep reinforcement learning algorithm. After training, the influence of different Kripke models on the tactics of the algorithm can be investigated. To see if the Kripke models can actually benefit the Q-learning agent, its performance could be compared to that of a greedy Kripke agent (without Q-learning) or to Q-learning agent that uses a different state representation that does not contain Kripke knowledge.
 
 ### Tactical guessing
 
@@ -507,7 +496,7 @@ The second and third question are based on knowledge provided by the Kripke mode
 -Make use of the fact that a player uses a certain strategy for playing cards
 -Not that well applicable for games with few cards -->
 
-Currently, we only make use of PAL and first order knowledge. After an announcement a player knows something about someone else, but we do not represent that the player knows the other players know that he knows. As in our implementation the agent only uses a strategy for both guessing and playing cards, it is not necessary to use higher order knowledge. 
+Currently, we only make use of PAL and first order knowledge. After an announcement a player knows something about someone else, but we do not represent that the player knows the other players know that he knows. As in our implementation the agent only uses a strategy for both guessing and playing cards, it is not necessary to use higher order knowledge.
 For guessing, the player only needs to know the value of his cards. He does not know the cards of the other players and it does not matter if he knows that they know that. In other versions of Boeren Bridge players receive a bonus if they guess 0 wins and get it correctly. This requires more complex behavior, in terms of tactical guessing. While he might be able to win a trick, he wil deliberately lose tricks, to receive bonus points. When a player guesses 0 it might be possible that he is using tactical guessing or that he really has bad cards. When a player knows that another player knows that he is tactical guessing, he might have to change some of his tactics. Future research could take a bigger focus on this form of higher order logic.
 
-There are other complex behaviours wich allow the implementation of higher order logic. Consider a situation where Player South needs one more win, to correctly obtain his guessed amount of wins. He has one high card that certainly wins (e.g. the highest trump card), and a few other cards, which might win in the future. Instead of directly playing his high card, he decided to play the other cards first. This way he is more likely to lose these other tricks, since there are more cards in the game. This increases his chances to correcly obtain the guessed amount of wins. Another player (e.g. player North) notices that South plays this losing card, while he still requires a win. By observing this behaviour, player North is able to figure out that South still holds a very high card. Player North knows that Player South knows that South is holding a very high card. In further research, this extra knowledge about the knowledge of other players can be used for tactical play.
+There are other complex behaviors which allow the implementation of higher order logic. Consider a situation where Player South needs one more win, to correctly obtain his guessed amount of wins. He has one high card that certainly wins (e.g. the highest trump card), and a few other cards, which might win in the future. Instead of directly playing his high card, he decides to play the other cards first. This way he is more likely to lose these other tricks, since there are more cards in the game. This increases his chances to correctly obtain the guessed amount of wins. Another player (e.g. player North) notices that South plays this losing card, while he still requires a win. By observing this behavior, player North is able to figure out that South still holds a very high card. Player North knows that Player South knows that South is holding a very high card. In future research, this extra knowledge about the knowledge of other players can be used for tactical play.
