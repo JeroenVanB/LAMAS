@@ -206,7 +206,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
 ### Example 1: Announcement 'Played card'
 
 If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore and the state is eliminated.
-the public announcement changes the common knowledge as follows:
+The public announcement changes the common knowledge as follows:
 
 <img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
 
@@ -363,7 +363,7 @@ Unfortunately, the lose-graph does not use make use of Kripke knowledge. The gra
 
 ### Guessing
 
-The guessing is a very important part of the game. Since tactical guessing results in rather complex behavior we heuristically determined two simple approaches. The Random agent randomly guesses a number between 0 and the number of tricks. All the other agents use a system in which the average mean of the cards (_mean_value_hand_) in the hand is compared to the mean value of all the cards in the game (_mean_value_game_). These values are calculated using the function _pre_evaluate()_ in the Card class, which takes the trump into account but ignores the trick suit, since there is none. If the _mean_value_hand_ is less than 90% of _mean_value_game_, the player guesses 0 tricks. If it is between 90% and 110% of _mean_value_game_, the player guesses he will win 1/4th of the total trick. Between 110% and 130%, he guesses 2/4ths of the total tricks. For more than 130%, the player guesses to win all tricks. This method uses all the available knowledge at the start of the game: which cards the player has and which other cards are in the game.
+The guessing is a very important part of the game. Since tactical guessing results in rather complex behavior we heuristically determined two simple approaches. The Random agent randomly guesses a number between 0 and the number of tricks. All the other agents use a system in which the average mean of the cards (_mean_value_hand_) in the hand is compared to the mean value of all the cards in the game (_mean_value_game_). These values are calculated using the function _pre_evaluate()_ in the Card class, which takes the trump into account but ignores the trick suit, since there is none. If the _mean_value_hand_ is less than 90% of _mean_value_game_, the player guesses 0 tricks. If it is between 90% and 110% of _mean_value_game_, the player guesses he will win 1/4th of the total tricks. Between 110% and 130%, he guesses 2/4ths of the total tricks. For more than 130%, the player guesses to win all tricks. This method uses all the available knowledge at the start of the game: which cards the player has and which other cards are in the game.
 
 ## Experiments
 
