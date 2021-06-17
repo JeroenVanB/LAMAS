@@ -123,7 +123,7 @@ To decrease the possible states, we minimized the number of cards used in the ga
 
 To formalize the game we make use of Public Announcement Logic (PAL) to update the Kripke S5 models, to which we will refer as Kripke models for convenience. Every time a player plays a card, he makes an announcement. By using PAL, we can reduce the number of possible states in the Kripke models and increase the common knowledge in the game. Since the announcements are always true and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states, and even result in some possible states to be eliminated. This can eliminate the possibilities of players having certain cards. Therefore, an announcement can result in common knowledge. For a more formal proof of the relation between PAL and common knowledge we refer to the book by _Dynamic Epistemic Logic_ by _Hans van Ditmarsch_.
 
-To formalize the model we use the following notation: _x_S_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
+To formalize the model we use the following notation: _x_S_r_, where _x_ ∈ \{N, E, S, W\}, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
 
 The full names and used abbreviations of the players, suits and ranks can be found in the tables 2, 3, and 4, respectively.
 
