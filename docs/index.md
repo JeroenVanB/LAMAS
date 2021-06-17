@@ -300,7 +300,7 @@ The left hand side of the UI shows the game information such as the current roun
 
 To give the user a better overview of what is happening in the game and models, we added a status box at the bottom. This box shows messages such as who's turn it is to play, what the trump is for this round or what the current trick suit is. All public announcements can be observed here so that the user has a better understanding of the changes to the Kripke models. In the image above you can find that player West had to change it's guess since it is not allowed for the sum of guess to be equal to the number of tricks in the game. 
 
-#TODO add image or refer to another image??
+<!-- #TODO add image or refer to another image?? -->
 
 ### Kripke Model Viewer
 
@@ -320,12 +320,12 @@ North has just opened the game and a public announcement is made that he played 
 
 ### Playing cards
 
-The Greedy Kripke Agent and Full Kripke Agent use the Kripke models to determine which card to play. The GKA is greedy, since he only has a strategy to win a trick. Since a good strategy can become very complex (especially in a programming language), the rules are also presented in the win-graph below (made with draw.io).
+The Greedy Kripke agent (GKA) and Full Kripke agent (FKA) use the Kripke models to determine which card to play. The GKA is greedy, since he only has a strategy to win a trick. Since a good strategy can become very complex to read (especially in a programming language), the rules are also presented in the win-graph below (made with draw.io).
 
 [![](greedy_kripke.jpg)Rules for winning using a Kripke model](greedy_kripke.jpg)
 
 The FKA extends the GKA, by also using applying moves based on strategy to deliberatly lose tricks when the guessed wins are already reached. The strategy for losing is also presended in the lose-graph.
-TODO mention that the lose-graph does not yet make use of Kripke knowledge. This can be done in the future (ref to possible extensions)
+
 
 [![](kripke_graph_lose.jpg)Rules for losing using a Kripke model](kripke_graph_lose.jpg)
 
@@ -352,9 +352,10 @@ Examples of applied strategies:
   - Does he have the highest trick suit card? -> Yes
   - Play the highest trick suit card
 
-  The agent has to make assumptions about the game in order to play a good strategy. In the win-graph one of the questions is "Does he have the highest trick suit card?". Using his knowledge about all possible trick cards in the game, the agent can make the right move. However, it is not always certain if the other players still have trick suit cards. If they don't, they might use a trump card to win the trick anyway. This shows that our graph is not certain of leading to a win, but we believe it definitely has a high chance of doing so.
+  The agent has to make assumptions about the game in order to play a good strategy. In the win-graph one of the questions is "Does he have the highest trick suit card?". Using his knowledge about all possible trick cards in the game, the agent can make the right move. However, it is not always certain if the other players still have trick suit cards. If they don't, they might use a trump card to win the trick anyway. This shows that our graph is not certain of leading to a win, but we believe it definitely has a higher probability of doing so.
 
 - A player already has reached his guessed wins, so he wants to lose tricks. In a trick, another player played a trump card. He does have the highest trick suit card in the game, so he plays it. (FKA)
+
   This strategy is implemented in the lose-graph in the following path:
 
   - Is he the opener? -> No
@@ -362,17 +363,17 @@ Examples of applied strategies:
   - Did someone play a trump card? -> Yes
   - Play the highest trick suit card
 
-  The player wants to lose all following tricks, since he has already reached his goal. High (non-trump) cards are likely to win tricks. It is difficult to lose tricks with them. Therefore, it is a good habit to play them when someone else has played a trump card.
+  The player wants to lose all following tricks, since he has already reached his goal. High, non-trump cards are likely to win tricks. It is difficult to lose tricks with them. Therefore, it is a good habit to play them when someone else has played a trump card.
 
-Unfortunately, the lose-graph does not use make use of Kripke knowledge. The graph was heuristically created to optimize the play of the agent. We did think of some exceptional rules that do take the Kripke knowledge into account, but these situations are very rare. An example is explained in the section 'Possible Extensions'
+Unfortunately, the lose-graph does not use make use of Kripke knowledge. The graph was heuristically created to optimize the play of the agent. We did think of some exceptional rules that do take the Kripke knowledge into account, but these situations are very rare. An example is explained in the section 'Possible Extensions'.
 
 ### Guessing
 
-The guessing is a very important part of the game. Since tactical guessing results in rather complex behavior we heuristically determined two simple approaches. The RandomAgent randomly guesses a number between 0 and the number of tricks. All the other agents use a system in which uses a the average mean of the cards (_mean_value_hand_) in the hand is compared to the mean value of all the cards in the game (_mean_value_game_). These values are calculated using the function _pre_evaluate()_ in the Card class, which take the trump into account (but ignores the trick suit, since there is none). If the _mean_value_hand_ is less than 90% of _mean_value_game_, the player guesses 0 tricks. If it is between 90% and 110% of _mean_value_game_, the player guesses he will win 1/4th of the total trick. Between 110% and 130%, he guesses 2/4ths of the total tricks. For more than 130%, the player guesses to win all tricks. This method uses all the available knowledge at the start of the game: which cards the player has and which other cards are in the game.
+The guessing is a very important part of the game. Since tactical guessing results in rather complex behavior we heuristically determined two simple approaches. The Random agent randomly guesses a number between 0 and the number of tricks. All the other agents use a system in which the average mean of the cards (_mean\_value\_hand_) in the hand is compared to the mean value of all the cards in the game (_mean\_value\_game_). These values are calculated using the function _pre\_evaluate()_ in the Card class, which takes the trump into account but ignores the trick suit, since there is none. If the _mean\_value\_hand_ is less than 90% of _mean\_value\_game_, the player guesses 0 tricks. If it is between 90% and 110% of _mean\_value\_game_, the player guesses he will win 1/4th of the total trick. Between 110% and 130%, he guesses 2/4ths of the total tricks. For more than 130%, the player guesses to win all tricks. This method uses all the available knowledge at the start of the game: which cards the player has and which other cards are in the game.
 
 ## Experiments
 
-To test the performance of the four different agents (Random, Greedy, GreedyKripke, FullKripke), they all played against eachother. The performance is averaged over 100.000 games.
+To test the performance of the four different agents, Random, Greedy, Greedy Kripke and Full Kripke, they all played against eachother. The performance is averaged over 100.000 games.
 
 ## Results
 
@@ -407,7 +408,7 @@ Table 6 shows the mean scores and standard deviation after four different agents
   </tr>
 </table>
 
-Table 7 shows the mean wins and standard deviation after four different agents have played 100.000 games against one another, while aiming for the most wins. Note that the GreedyKripkeAgent and FullKripkeAgent use the same strategy to win. Therefore, the results are the same.
+Table 7 shows the mean wins and standard deviation after four different agents have played 100.000 games against one another, while aiming for the most wins. Note that the GKA and FKA use the same strategy to win. Therefore, the results are the same.
 
 <table style="width:100%">
 <caption>Table 7: Mean scores per player </caption>
@@ -443,26 +444,25 @@ Table 7 shows the mean wins and standard deviation after four different agents h
 
 ## Discussion
 
-TODO update: GKA does not outperform GA (Greedykipke is better, see average tricks won. He just does not stop winning. He's out of control!)
+TODO update: GKA does not outperform GA (GreedyKipke is better, see average tricks won. He just does not stop winning. He's out of control!)
+TODO: Discuss why GKA is better than FKA
 
 The results in Table 6 show that agents who use strategies which are based on Kripke knowledge (GKA, FKA) outperform simple agents (RA, GA). The RA clearly performs the worst, while the GKA performs the best.
 
 <!-- - GKA is very similar to the Greedy agent. (Almost always plays high cards) -->
-  The GreedyKripkeAgent performs very similar to the GreedyAgent. This can be explained by the fact that their playstyle is very similar. They guess their wins using the same strategy and if they do not want to win a trick, they both play a random card. 
-  
-  They only differ in their playing style when trying to win tricks. The GKA uses Kripke knowledge, where the GA always plays the highest card. However, the strategy of GKA often leads to playing the highest card, which results in similar play.
+  The Greedy Kripke agent performs very similar to the Greedy agent. This can be explained by the fact that their playstyle is very similar. They guess their wins using the same strategy and try to win as many tricks as possible. The only difference in their playing style is how they try to win the the tricks. The GKA uses Kripke knowledge, where the GA always plays the highest card. However, the strategy of GKA often leads to playing the highest card, which results in similar play.
 
-- We only play with few cards
+<!-- - We only play with few cards -->
   In our experiments we play 5 different rounds, with a maximum of 5 cards. We deliberately chose this setup, since the optimal strategy is more difficult to find in games with more cards. As with more cards the strategy can be much more complex than the one that the agents use. We therefore simplified the game to enable us to heuristically create strategies based on Kripke models. This might thus not be a complete representation of the real game but that was not the goal of this project. 
   
-  The Greedy agent will always pick his highest card from his hand. As this strategy could work when there are few cards in the game, when more cards are added the higher the possibility that it will have no high cards left in his hands and will not reach its guess. It will also continue with a winning strategy even if it has reached its guess. In contrast, the Full Kripke player is implemented as such that tries to win tricks by playing its lowest card that still wins. This will result in higher cards at the end of the game and could increase the probability of reaching the guess. Additionally, it does not try to win when it has already reached its guess. 
+  The Greedy agent will always pick his highest card from his hand. As this strategy could work when there are few cards in the game, when more cards are added the higher the possibility that it will have no high cards left in his hands and will not reach its guess. It will also continue with a winning strategy even if it has reached its guess. In contrast, the Full Kripke agent is implemented such that it tries to win tricks by playing its lowest card that still wins. This will result in higher cards at the end of the game and could increase the probability of reaching the guess. Additionally, it does not try to win when it has already reached its guess. 
   
-- The Strategy based on Kripke models is heuristically determined (and FKA loss-graph is not optimized (see Extensions))
-  The strategy based on the Kripke models is heuristically determined. The implemented strategies are based on our own experience of the game and therefore might be sub-optimal. This can obviously influence the conclusion of our experiments (weather or the use of Kripke models is useful in card games like this).
-  Also the losing strategy of the FKA is heuristically determined. This can influence the results in the same way.
+<!-- - The Strategy based on Kripke models is heuristically determined (and FKA loss-graph is not optimized (see Extensions)) -->
+  The strategy based on the Kripke models is heuristically determined. The implemented strategies are based on our own experience of the game and therefore might be sub-optimal. This can obviously influence the conclusion of our experiments, if Kripke knowledge is useful in this card game. Also the losing strategy of the FKA is heuristically determined. This can influence the results in the same way.
   
-- The guessing is similar across 3 of the agents
-  A player can only obtain points if he guesses his wins correctly. The implementation of the guesses is the same across the three agents GA, GKA and FKA. To confirm the influence of the Kripke models on the capabilities of the agents, we also tested the agents in a setup where they always tried to win. I.e. they did not use their losing strategies, when they reached their guessed wins. These results are shown in Table 7. The difference in score indicates how well the differen strategies work. When an agent tries to win, the strategie of the GKA and FKA outperforms the GA and RA.
+<!-- - The guessing is similar across 3 of the agents -->
+  A player can only obtain points if he guesses his wins correctly. The implementation of the guesses is the same across the three agents GA, GKA and FKA. To confirm the influence of the Kripke models on the capabilities of the agents, we also tested the agents in a setup where they always tried to win. I.e. they did not use their losing strategies, when they reached their guessed wins. These results are shown in Table 7. The difference in score indicates how well the different strategies work. When an agent tries to win, the strategy of the GKA and FKA outperforms the GA and RA.
+  These results might also explain why the GA outperforms the GKA in the game results of Table 6. It might be possible that the GKA has a better winning strategy and exceeds his guesses more often. This results in a lower overall score, due to the negative points it gets when exceeding the guesses.
   
 
 ## Possible extensions
