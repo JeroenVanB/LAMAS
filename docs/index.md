@@ -45,7 +45,7 @@ Final todo's:
 - 'Website' layout
 ## Introduction
 
-In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the amount of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project we are testing the performance of agents that use Kripke knowledge and compare it with agents that use simple tactics that are not based on Kripke knowledge.
+In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the number of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project, we are testing the performance of agents that use Kripke knowledge and compare it with agents that use simple tactics that are not based on Kripke knowledge.
 
 [This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
 
@@ -56,7 +56,7 @@ In this project, we are going to analyze the application of Kripke knowledge in 
 
 ### Variations
 
-There are many variants of the game: 'Oh hell!', 'Wizard' or 'Nomination Whist'. We decided to implement a version, which we ourselves usually play. To prevent state explosion, we simplified some game rules, e.g. the amount of cards. We implemented a version with 5 rounds and only the highest cards of the normal deck of cards are used. The trump changes each round and is chosen randomly.
+There are many variants of the game: 'Oh hell!', 'Wizard' or 'Nomination Whist'. We decided to implement a version, which we usually play. To prevent state explosion, we simplified some game rules, e.g. the number of cards. We implemented a version with 5 rounds and only the highest cards of the normal deck of cards are used. The trump changes each round and is chosen randomly.
 
 ### Points
 
@@ -68,7 +68,7 @@ If the player guesses wrong, he will get two points subtracted for each trick he
 
 In each round, each player is given _n_ cards. From a separate set of cards, one random card is picked to determine the trump of the round. Starting by the player to the left of the dealer _P<sub>1</sub>_ and continuing clockwise, every player _P_ ∈ \{_P<sub>1</sub>_, _P<sub>2</sub>_, _P<sub>3</sub>_, _P<sub>4</sub>_\} guesses the number of tricks he will win. (In the rare occasion that all the guesses sum up to _n_, the dealer has to change his guess. He has to increase or decrease his original guess with 1 such that the total is not a sum equal to _n_.)
 
-Next, _t_ = _n_ tricks are played, in which each player plays one card. During the first trick _t_<sub>1</sub>, the player left of the dealer starts. In the following rounds, the winner of the previous trick starts. The starting player is called _the opener_. Every player after the opener, should play a card matching the suit of the card played by the opener. If this is not possible, the player may play any card of his choice.
+Next, _t_ = _n_ tricks are played, in which each player plays one card. During the first trick _t_<sub>1</sub>, the player left of the dealer starts. In the following rounds, the winner of the previous trick starts. The starting player is called _the opener_. Every player after the opener should play a card matching the suit of the card played by the opener. If this is not possible, the player may play any card of his choice.
 
 ### Winning tricks
 
@@ -77,8 +77,8 @@ The player who played the highest card during a trick, takes the trick. The card
 ### Number of cards
 
 The number of cards depend on the number of rounds. The number of rounds can is determined by the players beforehand. We chose to play 5 rounds.
-In every round _r_, the players is dealt _t<sub>r</sub>_ cards. First, starting in the first round with _t<sub>1</sub> = 3_. In each following round, every player is given _t<sub>r</sub> = t<sub>r-1</sub> + 1_ cards, up to 5 cards in total (in round 3). Then, starting with 2 more rounds are played, where the amount of cards decreases by 1. The game ends after round 5, where _n<sub>5</sub> = 3_. See the table below for clarification.
-To decrease the possible states, we minimized the amount of cards used in the game. This way it is known which cards are in the game and which are not. E.g. in round 1, only the (Queen, King, Ace) of all the suits are used. This is also clarified in the table below.
+In every round _r_, the players is dealt _t<sub>r</sub>_ cards. First, starting in the first round with _t<sub>1</sub> = 3_. In each following round, every player is given _t<sub>r</sub> = t<sub>r-1</sub> + 1_ cards, up to 5 cards in total (in round 3). Then, 2 more rounds are played, where the number of cards decreases by 1. The game ends after round 5, where _n<sub>5</sub> = 3_. See the table below for clarification.
+To decrease the possible states, we minimized the number of cards used in the game. This way it is known which cards are in the game and which are not. E.g. in round 1, only the (Queen, King, Ace) of all the suits are used. This is also clarified in the table below.
 
 <!-- | Round  | Number of cards  | Cards                      |
 | ------ | ---------------- | -------------------------- |
@@ -123,17 +123,14 @@ To decrease the possible states, we minimized the amount of cards used in the ga
 </table>
 
 ## Formalization
-
-TODO introduce Kripke S5 here (komt anders later uit de lucht vallen)
-
-Every time a player plays a card, he makes an announcement. By using Public Announcement Logic (PAL), we can reduce the amount of possible states in the Kripke models. By using PAL, we can increase the common knowledge in the game. Since the announcements are always true and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states. This can eliminate the possibilities of players having certain cards. Therefore, an announcement can result in common knowledge. For a more formal proof of the relation between PAL and common knowledge we refer to the book by _Dynamic Epistemic Logic_ by _Hans van Ditmarsch_.
+To formalize the game we make use of Public Announcement Logic (PAL) to update the Kripke S5 models, to which we will refer as Kripke models for convenience. Every time a player plays a card, he makes an announcement. By using PAL, we can reduce the number of possible states in the Kripke models and increase the common knowledge in the game. Since the announcements are always true and contain information that all the players can use, it can be used to update the Kripke models of all players. The announced knowledge has thus become common knowledge. The announcements give more information about the real world and therefore result in a decreased number of relations between possible states, and even result in some possible states to be eliminated. This can eliminate the possibilities of players having certain cards. Therefore, an announcement can result in common knowledge. For a more formal proof of the relation between PAL and common knowledge we refer to the book by _Dynamic Epistemic Logic_ by _Hans van Ditmarsch_.
 
 To formalize the model we use the following notation: _x\_S\_r_, where _x_ ∈ \{N, E, S, W\} which are the players, _S_ ∈ \{C, SP, H, D\} and _r_ ∈ \{A, K, Q, J, 10\}. This indicates that player _x_ has (and plays) a card with suit _S_ and rank _r_.
 
-The full names and used abbreviations of the players, suits and ranks can be found in the tables 1, 2, and 3, respectively.
+The full names and used abbreviations of the players, suits and ranks can be found in the tables 2, 3, and 4, respectively.
 
 <table style="width:100%">
-<caption>Table 3: Player names.</caption>
+<caption>Table 2: Player names.</caption>
   <tr>
     <th>Name</th>
     <th>Abbreviation</th>
@@ -157,7 +154,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
 </table>
 
 <table style="width:100%">
-<caption>Table 4: Suits.</caption>
+<caption>Table 3: Suits.</caption>
   <tr>
     <th>Name</th>
     <th>Abbreviation</th>
@@ -181,7 +178,7 @@ The full names and used abbreviations of the players, suits and ranks can be fou
 </table>
   
 <table style="width:100%">
-<caption>Table 5: Ranks. </caption>
+<caption>Table 4: Ranks. </caption>
   <tr>
     <th>Name</th>
     <th>Abbreviation</th>
@@ -210,14 +207,14 @@ The full names and used abbreviations of the players, suits and ranks can be fou
 
 ### Example 1: Announcement 'Played card'
 
-If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore.
+If player North plays the Ace of Spades, no one else can hold that card. Therefore, the Kripke model of the Ace of Spades can be updated. All players only have a relation from the real world, to the real world (in which North is the owner of the Ace of Spades). After the update it is common knowledge that no one has that specific card anymore and the state is eliminated. 
 the public announcement changes the common knowledge as follows:
 
 <img src="announcement_plays_card.png" alt="Formal definition of the announcement 'Played card'">
 
 ### Example 2: Announcement 'Does not have suit'
 
-Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts.
+Consider the Kripke model of the Queen of Hearts. Player South does not hold the Queen of Hearts. Player North is the opener and starts the trick by playing the 10 of Hearts. Player East plays the Jack of Clubs. If Player East had a card of the Hearts suit (the trick suit), he was obligated to play it. Since he did not, player South now knows, that he does not have the Queen of Hearts and therefore has no Hearts suit at all. Therefore, every Player can update their knowledge on the cards that Player East holds. It is now common knowledge that Player East does not hold a card with suit Hearts. For every card with the Hearts suit the state "East has card" is eliminated. 
 In formal, the public announcement changes the common knowledge as follows:
 
 <img src="announcement_has_no_suit.png" alt="Formal definition of the announcement 'Does not have suit'" width="400">
@@ -228,10 +225,10 @@ The game is made in Python with [Pygame](https://www.pygame.org/), using a MVC p
 
 ### Card Class
 
-An instance of the Card class represents a card, by keeping track of the rank, suit, owner and the value. The base value is determined by the rank, as shown in Table 2. The lowest rank, Ten, is evaluated at 8, to preserve the possibility to extend with more (lower) cards. When a card is played, the value is influenced by the trump and trick suit. When a card has the same suit as the trick suit, its value is increased by 13. When a card has the same suit as the trump, its value is increased by 26.
+An instance of the Card class represents a card, by keeping track of the rank, suit, owner and the value. The base value is determined by the rank, as shown in Table 5. The lowest rank, Ten, is evaluated at 8, to preserve the possibility to extend with more (lower) cards. When a card is played, the value is influenced by the trump and trick suit. When a card has the same suit as the trick suit, its value is increased by 13. When a card has the same suit as the trump, its value is increased by 26.
 
 <table style="width:100%">
-<caption>Table 2: Value of each rank. </caption>
+<caption>Table 5: Value of each rank. </caption>
   <tr>
     <th>Rank</th>
     <th>Value</th>
@@ -260,7 +257,7 @@ An instance of the Card class represents a card, by keeping track of the rank, s
 
 ### Deck Class
 
-During the game only one instance of the Deck class is present. It keeps track of all the cards in the game. The amount of cards in the deck depends on the round, as explained in the section Game Rules.
+During the game only one instance of the Deck class is present. It keeps track of all the cards in the game. The number of cards in the deck depends on the round, as explained in the section Game Rules.
 
 ### Player Class
 
@@ -300,7 +297,7 @@ The left hand side of the UI shows the game information such as the current roun
 
 ### Message box
 
-To give the user a better overview of what is happening in the game and models we added a status box at the bottom. This box shows messages such as who's turn it is to play, what the trump is for this round or what the current trick suit is. All public announcements can be observed here so that the user has a better understanding of the changes to the Kripke models. In the image above you can find that player West had to change it's guess since it is not allowed for the sum of guess to be equal to the amount of tricks in the game.
+To give the user a better overview of what is happening in the game and models we added a status box at the bottom. This box shows messages such as who's turn it is to play, what the trump is for this round or what the current trick suit is. All public announcements can be observed here so that the user has a better understanding of the changes to the Kripke models. In the image above you can find that player West had to change it's guess since it is not allowed for the sum of guess to be equal to the number of tricks in the game.
 
 ### Kripke Model Viewer
 
@@ -374,7 +371,7 @@ Unfortunately, the lose-graph does not use make use of Kripke knowledge. The gra
 
 ### Guessing
 
-The guessing is a very important part of the game. Since tactical guessing results in rather complex behavior we heuristically determined two simple approaches. The RandomAgent randomly guesses a number between 0 and the amount of tricks. All the other agents use a system in which uses a the average mean of the cards (_mean_value_hand_) in the hand is compared to the mean value of all the cards in the game (_mean_value_game_). These values are calculated using the function _pre_evaluate()_ in the Card class, which take the trump into account (but ignores the trick suit, since there is none). If the _mean_value_hand_ is less than 90% of _mean_value_game_, the player guesses 0 tricks. If it is between 90% and 110% of _mean_value_game_, the player guesses he will win 1/4th of the total trick. Between 110% and 130%, he guesses 2/4ths of the total tricks. For more than 130%, the player guesses to win all tricks. This method uses all the available knowledge at the start of the game: which cards the player has and which other cards are in the game.
+The guessing is a very important part of the game. Since tactical guessing results in rather complex behavior we heuristically determined two simple approaches. The RandomAgent randomly guesses a number between 0 and the number of tricks. All the other agents use a system in which uses a the average mean of the cards (_mean_value_hand_) in the hand is compared to the mean value of all the cards in the game (_mean_value_game_). These values are calculated using the function _pre_evaluate()_ in the Card class, which take the trump into account (but ignores the trick suit, since there is none). If the _mean_value_hand_ is less than 90% of _mean_value_game_, the player guesses 0 tricks. If it is between 90% and 110% of _mean_value_game_, the player guesses he will win 1/4th of the total trick. Between 110% and 130%, he guesses 2/4ths of the total tricks. For more than 130%, the player guesses to win all tricks. This method uses all the available knowledge at the start of the game: which cards the player has and which other cards are in the game.
 
 ## Experiments
 
@@ -487,7 +484,7 @@ The implementation of such an algorithm is not the main goal of the course, but 
 
 ### Tactical guessing
 
-Our implementation of the game is a simplified version because of time constraints. As previously discussed we focus only on 'greedy guessing' in which the agent guesses the amount of plays he will win. The player then uses a greedy tactic to get the most wins out of the game. While this results in a relatively good score this is only played by beginners. In Boeren Bridge players often use 'tactical guessing'. This means guessing and playing for 0 wins. This can get you bonus points if you succeed and can result in more points. However the player has to adopt a whole new tactic. The question is now "How can I lose my high cards without winning the trick?". It would be interesting to extend our implementation so that there are agents that use the Kripke models for both greedy and non-greedy dynamic behavior.
+Our implementation of the game is a simplified version because of time constraints. As previously discussed we focus only on 'greedy guessing' in which the agent guesses the number of plays he will win. The player then uses a greedy tactic to get the most wins out of the game. While this results in a relatively good score this is only played by beginners. In Boeren Bridge players often use 'tactical guessing'. This means guessing and playing for 0 wins. This can get you bonus points if you succeed and can result in more points. However the player has to adopt a whole new tactic. The question is now "How can I lose my high cards without winning the trick?". It would be interesting to extend our implementation so that there are agents that use the Kripke models for both greedy and non-greedy dynamic behavior.
 
 It would be interesting to extend the Q-learning approach mentioned above with tactical guessing. A second neural network could be used to make a correct guess and to chose which tactic to apply: greedy or non-greedy.
 
