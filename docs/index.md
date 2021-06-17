@@ -45,7 +45,7 @@ Julian Bruinsma (s3215601)
 
 In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the number of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project, we are testing the performance of agents that use Kripke knowledge and compare it with agents that use simple tactics that are not based on Kripke knowledge.
 
-[This](https://github.com/JeroenVanB/LAMAS) is the link to our github repository.
+All code of this project can be found in the [Github repository](https://github.com/JeroenVanB/LAMAS).
 
 
 ## Game Rules 
