@@ -33,14 +33,14 @@ Julian Bruinsma (s3215601)
 - [Possible extensions](#possible-extensions)
   * [Q-learning](#q-learning)
   * [Tactical guessing](#tactical-guessing)
-  * [Kipke knowledge in lose-graph](#kipke-knowledge-in-lose-graph)
+  * [Kripke knowledge in lose-graph](#kripke-knowledge-in-lose-graph)
   * [Higher order Logic (K_1K_2)](#higher-order-logic--k-1k-2-)
 <!-- 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small> -->
 
 
-Final todo's:
-- 'Website' layout
+<!-- Final todo's:
+- 'Website' layout -->
 ## Introduction
 
 In this project, we are going to analyze the application of Kripke knowledge in the Dutch game called _Boeren Bridge_. It is a card game played with four players, in which the objective is to obtain the most points, by correctly guessing the number of tricks the player himself will take. We created agents which use playing strategies based on Kripke models, which are updated during the game with Public Announcement Logic. In this project, we are testing the performance of agents that use Kripke knowledge and compare it with agents that use simple tactics that are not based on Kripke knowledge.
@@ -402,7 +402,7 @@ Table 6 shows the mean scores and standard deviation after four different agents
   </tr>
 </table>
 
-Table 7 shows the mean wins and standard deviation after four different agents have played 100.000 games against one another, while aiming for the most wins. Note that the GKA and FKA use the same strategy to win. Therefore, the results are the same.
+Table 7 shows the mean wins and standard deviation after four different agents have played 100.000 games against one another, while aiming for the most wins instead of guesses. Note that the GKA and FKA use the same strategy to win. Therefore, the results are similar.
 
 <table style="width:100%">
 <caption>Table 7: Mean scores per player </caption>
@@ -436,7 +436,7 @@ Table 7 shows the mean wins and standard deviation after four different agents h
 
 ## Discussion
 
-The results in Table 6 show that agents who use strategies which are based on Kripke knowledge (GKA, FKA) outperform simple agents (RA, GA). The RA clearly performs the worst, while the GKA performs the best.
+The results in Table 6 show that agents who use strategies which are based on Kripke knowledge (GKA, FKA) perfrom very well. However, the GA slightly outperforms the GKA. The RA clearly performs the worst, while the FKA performs the best.
 
 <!-- - GKA is very similar to the Greedy agent. (Almost always plays high cards) -->
 
@@ -479,7 +479,7 @@ Our implementation of the game is a simplified version because of time constrain
 
 It would be interesting to extend the Q-learning approach mentioned above with tactical guessing. A second neural network could be used to make a correct guess and to chose which tactic to apply: greedy or non-greedy.
 
-### Kipke knowledge in lose-graph
+### Kripke knowledge in lose-graph
 
 Currently, FKA is the only agent that uses the lose-graph. As mentioned before, the implemented strategies do not use Kripke knowledge, since it would be excessive for the current setup. However, the strategies can be extended by applying more rules, which do make use of Kripke knowledge. Consider the following example for a losing strategy:
 
@@ -496,4 +496,4 @@ The second and third question are based on knowledge provided by the Kripke mode
 Currently, we only make use of PAL and first order knowledge. After an announcement a player knows something about someone else, but we do not represent that the player knows the other players know that he knows. As in our implementation the agent only uses a strategy for both guessing and playing cards, it is not necessary to use higher order knowledge. 
 For guessing, the player only needs to know the value of his cards. He does not know the cards of the other players and it does not matter if he knows that they know that. In other versions of Boeren Bridge players receive a bonus if they guess 0 wins and get it correctly. This requires more complex behavior, in terms of tactical guessing. While he might be able to win a trick, he wil deliberately lose tricks, to receive bonus points. When a player guesses 0 it might be possible that he is using tactical guessing or that he really has bad cards. When a player knows that another player knows that he is tactical guessing, he might have to change some of his tactics. Future research could take a bigger focus on this form of higher order logic.
 
-There are other complex behaviors which allow the implementation of higher order logic. Consider a situation where Player South needs one more win, to correctly obtain his guessed amount of wins. He has one high card that certainly wins (e.g. the highest trump card), and a few other cards, which might win in the future. Instead of directly playing his high card, he decides to play the other cards first. This way he is more likely to lose these other tricks, since there are more cards in the game. This increases his chances to correctly obtain the guessed amount of wins. Another player (e.g. player North) notices that South plays this losing card, while he still requires a win. By observing this behavior, player North is able to figure out that South still holds a very high card. Player North knows that Player South knows that South is holding a very high card. In future research, this extra knowledge about the knowledge of other players can be used for tactical play.
+There are other complex behaviors which allow the implementation of higher order logic. Consider a situation where Player South needs one more win, to correctly obtain his guessed number of wins. He has one high card that certainly wins (e.g. the highest trump card), and a few other cards, which might win in the future. Instead of directly playing his high card, he decides to play the other cards first. This way he is more likely to lose these other tricks, since there are more cards in the game. This increases his chances to correctly obtain the guessed number of wins. Another player (e.g. player North) notices that South plays this losing card, while he still requires a win. By observing this behavior, player North is able to figure out that South still holds a very high card. Player North knows that Player South knows that South is holding a very high card. In future research, this extra knowledge about the knowledge of other players can be used for tactical play.
