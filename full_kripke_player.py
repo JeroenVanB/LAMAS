@@ -5,7 +5,7 @@ from card import Card
 
 
 class FullKripkePlayer(Player):
-    """The Kripke Player plays cards based on the kripke model"""
+    """The Kripke Player plays cards based on the Kripke model"""
 
     def __init__(self, seat_number, seat: Seat):
         Player.__init__(self, seat_number, seat)
@@ -22,8 +22,7 @@ class FullKripkePlayer(Player):
                 if self.kb.other_players_have_suit(self.game_model.trump):
                     # check if I have the highest trump
                     trump_cards = self.get_trump_cards()
-                    card = self.kb.get_highest_card_of_suit(
-                        self.game_model.trump)
+                    card = self.kb.get_highest_card_of_suit(self.game_model.trump)
                     if trump_cards and card.owner == self:  # I have highest trump card
                         return card
                     else:
@@ -90,8 +89,7 @@ class FullKripkePlayer(Player):
                                 if self.highest_trump_of_table().evaluate(
                                     self.game_model.trump, self.game_model.trick_suit
                                 ) > self.get_highest_card(
-                                    self.get_cards_of_suit(
-                                        self.game_model.trump)
+                                    self.get_cards_of_suit(self.game_model.trump)
                                 ).evaluate(
                                     self.game_model.trump, self.game_model.trick_suit
                                 ):
@@ -99,8 +97,7 @@ class FullKripkePlayer(Player):
                                     return self.get_lowest_card()
                                 else:
                                     return self.get_highest_card(
-                                        self.get_cards_of_suit(
-                                            self.game_model.trump)
+                                        self.get_cards_of_suit(self.game_model.trump)
                                     )
                             else:
 
@@ -142,23 +139,28 @@ class FullKripkePlayer(Player):
                     # Did someone play a trump card?
                     if self.game_model.trump_on_table():
                         # Play the highest trick suit card
-                        return self.get_highest_card(self.get_cards_of_suit(self.game_model.trick_suit))
+                        return self.get_highest_card(
+                            self.get_cards_of_suit(self.game_model.trick_suit)
+                        )
                     else:
                         card = self.kb.get_highest_card_of_suit(
                             self.game_model.trick_suit
                         )
                         if card.owner == self:  # I have the highest trick suit card
-                            return self.get_highest_card(self.get_cards_of_suit(self.game_model.trick_suit))
+                            return self.get_highest_card(
+                                self.get_cards_of_suit(self.game_model.trick_suit)
+                            )
                         else:  # Play the highest trick suit card that still loses
                             highest_losing = self.get_highest_card_below(
-                                self.get_cards_of_suit(
-                                    self.game_model.trick_suit),
-                                self.game_model.highest_card_of_table()
+                                self.get_cards_of_suit(self.game_model.trick_suit),
+                                self.game_model.highest_card_of_table(),
                             )
                             if highest_losing is not None:
                                 return highest_losing
                             else:
-                                return self.get_highest_card(self.get_cards_of_suit(self.game_model.trick_suit))
+                                return self.get_highest_card(
+                                    self.get_cards_of_suit(self.game_model.trick_suit)
+                                )
                 else:  # He does not have trick suit
                     self.game_model.make_announcement(
                         sender=self,
@@ -173,7 +175,9 @@ class FullKripkePlayer(Player):
                             # Does he have a lower trump card?
                             highest_trump = self.highest_trump_of_table()
                             if self.contains_lower(own_trump_cards, highest_trump):
-                                return self.get_highest_card_below(own_trump_cards, highest_trump)
+                                return self.get_highest_card_below(
+                                    own_trump_cards, highest_trump
+                                )
                     return self.get_highest_card(self.cards)
 
     def guess_wins(self, trump, total_tricks):

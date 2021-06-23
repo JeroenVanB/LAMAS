@@ -12,7 +12,6 @@ if len(sys.argv) == 1:
     ui = UI(GameModel())
 else:
     # Run experiments
-
     num_games = int(sys.argv[1])
     scores = {"greedy": [], "greedy_kripke": [], "full_kripke": [], "random": []}
 
@@ -41,4 +40,14 @@ else:
     print(f"\nAverage score over {num_games} games per player.")
     for k, v in scores.items():
         if v:
-            print(k, " \t\tscored ", mean(v), "\t\tstd", stdev(v), "\t\tlowest", min(v), "\t\tmax", max(v))
+            print(
+                k,
+                " \t\tscored ",
+                mean(v),
+                "\t\tstd",
+                stdev(v),
+                "\t\tlowest",
+                min(v),
+                "\t\tmax",
+                max(v),
+            )
